@@ -1,0 +1,39 @@
+name: openwrt_manager
+description: OpenWRT Manager app for your devices.
+
+version: 1.00.0+201000
+
+environment:
+  sdk: ">=2.3.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^0.1.2
+  path_provider: ^1.6.5
+  rflutter_alert: ^1.0.3
+  uuid: 2.0.4
+  http: ^0.12.0+4
+  package_info: ^0.4.0+17
+  feature_discovery: ^0.10.0
+  
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.7.4
+
+flutter_icons:
+  image_path: "assets/icon/openwrt_manager.png" 
+  android: true
+  ios: true
+
+flutter:
+  assets:
+    - assets/
+  uses-material-design: true
+  fonts:
+    - family:  MyFlutterApp
+      fonts:
+        - asset: fonts/MyFlutterApp.ttf
+
