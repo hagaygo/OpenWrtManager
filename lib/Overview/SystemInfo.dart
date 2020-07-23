@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:openwrt_manager/Model/device.dart';
 import 'package:openwrt_manager/OpenWRT/Model/AuthenticateReply.dart';
 import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
+import 'package:openwrt_manager/Overview/DHCPLeaseStatus.dart';
 import 'package:openwrt_manager/Overview/OverviewItemManager.dart';
 import 'package:openwrt_manager/Overview/OverviewWidgetBase.dart';
 import 'package:openwrt_manager/Utils.dart';
+import 'package:openwrt_manager/dataCache.dart';
 
 class SystemInfo extends OverviewWidgetBase {
   SystemInfo(
@@ -30,7 +32,7 @@ class SystemInfoState extends OverviewWidgetBaseState
 
   @override
   Widget get myWidget {
-    var infoData = data[0][1];
+    var infoData =  data[0][1];
     var uptime = infoData["uptime"];
     var load = infoData["load"] as List<dynamic>;
     var memoryTotal = infoData["memory"]["total"];
@@ -43,6 +45,10 @@ class SystemInfoState extends OverviewWidgetBaseState
     var hostName = boardData["hostname"];
     var releaseData = boardData["release"];
 
+    var dhcpLeaseData = data[2][1];
+    var dhcpLeaseList  = DHCPLeaseStatusState.getDHCPLeaseListFromJSON(dhcpLeaseData["dhcp_leases"]);    
+    DataCache.updateData(dhcpLeaseList);
+    
     var alwaysVisibleRows = getRows({
       "Hostname": hostName,
       "Up": Utils.formatDuration(Duration(seconds: uptime)),

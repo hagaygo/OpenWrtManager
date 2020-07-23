@@ -7,6 +7,7 @@ import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
 import 'package:openwrt_manager/Overview/OverviewItemManager.dart';
 import 'package:openwrt_manager/Overview/OverviewWidgetBase.dart';
 import 'package:openwrt_manager/Utils.dart';
+import 'package:openwrt_manager/dataCache.dart';
 
 class DHCPLeaseStatus extends OverviewWidgetBase {
   DHCPLeaseStatus(Device device, bool loading, AuthenticateReply authenticationStatus, List<CommandReplyBase> replies,
@@ -17,15 +18,13 @@ class DHCPLeaseStatus extends OverviewWidgetBase {
   DHCPLeaseStatusState createState() => DHCPLeaseStatusState();
 }
 
-class DHCPLeaseStatusState extends OverviewWidgetBaseState with TickerProviderStateMixin {
-  
-  @override
-  Widget get myWidget {
-    var infoData = data[0][1];
-    var dhcp4Leases = infoData["dhcp_leases"];
 
+class DHCPLeaseStatusState extends OverviewWidgetBaseState with TickerProviderStateMixin {
+
+  static List<DHCPLease> getDHCPLeaseListFromJSON(dynamic data)
+  {
     var dhcpLeaseList = List<DHCPLease>();
-    for (var l in dhcp4Leases) {
+    for (var l in data) {
       var i = DHCPLease();
       i.expires = l["expires"];
       i.macAddress = l["macaddr"];
@@ -35,6 +34,15 @@ class DHCPLeaseStatusState extends OverviewWidgetBaseState with TickerProviderSt
     }
 
     dhcpLeaseList.sort((a,b) => b.expires - a.expires);
+    return dhcpLeaseList;
+  }
+
+  @override
+  Widget get myWidget {
+    var infoData = data[0][1];    
+
+    var dhcpLeaseList  = getDHCPLeaseListFromJSON(infoData["dhcp_leases"]);    
+    DataCache.updateData(dhcpLeaseList);
 
     var rows = List<Widget>();
     if (dhcpLeaseList.length == 0) {
