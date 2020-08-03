@@ -6,7 +6,6 @@ import 'package:openwrt_manager/OpenWRT/Model/AuthenticateReply.dart';
 import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
 import 'package:openwrt_manager/Overview/OverviewItemManager.dart';
 import 'package:openwrt_manager/Overview/OverviewWidgetBase.dart';
-import 'package:openwrt_manager/Utils.dart';
 import 'package:openwrt_manager/dataCache.dart';
 
 class DHCPLeaseStatus extends OverviewWidgetBase {
@@ -18,7 +17,6 @@ class DHCPLeaseStatus extends OverviewWidgetBase {
   DHCPLeaseStatusState createState() => DHCPLeaseStatusState();
 }
 
-
 class DHCPLeaseStatusState extends OverviewWidgetBaseState with TickerProviderStateMixin {
 
   static List<DHCPLease> getDHCPLeaseListFromJSON(dynamic data)
@@ -26,7 +24,12 @@ class DHCPLeaseStatusState extends OverviewWidgetBaseState with TickerProviderSt
     var dhcpLeaseList = List<DHCPLease>();
     for (var l in data) {
       var i = DHCPLease();
+      try
+      {
       i.expires = l["expires"];
+      } catch(e) {
+        i.expires = -1;
+      }
       i.macAddress = l["macaddr"];
       i.ipAddress = l["ipaddr"];
       i.hostName = l["hostname"];
@@ -62,7 +65,7 @@ class DHCPLeaseStatusState extends OverviewWidgetBaseState with TickerProviderSt
               ],),
               SizedBox(height: 5),
               Row(children: <Widget>[
-              Expanded(child: Text(Utils.formatDuration(Duration(seconds:  d.expires)))),
+              Expanded(child: Text(d.expiresText)),
               Expanded(child: Align(alignment: Alignment.center, child: Text(d.hostName)))
               ],)
             ],
