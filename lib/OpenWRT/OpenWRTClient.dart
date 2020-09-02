@@ -8,6 +8,7 @@ import 'package:openwrt_manager/OpenWRT/Model/AuthenticateReply.dart';
 import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
 import 'package:openwrt_manager/OpenWRT/Model/ReplyBase.dart';
 import 'package:openwrt_manager/OpenWRT/Model/DeleteClientReply.dart';
+import 'package:openwrt_manager/OpenWRT/Model/RestartInterfaceReply.dart';
 import 'Model/SystemInfoReply.dart';
 
 class OpenWRTClient {
@@ -93,6 +94,22 @@ class OpenWRTClient {
       return Future.value([SystemInfoReply(ReplyStatus.Error)]);
     }
     return Future.value([SystemInfoReply(ReplyStatus.Error)]);
+  }
+
+  Future<RestartInterfaceReply> restartInterface(
+      AuthenticateReply auth, String interfaceName) async {
+    try {
+      var cmd = RestartInterfaceReply(ReplyStatus.Ok);
+      cmd.interfaceName = interfaceName;      
+      var res = await getData(auth.authenticationCookie, [cmd]);
+      var data = res[0] as RestartInterfaceReply;
+      if ((data.data["result"] as List)[0] == 0)
+        return Future.value(data);
+      else
+        return RestartInterfaceReply(ReplyStatus.Error);
+    } catch (e) {      
+      return Future.value(RestartInterfaceReply(ReplyStatus.Error));
+    }
   }
 
   Future<DeleteClientReply> deleteClient(

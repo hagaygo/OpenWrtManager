@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:openwrt_manager/Dialog/Dialogs.dart';
 import 'package:openwrt_manager/Model/device.dart';
 import 'package:openwrt_manager/OpenWRT/Model/AuthenticateReply.dart';
 import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
+import 'package:openwrt_manager/OpenWRT/Model/ReplyBase.dart';
+import 'package:openwrt_manager/OpenWRT/OpenWRTClient.dart';
 import 'package:openwrt_manager/Overview/OverviewItemManager.dart';
 import 'package:openwrt_manager/Overview/OverviewWidgetBase.dart';
 import 'package:openwrt_manager/Utils.dart';
 import 'package:openwrt_manager/my_flutter_app_icons.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class NetworkTraffic extends OverviewWidgetBase {
-  NetworkTraffic(
-      Device device,
-      bool loading,
-      AuthenticateReply authenticationStatus,
-      List<CommandReplyBase> replies,
-      OverviewItem item,
-      String overviewItemGuid,
-      Function doOverviewRefresh)
-      : super(device, loading, authenticationStatus, replies, item,
-            overviewItemGuid, doOverviewRefresh);
+  NetworkTraffic(Device device, bool loading, AuthenticateReply authenticationStatus, List<CommandReplyBase> replies,
+      OverviewItem item, String overviewItemGuid, Function doOverviewRefresh)
+      : super(device, loading, authenticationStatus, replies, item, overviewItemGuid, doOverviewRefresh);
 
   @override
   State<StatefulWidget> createState() {
@@ -30,9 +27,9 @@ class NetworkTrafficState extends OverviewWidgetBaseState {
   var _trafficData = Map<String, Map<String, dynamic>>();
 
   @override
-  Widget get myWidget {    
+  Widget get myWidget {
     var rows = List<Widget>();
-    var trafficInterfaces = data[0][1];    
+    var trafficInterfaces = data[0][1];
     var interfaces = data[1][1]["interface"] as List;
     var ifCounter = 1;
     _interfaces = List<String>();
@@ -48,50 +45,35 @@ class NetworkTrafficState extends OverviewWidgetBaseState {
         if (_trafficData[name] != null) {
           var incomingDiff = incoming - _trafficData[name]["in"];
           var outgoingDiff = outgoing - _trafficData[name]["out"];
-          if (gotNewData) {          
+          if (gotNewData) {
             var currentTimeStamp = new DateTime.now().millisecondsSinceEpoch;
-            var timeDiff =
-                (currentTimeStamp - _trafficData[name]["timeStamp"]) /
-                    1000;
+            var timeDiff = (currentTimeStamp - _trafficData[name]["timeStamp"]) / 1000;
             _trafficData[name]["timeStamp"] = currentTimeStamp;
-            _trafficData[name]["inSpeed"] = Utils.formatBytes(
-                (incomingDiff / timeDiff).round(),
-                decimals: 1);
-            _trafficData[name]["outSpeed"] = Utils.formatBytes(
-                (outgoingDiff / timeDiff).round(),
-                decimals: 1);
-            
+            _trafficData[name]["inSpeed"] = Utils.formatBytes((incomingDiff / timeDiff).round(), decimals: 1);
+            _trafficData[name]["outSpeed"] = Utils.formatBytes((outgoingDiff / timeDiff).round(), decimals: 1);
           }
         }
 
         String incomingSpeed = " ----- Kb/s";
         String outgoingSpeed = " ----- Kb/s";
 
-        if (_trafficData[name] != null &&
-            _trafficData[name]["inSpeed"] != null) {
+        if (_trafficData[name] != null && _trafficData[name]["inSpeed"] != null) {
           incomingSpeed = "${_trafficData[name]["inSpeed"]}/s";
           outgoingSpeed = "${_trafficData[name]["outSpeed"]}/s";
         }
 
-        var interface = interfaces.firstWhere(
-            (x) => x["l3_device"] == iff["name"],
-            orElse: () => null); // first try by name
+        var interface =
+            interfaces.firstWhere((x) => x["l3_device"] == iff["name"], orElse: () => null); // first try by name
 
         if (interface == null) // then try to match by master device
-          interface = interfaces.firstWhere(
-              (x) => iff["master"] == x["l3_device"],
-              orElse: () => null);
+          interface = interfaces.firstWhere((x) => iff["master"] == x["l3_device"], orElse: () => null);
 
         String uptime = "";
         String interfaceAddress = "";
         if (interface != null) {
-          if (interface["uptime"] != null)
-            uptime =
-                Utils.formatDuration(Duration(seconds: interface["uptime"]));
-          if (interface["ipv4-address"] != null &&
-              (interface["ipv4-address"] as List).length > 0)
-            interfaceAddress =
-                "${interface["ipv4-address"][0]["address"] ?? ""}";
+          if (interface["uptime"] != null) uptime = Utils.formatDuration(Duration(seconds: interface["uptime"]));
+          if (interface["ipv4-address"] != null && (interface["ipv4-address"] as List).length > 0)
+            interfaceAddress = "${interface["ipv4-address"][0]["address"] ?? ""}";
         }
 
         var interfaceHeaderRow = Row(
@@ -124,40 +106,38 @@ class NetworkTrafficState extends OverviewWidgetBaseState {
             Expanded(
               child: Align(
                   alignment: Alignment.center,
-                  child: getTrafficWidgetBytes(
-                      incoming, MyFlutterApp.down_bold, incomingSpeed)),
+                  child: getTrafficWidgetBytes(incoming, MyFlutterApp.down_bold, incomingSpeed)),
             ),
             Expanded(
               child: Align(
                   alignment: Alignment.center,
-                  child: getTrafficWidgetBytes(
-                      outgoing, MyFlutterApp.up_bold, outgoingSpeed)),
+                  child: getTrafficWidgetBytes(outgoing, MyFlutterApp.up_bold, outgoingSpeed)),
             )
           ],
         );
 
         var interfaceBox = Container(
             padding: EdgeInsets.all(3),
-            child: Column(
-              children: <Widget>[
-                interfaceHeaderRow,
-                SizedBox(
-                  height: 10,
-                ),
-                trafficRow,
-                SizedBox(
-                  height: 5,
-                )
-              ],
-            ));
+            child: InkWell(
+                onLongPress: () async => { await showRestartInterfaceOptionsDialog(interface)},
+                child: Column(
+                  children: <Widget>[
+                    interfaceHeaderRow,
+                    SizedBox(
+                      height: 10,
+                    ),
+                    trafficRow,
+                    SizedBox(
+                      height: 5,
+                    )
+                  ],
+                )));
         rows.add(interfaceBox);
-        if (_trafficData[name] == null)
-          _trafficData[name] = Map<String, dynamic>();
+        if (_trafficData[name] == null) _trafficData[name] = Map<String, dynamic>();
         _trafficData[name]["out"] = outgoing;
         _trafficData[name]["in"] = incoming;
         if (_trafficData[name]["timeStamp"] == null)
-          _trafficData[name]["timeStamp"] =
-              new DateTime.now().millisecondsSinceEpoch;
+          _trafficData[name]["timeStamp"] = new DateTime.now().millisecondsSinceEpoch;
         ifCounter++;
       }
     }
@@ -173,9 +153,7 @@ class NetworkTrafficState extends OverviewWidgetBaseState {
       children: <Widget>[
         Container(
             width: 75,
-            child: Align(
-                alignment: Alignment.centerRight,
-                child: Text("${Utils.formatBytes(bytes, decimals: 1)}"))),
+            child: Align(alignment: Alignment.centerRight, child: Text("${Utils.formatBytes(bytes, decimals: 1)}"))),
         SizedBox(width: 2),
         Icon(ico, size: 12),
         SizedBox(width: 2),
@@ -187,17 +165,42 @@ class NetworkTrafficState extends OverviewWidgetBaseState {
   @override
   List<Map<String, dynamic>> get configItems {
     if (_interfaces == null || _interfaces.length == 0) return null;
-    return _interfaces
-        .map((x) => {
-              "name": "$x",
-              "type": "bool",
-              "category": "Select interfaces to show"
-            })
-        .toList();
+    return _interfaces.map((x) => {"name": "$x", "type": "bool", "category": "Select interfaces to show"}).toList();
   }
 
   @override
   bool get supportsConfig {
     return true;
+  }
+
+  Future showRestartInterfaceOptionsDialog(interface)  async {
+    Alert(context: context, title: "${interface["interface"]} (${interface["device"]})", desc: "" , buttons: [
+      DialogButton(
+        color: Colors.red,
+        child: Text(
+          "Restart",
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+        onPressed: () async {
+          var client = OpenWRTClient(widget.device, null);
+          Dialogs.showLoadingDialog(context);
+          var res = await client.restartInterface(widget.authenticationStatus, interface["interface"]);
+          if (res.status != ReplyStatus.Ok) {
+             Dialogs.simpleAlert(context, "Error", "Interface restart request returned error");
+           } 
+          Navigator.pop(context);
+          Navigator.pop(context);
+        },
+      ),
+      DialogButton(
+        child: Text(
+          "Close",
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      )
+    ]).show();
   }
 }
