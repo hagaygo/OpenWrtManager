@@ -30,10 +30,10 @@ android {
     def keystoreProperties = new Properties()
     def keystorePropertiesFile = rootProject.file('key.properties')
     
-    keystoreProperties.setProperty('storePassword', System.getenv('OPENWRT_MANAGER_KEY_STORE_PASSWORD'));
-    keystoreProperties.setProperty('keyPassword', System.getenv('OPENWRT_MANAGER_KEY_PASSWORD'));
-    keystoreProperties.setProperty('keyAlias', System.getenv('OPENWRT_MANAGER_ALIAS'));
-    keystoreProperties.setProperty('storeFile', System.getenv('OPENWRT_MANAGER_KEY_PATH'));
+    keystoreProperties.setProperty('storePassword', System.getenv('OPENWRT_MANAGER_KEY_STORE_PASSWORD') ?: "");
+    keystoreProperties.setProperty('keyPassword', System.getenv('OPENWRT_MANAGER_KEY_PASSWORD') ?: "");
+    keystoreProperties.setProperty('keyAlias', System.getenv('OPENWRT_MANAGER_ALIAS') ?: "");
+    keystoreProperties.setProperty('storeFile', System.getenv('OPENWRT_MANAGER_KEY_PATH') ?: "");
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
