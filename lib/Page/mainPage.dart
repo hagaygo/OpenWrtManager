@@ -262,7 +262,9 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => DevicesPage()),
-                        );
+                        ).then((value) {
+                          refreshOverviews();
+                        });
                       });
                     });
                   },
@@ -395,8 +397,27 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
         });
       }
     }
+    if (lst.length == 0)
+    {
+      setupEmptyOverviewText(lst);
+    }
 
     return lst;
+  }
+
+  void setupEmptyOverviewText(List<Widget> lst) {
+    if (SettingsUtil.devices.length > 0)
+    {
+      lst.add(Container(
+        padding: EdgeInsets.all(5),
+        child: Center(child:Text("No overview added.\nUse + button to add overview for your device(s).", textAlign: TextAlign.center,))));
+    }
+    else
+    {
+      lst.add(Container(
+        padding: EdgeInsets.all(5),
+        child: Center(child:Text("No devices added.\nAdd them from menu option.", textAlign: TextAlign.center,))));        
+    }
   }
 
   bool _refreshing = false;
