@@ -28,7 +28,7 @@ class OverviewConfigFormState extends State<OverviewConfigForm> {
     _data = Map<String, dynamic>();
     var config = SettingsUtil.overviewConfig.data[widget.overviewItemGuid];
     for (var ci in widget.configItems) {
-      _data[ci["name"]] = config == null ? false : config[ci["name"]] ?? false;
+      _data[ci["name"]] = config == null ? true : config[ci["name"]] ?? false;
     }
   }
 
