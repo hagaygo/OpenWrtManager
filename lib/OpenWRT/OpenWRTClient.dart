@@ -135,7 +135,7 @@ class OpenWRTClient {
     try {
       var request = await http.postUrl(Uri.parse(_baseURL + "/cgi-bin/luci/"));
       var params =
-          "luci_username=${_identity.username}&luci_password=${_identity.password}";
+          "luci_username=${Uri.encodeComponent(_identity.username)}&luci_password=${Uri.encodeComponent(_identity.password)}";
       var body = utf8.encode(params);
       request.headers.set('content-type', 'application/x-www-form-urlencoded');
       request.contentLength = body.length;
