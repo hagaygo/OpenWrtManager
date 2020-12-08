@@ -16,8 +16,10 @@ import 'package:openwrt_manager/Overview/SystemInfo.dart';
 import 'package:openwrt_manager/Overview/NetworkStatus.dart';
 import 'package:openwrt_manager/Overview/WIFIStatus.dart';
 import 'package:openwrt_manager/Page/devicesPage.dart';
+import 'package:openwrt_manager/ThemeChangeNotifier.dart';
 import 'package:openwrt_manager/settingsUtil.dart';
 import 'package:package_info/package_info.dart';
+import 'package:provider/provider.dart';
 
 import 'Form/OverviewItemSelectionForm.dart';
 import 'identitiesPage.dart';
@@ -205,6 +207,15 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
     SettingsUtil.saveAppSettings();
   }
 
+  bool get _darkTheme {
+    if (SettingsUtil.appSettings == null) return false;
+    return SettingsUtil.appSettings.darkTheme;
+  }
+
+  set _darkTheme(bool val) {
+    SettingsUtil.appSettings.darkTheme = val;
+    SettingsUtil.saveAppSettings();
+  }
   Widget buildDrawer(BuildContext context) {
     return Container(
         width: 250,
@@ -221,12 +232,11 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Text('Options', style: TextStyle(color: Colors.white)),
+                            Text('Options'),
                           ],
                         )
                       ],
-                    ),
-                    decoration: BoxDecoration(color: Colors.blue),
+                    ),                    
                     padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                     margin: EdgeInsets.all(0.0),
                   ),
@@ -270,6 +280,41 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                   },
                 ),
                 ListTile(
+                  leading: Container(width: drawerIconWidth, child: const Icon(Icons.device_hub)),
+                  title: Text('Update Devices'),
+                  onTap: () {
+                    SettingsUtil.getIdentities().then((ids) {
+                      SettingsUtil.getDevices().then((dvs) {
+                        Navigator.pop(context);
+                        updateDevicesData(dvs).then((x) {
+                          Navigator.pop(context);
+                          if (x.length > 0) Dialogs.simpleAlert(context, "Update Device failed", x.join(","));
+                        });
+                        Dialogs.showLoadingDialog(context);
+                      });
+                    });
+                  },
+                ),
+                    ListTile(
+                    leading: Container(
+                        width: 60,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Switch(
+                              onChanged: (bool value) {
+                                setState(() {
+                                  _darkTheme = value;                                                                     
+                                  Provider.of<ThemeChangeNotifier>(context, listen: false).toggleTheme();
+                                });                                
+                              },
+                              value: _darkTheme,
+                            ),
+                          ],
+                        )),
+                    title: Text("Dark Mode")),
+                ListTile(
                     leading: Container(
                         width: 60,
                         child: Row(
@@ -287,7 +332,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                             ),
                           ],
                         )),
-                    title: Text("Auto Refresh")),
+                    title: Text("Auto Refresh")),                    
                 Visibility(
                     visible: _autoRefresh,
                     child: ListTile(
@@ -310,23 +355,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                           )
                         ],
                       ),
-                    )),
-                ListTile(
-                  leading: Container(width: drawerIconWidth, child: const Icon(Icons.device_hub)),
-                  title: Text('Update Devices'),
-                  onTap: () {
-                    SettingsUtil.getIdentities().then((ids) {
-                      SettingsUtil.getDevices().then((dvs) {
-                        Navigator.pop(context);
-                        updateDevicesData(dvs).then((x) {
-                          Navigator.pop(context);
-                          if (x.length > 0) Dialogs.simpleAlert(context, "Update Device failed", x.join(","));
-                        });
-                        Dialogs.showLoadingDialog(context);
-                      });
-                    });
-                  },
-                )
+                    )),                
               ])),
           Column(children: <Widget>[
             Expanded(

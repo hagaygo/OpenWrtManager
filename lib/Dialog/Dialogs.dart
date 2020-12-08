@@ -59,11 +59,14 @@ class Dialogs {
 
   static void simpleAlert(BuildContext context, String title, String text,
       {Function closeAction, String buttonText}) {
-    Alert(context: context, title: title, desc: text, buttons: [
+    Alert(
+      //style: AlertStyle,
+      context: context, title: title, desc: text, buttons: [
       DialogButton(
+        color: Theme.of(context).buttonTheme.colorScheme.background,
         child: Text(
           buttonText ?? "Close",
-          style: TextStyle(color: Colors.white, fontSize: 20),
+          style: TextStyle(fontSize: 20),
         ),
         onPressed: () {
           if (closeAction == null)
