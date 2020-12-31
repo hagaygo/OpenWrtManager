@@ -9,6 +9,7 @@ import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
 import 'package:openwrt_manager/OpenWRT/Model/NetworkDeviceReply.dart';
 import 'package:openwrt_manager/OpenWRT/Model/ReplyBase.dart';
 import 'package:openwrt_manager/OpenWRT/OpenWRTClient.dart';
+import 'package:openwrt_manager/Overview/ActiveConnections.dart';
 import 'package:openwrt_manager/Overview/DHCPLeaseStatus.dart';
 import 'package:openwrt_manager/Overview/NetworkTraffic.dart';
 import 'package:openwrt_manager/Overview/OverviewItemManager.dart';
@@ -489,6 +490,10 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
         break;
       case OverviewItemType.DHCPLeaseInfo:
         return DHCPLeaseStatus(device, inRefresh, deviceAuthenticationStatus, deviceReplies, ovi, oi.guid, refreshOverviews);
+        break;
+        case OverviewItemType.ActiveConnections:
+        return ActiveConnections(
+            device, inRefresh, deviceAuthenticationStatus, deviceReplies, ovi, oi.guid, refreshOverviews);
         break;
     }
   }

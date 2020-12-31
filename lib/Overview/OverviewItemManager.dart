@@ -1,3 +1,4 @@
+import 'package:openwrt_manager/OpenWRT/Model/ActiveConnectionsReply.dart';
 import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
 import 'package:openwrt_manager/OpenWRT/Model/DHCPLeaseReply.dart';
 import 'package:openwrt_manager/OpenWRT/Model/HostHintReply.dart';
@@ -15,7 +16,8 @@ enum OverviewItemType
   NetworkStatus,
   NetworkTraffic,
   WifiStatus,
-  DHCPLeaseInfo
+  DHCPLeaseInfo,
+  ActiveConnections
 }
 
 class OverviewItem
@@ -36,5 +38,6 @@ class OverviewItemManager
     'db7b2fe8-cf9b-4a01-bce4-c56e293d458a' : OverviewItem("Network Traffic", OverviewItemType.NetworkTraffic , [NetworkDeviceReply(ReplyStatus.Ok),NetworkInterfaceReply(ReplyStatus.Ok)]),
     '25bafd01-816f-4d76-a88c-ef49a6120fa2' : OverviewItem("WIFI Status", OverviewItemType.WifiStatus , [HostHintReply(ReplyStatus.Ok),WirelessDeviceReply(ReplyStatus.Ok),WifiAssociatedClientReply(ReplyStatus.Ok)]),    
     '892fdf21-0cce-4e58-b1d9-c35e456fdf3d' : OverviewItem("DHCP Leases", OverviewItemType.DHCPLeaseInfo , [DHCPLeaseReply(ReplyStatus.Ok)]),    
+    '9aef9078-a8a6-4fdb-8b65-b6e2e8dd55e1' : OverviewItem("Active Connections", OverviewItemType.ActiveConnections , [ActiveConnectionsReply(ReplyStatus.Ok)]),
   };
 }

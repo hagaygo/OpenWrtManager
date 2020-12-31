@@ -9,6 +9,8 @@ import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
 import 'package:openwrt_manager/OpenWRT/Model/ReplyBase.dart';
 import 'package:openwrt_manager/OpenWRT/Model/DeleteClientReply.dart';
 import 'package:openwrt_manager/OpenWRT/Model/RestartInterfaceReply.dart';
+import 'package:openwrt_manager/OpenWRT/Model/RRDNSReply.dart';
+import 'package:openwrt_manager/Utils.dart';
 import 'Model/SystemInfoReply.dart';
 
 class OpenWRTClient {
@@ -96,18 +98,34 @@ class OpenWRTClient {
     return Future.value([SystemInfoReply(ReplyStatus.Error)]);
   }
 
+  Future<RRDNSReply> getRemoteDns(
+      AuthenticateReply auth, List<String> ips) async {
+    try {
+      var cmd = RRDNSReply(ReplyStatus.Ok);
+      cmd.ipList = ips;
+      var res = await getData(auth.authenticationCookie, [cmd]);
+      var data = res[0] as RRDNSReply;
+      if ((data.data["result"] as List)[0] == 0)
+        return Future.value(data);
+      else
+        return RRDNSReply(ReplyStatus.Error);
+    } catch (e) {
+      return Future.value(RRDNSReply(ReplyStatus.Error));
+    }
+  }
+
   Future<RestartInterfaceReply> restartInterface(
       AuthenticateReply auth, String interfaceName) async {
     try {
       var cmd = RestartInterfaceReply(ReplyStatus.Ok);
-      cmd.interfaceName = interfaceName;      
+      cmd.interfaceName = interfaceName;
       var res = await getData(auth.authenticationCookie, [cmd]);
       var data = res[0] as RestartInterfaceReply;
       if ((data.data["result"] as List)[0] == 0)
         return Future.value(data);
       else
         return RestartInterfaceReply(ReplyStatus.Error);
-    } catch (e) {      
+    } catch (e) {
       return Future.value(RestartInterfaceReply(ReplyStatus.Error));
     }
   }
@@ -124,7 +142,7 @@ class OpenWRTClient {
         return Future.value(data);
       else
         return DeleteClientReply(ReplyStatus.Error);
-    } catch (e) {      
+    } catch (e) {
       return Future.value(DeleteClientReply(ReplyStatus.Error));
     }
   }
@@ -152,10 +170,10 @@ class OpenWRTClient {
       }
       return Future.value(AuthenticateReply(ReplyStatus.Forbidden, null));
     } on HandshakeException catch (ex) {
-      debugPrint(ex.toString());
+      if (Utils.ReleaseMode) debugPrint(ex.toString());
       return Future.value(AuthenticateReply(ReplyStatus.HandshakeError, null));
     } on Exception catch (ex) {
-      debugPrint(ex.toString());
+      if (Utils.ReleaseMode) debugPrint(ex.toString());
       return Future.value(AuthenticateReply(ReplyStatus.Timeout, null));
     }
   }

@@ -54,8 +54,8 @@ class NetworkTrafficState extends OverviewWidgetBaseState {
           }
         }
 
-        String incomingSpeed = " ----- Kb/s";
-        String outgoingSpeed = " ----- Kb/s";
+        String incomingSpeed = " " + Utils.NoSpeedCalculationText + " Kb/s";
+        String outgoingSpeed = " " + Utils.NoSpeedCalculationText + " Kb/s";
 
         if (_trafficData[name] != null && _trafficData[name]["inSpeed"] != null) {
           incomingSpeed = "${_trafficData[name]["inSpeed"]}/s";

@@ -2,6 +2,9 @@ import 'dart:math';
 
 class Utils
 {
+  static const String NoSpeedCalculationText = "-----";
+  static const bool ReleaseMode = bool.fromEnvironment('dart.vm.product', defaultValue: false);
+
   static String formatDuration(Duration d) {
     var seconds = d.inSeconds;
     final days = seconds ~/ Duration.secondsPerDay;
