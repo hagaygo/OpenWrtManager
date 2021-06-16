@@ -50,7 +50,7 @@ class OpenWRTClient {
     try {
       var request =
           await http.postUrl(Uri.parse(_baseURL + "/cgi-bin/luci/admin/ubus"));
-      var data = List<Map<String, Object>>();
+      List<Map<String, Object>> data = [];
       var counter = 1;
       for (var cmd in commands) {
         List<Object> params = ["${c.value}"];
@@ -80,7 +80,7 @@ class OpenWRTClient {
         var jsonText = await response.transform(utf8.decoder).join();
         var jsonData = (json.decode(jsonText) as List<dynamic>)
             .map((x) => x as Map<String, Object>);
-        var lstResponse = List<CommandReplyBase>();
+        List<CommandReplyBase> lstResponse = [];
         var idCounter = 1;
         for (var cmd in commands) {
           var cmdData = jsonData.firstWhere((x) => x["id"] as int == idCounter);

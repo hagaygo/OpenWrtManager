@@ -16,13 +16,13 @@ class Dialogs {
           title: Text(title),
           content: Text(text),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop(ConfirmAction.CANCEL);
               },
             ),
-            FlatButton(
+            TextButton(
               child: const Text('Accept'),
               onPressed: () {
                 Navigator.of(context).pop(ConfirmAction.ACCEPT);

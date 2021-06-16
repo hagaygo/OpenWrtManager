@@ -27,10 +27,10 @@ class NetworkStatus extends OverviewWidgetBase {
 class NetworkStatusState extends OverviewWidgetBaseState {
   @override
   Widget get myWidget {
-    var rows = List<Widget>();
+    List<Widget> rows = [];
     var interfaces = data[0][1]["interface"];
     var ifCounter = 1;
-    _interfaces = List<String>();
+    _interfaces = [];
     for (var iff in interfaces) {
       if (iff["up"] && iff["proto"] != "none" && iff["device"] != "lo") {
         var dataMap = Map<String, String>();

@@ -11,7 +11,7 @@ class WifiAssociatedClientReply extends CommandReplyBase {
 
   @override
   List<dynamic> get commandParameters {
-    var lst = List<dynamic>();
+    List<dynamic> lst = [];
     lst.addAll(["iwinfo", "assoclist"]);
     if (device != null && device.wifiDevices.length > 0 && interfaceIndex != null)
       lst.add({"device": device.wifiDevices[interfaceIndex]});
@@ -27,7 +27,7 @@ class WifiAssociatedClientReply extends CommandReplyBase {
       i.data = data;
       return i;
     }
-    var lst = List<WifiAssociatedClientReply>();
+    List<WifiAssociatedClientReply> lst = [];
     if (device.wifiDevices.length >= 2) {
       for (int idx = 0; idx < device.wifiDevices.length;) {
         var i = WifiAssociatedClientReply(status);

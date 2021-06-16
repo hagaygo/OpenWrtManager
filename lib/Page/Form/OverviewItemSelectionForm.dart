@@ -115,7 +115,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                 margin: EdgeInsets.fromLTRB(0, 10, 5, 0),
                                 child: SizedBox(
                                   width: 135.0,
-                                  child: RaisedButton(
+                                  child: ElevatedButton(
                                       onPressed: () {
                                         var soi = SettingsUtil.overviews
                                             .firstWhere(
@@ -134,13 +134,14 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                         "Move Up",
                                         style: TextStyle(color: Colors.white),
                                       ),
-                                      color: Colors.green),
+                                      style: ElevatedButton.styleFrom(
+                      primary: Colors.green),),
                                 )),
                             Container(
                                 margin: EdgeInsets.fromLTRB(5, 10, 0, 0),
                                 child: SizedBox(
                                   width: 135.0,
-                                  child: RaisedButton(
+                                  child: ElevatedButton(
                                       onPressed: () {
                                         var soi = SettingsUtil.overviews
                                             .firstWhere(
@@ -160,7 +161,8 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                         "Move Down",
                                         style: TextStyle(color: Colors.white),
                                       ),
-                                      color: Colors.green),
+                                      style: ElevatedButton.styleFrom(
+                      primary: Colors.green)),
                                 ))
                           ],
                         ))),
@@ -170,7 +172,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                             margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                             height: 40,
                             child: SizedBox.expand(                              
-                              child: RaisedButton(
+                              child: ElevatedButton(
                                   onPressed: () async {
                                     var res = await Dialogs.confirmDialog(
                                         context,
@@ -188,13 +190,14 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                     "Delete",
                                     style: TextStyle(color: Colors.white),
                                   ),
-                                  color: Colors.red),
+                                  style: ElevatedButton.styleFrom(
+                      primary: Colors.red)),
                             ))),
                     Container(
                         height: 40,
                         margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                         child: SizedBox.expand(                          
-                          child: RaisedButton(
+                          child: ElevatedButton(
                               onPressed: () {
                                 if (_formKey.currentState.validate()) {
                                   if (_editedGuid == null) {
@@ -217,7 +220,8 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                 _editedGuid != null ? "Update" : "Add",
                                 style: TextStyle(color: Colors.white),
                               ),
-                              color: Colors.blue),
+                              style: ElevatedButton.styleFrom(
+                      primary: Colors.blue)),
                         ))
                   ])
                 ],

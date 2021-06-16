@@ -55,7 +55,7 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
 
   @override
   Widget get myWidget {
-    var rows = List<Widget>();
+    List<Widget> rows = [];
     var connectionsList = data[0][1]["result"] as List;
     if (connectionsList.length == 0) {
       rows.add(Row(
@@ -66,7 +66,7 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
       connectionsList.sort((a, b) =>
           int.parse(b["bytes"].toString()) - int.parse(a["bytes"].toString()));
 
-      var ipToResolve = List<String>();
+      List<String> ipToResolve = [];
       var currentTimeStamp = new DateTime.now().millisecondsSinceEpoch;
       for (var con in connectionsList.take(expanded ? EXPANDED_MAX_ROWS : MAX_ROWS)) {
         checkIpForLookup(con["src"], ipToResolve);

@@ -56,7 +56,7 @@ class _DevicesPageState extends State<DevicesPage> {
   }
 
   List<Widget> getDevices() {
-    var lst = List<Widget>();
+    List<Widget> lst = [];
     for (var d in SettingsUtil.devices) {
       var lt = Container(
           child: ListTile(
@@ -66,9 +66,11 @@ class _DevicesPageState extends State<DevicesPage> {
                 Expanded(
                     child: Align(
                   alignment: Alignment.centerRight,
-                  child: RaisedButton(
-                    color: Colors.red,
-                    textColor: Colors.white,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.red,
+                      onPrimary: Colors.white,
+                      ),                    
                     onPressed: () async {
                       var res = await Dialogs.confirmDialog(
                                         context,

@@ -10,7 +10,7 @@ class DeleteClientReply extends CommandReplyBase {
 
   @override
   List<dynamic> get commandParameters {
-    var lst = List<dynamic>();
+    List<dynamic> lst = [];
     lst.addAll(["hostapd." + interfaceName, "del_client"]);
     lst.add({"addr": mac, "deatuh": true, "reason": 1, "ban_time": 3000});
     return lst;

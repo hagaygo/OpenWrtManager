@@ -92,7 +92,7 @@ class IdentityFormState extends State<IdentityForm> {
                           margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
                           height: 40,
                           child: SizedBox.expand(
-                            child: RaisedButton(
+                            child: ElevatedButton(
                                 onPressed: () async {
                                   var res = await Dialogs.confirmDialog(context,
                                       title: 'Delete Identity ?',
@@ -120,13 +120,15 @@ class IdentityFormState extends State<IdentityForm> {
                                   "Delete",
                                   style: TextStyle(color: Colors.white),
                                 ),
-                                color: Colors.red),
+                                style: ElevatedButton.styleFrom(
+                      primary: Colors.red,
+                      )),
                           ))),
                   Container(
                       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
                       height: 40,
                       child: SizedBox.expand(
-                        child: RaisedButton(
+                        child: ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState.validate()) {
                                 var i = Identity();
@@ -148,7 +150,9 @@ class IdentityFormState extends State<IdentityForm> {
                               "Save",
                               style: TextStyle(color: Colors.white),
                             ),
-                            color: Colors.blue),
+                            style: ElevatedButton.styleFrom(
+                      primary: Colors.blue,
+                      )),
                       ))
                 ])
               ],

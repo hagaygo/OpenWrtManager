@@ -7,7 +7,7 @@ class RebootReply extends CommandReplyBase {
 
   @override
   List<dynamic> get commandParameters {
-    var lst = List<dynamic>();
+    List<dynamic> lst = [];
     lst.addAll(["file", "exec"]);
     lst.add({'command': '/sbin/reboot', 'params': null, 'env': null});
     return lst;

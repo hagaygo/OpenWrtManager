@@ -54,10 +54,12 @@ class OverviewConfigFormState extends State<OverviewConfigForm> {
             ),
             Container(
               width: 250,
-              child: RaisedButton(
-                textColor: Colors.white,
-                child: Text("Save"),
-                color: Colors.blue,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                      primary: Colors.blue,
+                      onPrimary: Colors.white,
+                      )                ,
+                child: Text("Save"),                
                 onPressed: () {
                   saveConfig();
                 },
@@ -70,7 +72,7 @@ class OverviewConfigFormState extends State<OverviewConfigForm> {
   }
 
   getConfigItems() {
-    var lst = List<Widget>();
+    List<Widget> lst = [];
     String lastCategory;
     for (var ci in widget.configItems) {
       var category = ci["category"];

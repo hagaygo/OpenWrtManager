@@ -10,7 +10,7 @@ class RestartInterfaceReply extends CommandReplyBase {
 
   @override
   List<dynamic> get commandParameters {
-    var lst = List<dynamic>();
+    List<dynamic> lst = [];
     lst.addAll(["file", "exec"]);
     lst.add({'command': '/sbin/ifup', 'params': [interfaceName], 'env': null});
     return lst;

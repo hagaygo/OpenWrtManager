@@ -28,11 +28,11 @@ class NetworkTrafficState extends OverviewWidgetBaseState {
 
   @override
   Widget get myWidget {
-    var rows = List<Widget>();
+    List<Widget> rows = [];
     var trafficInterfaces = data[0][1];
     var interfaces = data[1][1]["interface"] as List;
     var ifCounter = 1;
-    _interfaces = List<String>();
+    _interfaces = [];
     for (var name in trafficInterfaces.keys) {
       var iff = trafficInterfaces[name];
       if (iff["up"] && !iff["flags"]["loopback"]) {

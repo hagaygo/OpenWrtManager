@@ -29,7 +29,7 @@ class WIFIStatusState extends OverviewWidgetBaseState {
 
     var wifiData = [];
     var ifnameToApData = Map<String, Map<String, dynamic>>();
-    var wifiInterfaces = List<String>();
+    List<String> wifiInterfaces = [];
 
     if (data != null) {
       var hostHintData = data[0];
@@ -84,11 +84,11 @@ class WIFIStatusState extends OverviewWidgetBaseState {
     }
     if (wifiInterfaces.length == 0) return Text("No WIFI interfaces found" + infoText);
 
-    var rows = List<Widget>();
+    List<Widget> rows = [];
 
     String currentInterface = "";
     int ifCounter = 1;
-    var apWithDevicesList = List<String>();
+    List<String> apWithDevicesList = [];
     bool firstClientInAP = true;
     for (var cli in wifiData) {
       if (cli["ifname"] != currentInterface) {
@@ -274,7 +274,7 @@ List<Widget> getSignalWidgets(int signal, double width) {
   int barCount = 4;
   double barWidth = width / barCount;
 
-  var lst = List<Widget>();
+  List<Widget> lst = [];
   if (signal <= -60 && -80 < signal) barCount = 3;
   if (signal <= -80 && -95 < signal) barCount = 2;
   if (signal <= -95) barCount = 1;

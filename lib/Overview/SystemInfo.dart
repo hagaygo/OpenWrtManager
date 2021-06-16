@@ -59,7 +59,7 @@ class SystemInfoState extends OverviewWidgetBaseState
           "Mb"
     });
 
-    var rows = List<Widget>();
+    List<Widget> rows = [];
     rows.addAll(alwaysVisibleRows);
     rows.add(AnimatedSize(
       curve: Curves.fastOutSlowIn,

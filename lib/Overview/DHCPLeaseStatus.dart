@@ -21,7 +21,7 @@ class DHCPLeaseStatusState extends OverviewWidgetBaseState with TickerProviderSt
 
   static List<DHCPLease> getDHCPLeaseListFromJSON(dynamic data)
   {
-    var dhcpLeaseList = List<DHCPLease>();
+    List<DHCPLease> dhcpLeaseList = [];
     for (var l in data) {
       var i = DHCPLease();
       try
@@ -47,7 +47,7 @@ class DHCPLeaseStatusState extends OverviewWidgetBaseState with TickerProviderSt
     var dhcpLeaseList  = getDHCPLeaseListFromJSON(infoData["dhcp_leases"]);    
     DataCache.updateData(dhcpLeaseList);
 
-    var rows = List<Widget>();
+    List<Widget> rows = [];
     if (dhcpLeaseList.length == 0) {
       rows.add(Row(
         mainAxisAlignment: MainAxisAlignment.center,

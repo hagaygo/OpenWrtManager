@@ -107,7 +107,7 @@ static OverviewConfig _overviewConfig;
 
   static List<SelectedOverviewItem> get overviews {
     if (_overviews == null) {
-      _overviews = List<SelectedOverviewItem>();
+      _overviews = [];
       loadOverviews();
     }
     return _overviews;
@@ -149,7 +149,7 @@ static OverviewConfig _overviewConfig;
 
   static List<Device> get devices {
     if (_devices == null) {
-      _devices = List<Device>();
+      _devices = [];
       loadDevices();
     }
     return _devices;
@@ -188,7 +188,7 @@ static OverviewConfig _overviewConfig;
 
   static List<Identity> get identities {
     if (_identitites == null) {
-      _identitites = List<Identity>();
+      _identitites = [];
       loadIdentities();
     }
     return _identitites;

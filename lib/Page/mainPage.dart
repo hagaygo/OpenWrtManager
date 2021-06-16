@@ -370,7 +370,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   bool _overviewsLoaded = false;
 
   List<Widget> getOverviews() {
-    var lst = List<Widget>();
+    List<Widget> lst = [];
     var requestMap = Map<String, List<CommandReplyBase>>();
 
     if (!_overviewsLoaded) {
@@ -385,7 +385,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
       });
     } else {
       for (var oi in SettingsUtil.overviews) {
-        if (!requestMap.containsKey(oi.deviceGuid)) requestMap[oi.deviceGuid] = List<CommandReplyBase>();
+        if (!requestMap.containsKey(oi.deviceGuid)) requestMap[oi.deviceGuid] = [];
         var l = requestMap[oi.deviceGuid];
         for (var n in OverviewItemManager.items[oi.overiviewItemGuid].commands)
           if (l.firstWhere((x) => x.runtimeType == n.runtimeType, orElse: () => null) == null) {
@@ -500,7 +500,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 }
 
 Future<List<String>> updateDevicesData(List<Device> devices) async {
-  var failedDevices = List<String>();
+  List<String> failedDevices = [];
 
   for (var d in devices) {
     var cli = OpenWRTClient(d, SettingsUtil.identities.firstWhere((i) => i.guid == d.identityGuid));

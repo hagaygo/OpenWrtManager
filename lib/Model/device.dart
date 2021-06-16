@@ -6,7 +6,7 @@ class Device {
   String identityGuid;
   bool useSecureConnection;
   bool ignoreBadCertificate;
-  List<String> wifiDevices = List<String>();
+  List<String> wifiDevices = [];
 
   static const String defaultPort = "80/443";
 

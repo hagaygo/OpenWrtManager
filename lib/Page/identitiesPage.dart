@@ -52,7 +52,7 @@ class _IdentitiesPageState extends State<IdentitiesPage> {
   }
 
   List<Widget> getIdentities() {
-    var lst = List<Widget>();
+    List<Widget> lst = [];
     for (var i in SettingsUtil.identities) {
       var lt = Container(
           child: ListTile(

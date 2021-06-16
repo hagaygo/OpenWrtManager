@@ -190,7 +190,7 @@ class DeviceFormState extends State<DeviceForm> {
                             margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                             height: 40,
                             child: SizedBox.expand(
-                              child: RaisedButton(
+                              child: ElevatedButton(
                                   onPressed: () async {
                                     var res = await Dialogs.confirmDialog(
                                         context,
@@ -217,13 +217,15 @@ class DeviceFormState extends State<DeviceForm> {
                                     "Delete",
                                     style: TextStyle(color: Colors.white),
                                   ),
-                                  color: Colors.red),
+                                  style: ElevatedButton.styleFrom(
+                      primary: Colors.red,
+                      )),
                             ))),
                     Container(
                         height: 40,
                         margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                         child: SizedBox.expand(
-                          child: RaisedButton(
+                          child: ElevatedButton(
                               onPressed: () {
                                 if (_formKey.currentState.validate()) {
                                   var d = Device();
@@ -241,13 +243,15 @@ class DeviceFormState extends State<DeviceForm> {
                                 "Test",
                                 style: TextStyle(color: Colors.white),
                               ),
-                              color: Colors.green),
+                              style: ElevatedButton.styleFrom(
+                      primary: Colors.green,
+                      )),
                         )),
                     Container(
                         margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                         height: 40,
                         child: SizedBox.expand(
-                          child: RaisedButton(
+                          child: ElevatedButton(
                               onPressed: () {
                                 if (_formKey.currentState.validate()) {
                                   var d = Device();
@@ -267,7 +271,9 @@ class DeviceFormState extends State<DeviceForm> {
                                 "Save",
                                 style: TextStyle(color: Colors.white),
                               ),
-                              color: Colors.blue),
+                              style: ElevatedButton.styleFrom(
+                      primary: Colors.blue,
+                      )),
                         ))
                   ])
                 ],

@@ -151,7 +151,7 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
   @protected
   List<Widget> getRows(Map<dynamic, dynamic> data,
       {double firstRowWidth = 120}) {
-    var lst = List<Widget>();
+    List<Widget> lst = [];
     for (var k in data.keys) {
       var r = Container(
           padding: EdgeInsets.all(2),
@@ -185,7 +185,7 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
     var rp =
         widget.replies?.where((x) => widget.replyTypes.contains(x.runtimeType));
     if (rp != null && rp.length > 0) {      
-      var orderdList = List<dynamic>();
+      List<dynamic> orderdList = [];
       for (var r in widget
           .replyTypes) // pass reply data in the order of replyTypes property
       {
