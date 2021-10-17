@@ -53,6 +53,11 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
     }
   }
 
+  int getBytes(dynamic b)
+  {
+    return double.parse(b.toString()).round();
+  }
+
   @override
   Widget get myWidget {
     List<Widget> rows = [];
@@ -64,11 +69,12 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
       ));
     } else {
       connectionsList.sort((a, b) =>
-          int.parse(b["bytes"].toString()) - int.parse(a["bytes"].toString()));
+          getBytes(b["bytes"]) - getBytes(a["bytes"]));
 
       List<String> ipToResolve = [];
       var currentTimeStamp = new DateTime.now().millisecondsSinceEpoch;
       for (var con in connectionsList.take(expanded ? EXPANDED_MAX_ROWS : MAX_ROWS)) {
+        var bytes = double.parse(con["bytes"].toString()).round();
         checkIpForLookup(con["src"], ipToResolve);
         checkIpForLookup(con["dst"], ipToResolve);
 
@@ -80,7 +86,7 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
 
         if (_trafficMap.containsKey(connectionKey)) {
           var oldTrafficData = _trafficMap[connectionKey];
-          var newTrafficDataBytes = con["bytes"];
+          var newTrafficDataBytes = bytes;
 
           if (gotNewData) {
             var timeDiff = (currentTimeStamp - lastTrafficDataTimeStamp) / 1000;
@@ -96,7 +102,7 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
           }
         } else {
           _trafficMap[connectionKey] = Map();
-          _trafficMap[connectionKey]["traffic"] = con["bytes"];
+          _trafficMap[connectionKey]["traffic"] = bytes;
         }                
 
         rows.add(Container(                    
@@ -124,7 +130,7 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
                     width: 100,
                     child: Align(alignment: Alignment.centerRight,
                         child:
-                            Text(Utils.formatBytes(con["bytes"], decimals: 2), style: TextStyle(fontWeight: FontWeight.bold),)))
+                            Text(Utils.formatBytes(bytes, decimals: 2), style: TextStyle(fontWeight: FontWeight.bold),)))
               ]),
               SizedBox(
                 height: 5,
