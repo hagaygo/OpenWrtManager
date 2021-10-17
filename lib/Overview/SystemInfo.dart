@@ -74,8 +74,7 @@ class SystemInfoState extends OverviewWidgetBaseState
           "Target": releaseData["target"]
         })),
       ),
-      duration: Duration(milliseconds: 200),
-      vsync: this,
+      duration: Duration(milliseconds: 200),      
     ));
     return Column(
       children: rows,
