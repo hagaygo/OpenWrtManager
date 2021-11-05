@@ -6,6 +6,7 @@ import 'package:openwrt_manager/Model/Identity.dart';
 import 'package:openwrt_manager/Model/device.dart';
 import 'package:openwrt_manager/OpenWRT/Model/AuthenticateReply.dart';
 import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
+import 'package:openwrt_manager/OpenWRT/Model/FirstbootResetReply.dart';
 import 'package:openwrt_manager/OpenWRT/Model/ReplyBase.dart';
 import 'package:openwrt_manager/OpenWRT/Model/DeleteClientReply.dart';
 import 'package:openwrt_manager/OpenWRT/Model/RestartInterfaceReply.dart';
@@ -111,6 +112,20 @@ class OpenWRTClient {
         return RRDNSReply(ReplyStatus.Error);
     } catch (e) {
       return Future.value(RRDNSReply(ReplyStatus.Error));
+    }
+  }
+
+  Future<FirstbootResetReply> resetDevice(AuthenticateReply auth) async {
+    try {
+      var cmd = FirstbootResetReply(ReplyStatus.Ok);
+      var res = await getData(auth.authenticationCookie, [cmd]);
+      var data = res[0] as FirstbootResetReply;
+      if ((data.data["result"] as List)[0] == 0)
+        return Future.value(data);
+      else
+        return FirstbootResetReply(ReplyStatus.Error);
+    } catch (e) {
+      return Future.value(FirstbootResetReply(ReplyStatus.Error));
     }
   }
 

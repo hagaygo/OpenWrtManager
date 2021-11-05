@@ -31,7 +31,8 @@ class Device {
     i.useSecureConnection = json['useSecureConnection'] ?? false;
     i.ignoreBadCertificate = json['ignoreBadCertificate'] ?? false;
     if (json['wifiDevices'] != null && (json['wifiDevices'] as List).length > 0)
-      i.wifiDevices.addAll((json['wifiDevices'] as List<dynamic>).map((x) => x.toString()));
+      i.wifiDevices.addAll(
+          (json['wifiDevices'] as List<dynamic>).map((x) => x.toString()));
     return i;
   }
 }
