@@ -74,19 +74,21 @@ class WIFIStatusState extends OverviewWidgetBaseState {
           var wifiInterface = widget.device.wifiDevices[wifiDeviceCounter];
           wifiDeviceCounter++;
           wifiInterfaces.add(wifiInterface);
-          var results = interface[1]["results"];
-          if (results != null) {
-            for (var cli in results) {
-              var i = cli;
-              if (macToHostsMap[i["mac"]] != null)
-                i["hostname"] = macToHostsMap[i["mac"]];
-              i["ip"] = "";
-              if (DataCache.macAddressMap.containsKey(i["mac"])) {
-                var d = DataCache.macAddressMap[i["mac"]];
-                i["ip"] = d.ipAddress;
+          if ((interface as List).length > 1) {
+            var results = interface[1]["results"];
+            if (results != null) {
+              for (var cli in results) {
+                var i = cli;
+                if (macToHostsMap[i["mac"]] != null)
+                  i["hostname"] = macToHostsMap[i["mac"]];
+                i["ip"] = "";
+                if (DataCache.macAddressMap.containsKey(i["mac"])) {
+                  var d = DataCache.macAddressMap[i["mac"]];
+                  i["ip"] = d.ipAddress;
+                }
+                i["ifname"] = wifiInterface;
+                wifiData.add(i);
               }
-              i["ifname"] = wifiInterface;
-              wifiData.add(i);
             }
           }
         }

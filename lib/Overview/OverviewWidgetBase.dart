@@ -248,7 +248,7 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
     return Column(children: [
     Row(mainAxisAlignment: MainAxisAlignment.center, children: [Expanded(child: Text(text))]),
     Row(mainAxisAlignment: MainAxisAlignment.center, children: [ElevatedButton(child: Text("Copy Debug Trace To Clipboard"), onPressed:() async {
-      Clipboard.setData(ClipboardData(text: e.toString() + "\n" + stackTrace.toString() + "\n" + OpenWRTClient.lastJSONResponse));
+      Clipboard.setData(ClipboardData(text: e.toString() + "\n" + stackTrace.toString() + "\n" + OpenWRTClient.lastJSONRequest + "\n" + OpenWRTClient.lastJSONResponse));
     })]),
     ]);
   }

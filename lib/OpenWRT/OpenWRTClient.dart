@@ -44,6 +44,7 @@ class OpenWRTClient {
 
 
   static String lastJSONResponse;
+  static String lastJSONRequest;
 
   Future<List<CommandReplyBase>> getData(
       Cookie c, List<CommandReplyBase> commands) async {
@@ -72,7 +73,7 @@ class OpenWRTClient {
 
       request.headers.set('content-type', 'application/json');
       var jsonText = json.encode(data);
-      lastJSONResponse = jsonText;
+      lastJSONRequest = jsonText;
       var body = utf8.encode(jsonText);
       request.contentLength = body.length;
       request.add(body);
@@ -82,6 +83,7 @@ class OpenWRTClient {
       http.close();
       if (response.statusCode == 200) {
         var jsonText = await response.transform(utf8.decoder).join();
+        lastJSONResponse = jsonText;
         var jsonData = (json.decode(jsonText) as List<dynamic>)
             .map((x) => x as Map<String, Object>);
         List<CommandReplyBase> lstResponse = [];
