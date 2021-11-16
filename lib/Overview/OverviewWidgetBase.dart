@@ -5,9 +5,11 @@ import 'package:openwrt_manager/Model/device.dart';
 import 'package:openwrt_manager/OpenWRT/Model/AuthenticateReply.dart';
 import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
 import 'package:openwrt_manager/OpenWRT/Model/ReplyBase.dart';
+import 'package:openwrt_manager/OpenWRT/OpenWRTClient.dart';
 import 'package:openwrt_manager/Overview/OverviewItemManager.dart';
 import 'package:openwrt_manager/Page/Form/OverviewConfigForm.dart';
 import 'package:openwrt_manager/settingsUtil.dart';
+import 'package:flutter/services.dart';
 
 abstract class OverviewWidgetBase extends StatefulWidget {
   final Device device;
@@ -236,10 +238,19 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
       _gotNewData = false;
       badReplyData = false;
       return w;
-    } catch (e) {
+    } catch (e, stackTrace) {
       badReplyData = true;      
-      return Text("Error parsing reply from device");
+      return generateErrorText(e, stackTrace, "Error parsing reply from device");
     }
+  }
+
+  Column generateErrorText(e, StackTrace stackTrace, String text) {
+    return Column(children: [
+    Row(mainAxisAlignment: MainAxisAlignment.center, children: [Expanded(child: Text(text))]),
+    Row(mainAxisAlignment: MainAxisAlignment.center, children: [ElevatedButton(child: Text("Copy Debug Trace To Clipboard"), onPressed:() async {
+      Clipboard.setData(ClipboardData(text: e.toString() + "\n" + stackTrace.toString() + "\n" + OpenWRTClient.lastJSONResponse));
+    })]),
+    ]);
   }
 
   Widget getWidget() {

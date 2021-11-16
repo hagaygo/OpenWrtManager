@@ -14,9 +14,16 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'OverviewWidgetBase.dart';
 
 class WIFIStatus extends OverviewWidgetBase {
-  WIFIStatus(Device device, bool loading, AuthenticateReply authenticationStatus, List<CommandReplyBase> replies,
-      OverviewItem item, String overviewItemGuid, Function doOverviewRefresh)
-      : super(device, loading, authenticationStatus, replies, item, overviewItemGuid, doOverviewRefresh);
+  WIFIStatus(
+      Device device,
+      bool loading,
+      AuthenticateReply authenticationStatus,
+      List<CommandReplyBase> replies,
+      OverviewItem item,
+      String overviewItemGuid,
+      Function doOverviewRefresh)
+      : super(device, loading, authenticationStatus, replies, item,
+            overviewItemGuid, doOverviewRefresh);
 
   @override
   WIFIStatusState createState() => WIFIStatusState();
@@ -25,7 +32,8 @@ class WIFIStatus extends OverviewWidgetBase {
 class WIFIStatusState extends OverviewWidgetBaseState {
   @override
   Widget get myWidget {
-    const String infoText = "\nUse \"Update Devices\" on drawer if you expect to have any on this device";
+    const String infoText =
+        "\nUse \"Update Devices\" option on the drawer if you expect to have any WIFI interfaces on this device";
 
     var wifiData = [];
     var ifnameToApData = Map<String, Map<String, dynamic>>();
@@ -37,7 +45,8 @@ class WIFIStatusState extends OverviewWidgetBaseState {
       var macToHostsMap = Map<String, String>();
       for (var mac in (hostHintData[1] as Map).keys)
         try {
-          if (hostHintData[1][mac] != null && hostHintData[1][mac]["name"] != null)
+          if (hostHintData[1][mac] != null &&
+              hostHintData[1][mac]["name"] != null)
             macToHostsMap[mac] = hostHintData[1][mac]["name"];
         } catch (e) {}
 
@@ -66,23 +75,28 @@ class WIFIStatusState extends OverviewWidgetBaseState {
           wifiDeviceCounter++;
           wifiInterfaces.add(wifiInterface);
           var results = interface[1]["results"];
-          for (var cli in results) {
-            var i = cli;
-            if (macToHostsMap[i["mac"]] != null) i["hostname"] = macToHostsMap[i["mac"]];
-            i["ip"] = "";
-            if (DataCache.macAddressMap.containsKey(i["mac"])) {
-              var d = DataCache.macAddressMap[i["mac"]];
-              i["ip"] = d.ipAddress;
+          if (results != null) {
+            for (var cli in results) {
+              var i = cli;
+              if (macToHostsMap[i["mac"]] != null)
+                i["hostname"] = macToHostsMap[i["mac"]];
+              i["ip"] = "";
+              if (DataCache.macAddressMap.containsKey(i["mac"])) {
+                var d = DataCache.macAddressMap[i["mac"]];
+                i["ip"] = d.ipAddress;
+              }
+              i["ifname"] = wifiInterface;
+              wifiData.add(i);
             }
-            i["ifname"] = wifiInterface;
-            wifiData.add(i);
           }
         }
-      } catch (e) {
-        return Text("Error with WIFI data" + infoText);
+      } catch (e, stackTrace) {
+        return generateErrorText(
+            e, stackTrace, "Error with WIFI data" + infoText);
       }
     }
-    if (wifiInterfaces.length == 0) return Text("No WIFI interfaces found" + infoText);
+    if (wifiInterfaces.length == 0)
+      return Text("No WIFI interfaces found" + infoText);
 
     List<Widget> rows = [];
 
@@ -139,10 +153,13 @@ class WIFIStatusState extends OverviewWidgetBaseState {
       var outgoingDiff = outgoing - _trafficData[name]["out"];
       if (gotNewData) {
         var currentTimeStamp = new DateTime.now().millisecondsSinceEpoch;
-        var timeDiff = (currentTimeStamp - _trafficData[name]["timeStamp"]) / 1000; // miliseconds to seconds
+        var timeDiff = (currentTimeStamp - _trafficData[name]["timeStamp"]) /
+            1000; // miliseconds to seconds
         _trafficData[name]["timeStamp"] = currentTimeStamp;
-        _trafficData[name]["inSpeed"] = Utils.formatBytes((incomingDiff / timeDiff).round(), decimals: 1);
-        _trafficData[name]["outSpeed"] = Utils.formatBytes((outgoingDiff / timeDiff).round(), decimals: 1);
+        _trafficData[name]["inSpeed"] =
+            Utils.formatBytes((incomingDiff / timeDiff).round(), decimals: 1);
+        _trafficData[name]["outSpeed"] =
+            Utils.formatBytes((outgoingDiff / timeDiff).round(), decimals: 1);
       }
     }
 
@@ -158,7 +175,8 @@ class WIFIStatusState extends OverviewWidgetBaseState {
     _trafficData[name]["out"] = outgoing;
     _trafficData[name]["in"] = incoming;
     if (_trafficData[name]["timeStamp"] == null)
-      _trafficData[name]["timeStamp"] = new DateTime.now().millisecondsSinceEpoch;
+      _trafficData[name]["timeStamp"] =
+          new DateTime.now().millisecondsSinceEpoch;
 
     return Container(
       padding: EdgeInsets.all(2),
@@ -169,9 +187,13 @@ class WIFIStatusState extends OverviewWidgetBaseState {
               getSignalWidget(cli["signal"]),
               Expanded(
                   child: Center(
-                child: Text(cli["hostname"] != null ? "${cli["hostname"]}" : ""),
+                child:
+                    Text(cli["hostname"] != null ? "${cli["hostname"]}" : ""),
               )),
-              Expanded(child: Align(alignment: Alignment.centerRight, child: Text(cli["mac"].toString()))),
+              Expanded(
+                  child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(cli["mac"].toString()))),
             ],
           ),
           SizedBox(height: 5),
@@ -179,10 +201,18 @@ class WIFIStatusState extends OverviewWidgetBaseState {
             children: <Widget>[
               Container(
                 width: 110,
-                child: Text(Utils.formatDuration(Duration(seconds: cli["connected_time"]))),
+                child: Text(Utils.formatDuration(
+                    Duration(seconds: cli["connected_time"]))),
               ),
-              Expanded(child: Center(child: Text("${cli["rx"]["rate"] / 1000}/${cli["tx"]["rate"] / 1000} Mbit/s"))),
-              Expanded(child: Align(alignment: Alignment.centerRight, child: Text(cli["ip"]),)),
+              Expanded(
+                  child: Center(
+                      child: Text(
+                          "${cli["rx"]["rate"] / 1000}/${cli["tx"]["rate"] / 1000} Mbit/s"))),
+              Expanded(
+                  child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(cli["ip"]),
+              )),
             ],
           ),
           SizedBox(height: 5),
@@ -191,12 +221,14 @@ class WIFIStatusState extends OverviewWidgetBaseState {
               Expanded(
                 child: Align(
                     alignment: Alignment.center,
-                    child: NetworkTrafficState.getTrafficWidgetBytes(incoming, MyFlutterApp.down_bold, incomingSpeed)),
+                    child: NetworkTrafficState.getTrafficWidgetBytes(
+                        incoming, MyFlutterApp.down_bold, incomingSpeed)),
               ),
               Expanded(
                 child: Align(
                     alignment: Alignment.center,
-                    child: NetworkTrafficState.getTrafficWidgetBytes(outgoing, MyFlutterApp.up_bold, outgoingSpeed)),
+                    child: NetworkTrafficState.getTrafficWidgetBytes(
+                        outgoing, MyFlutterApp.up_bold, outgoingSpeed)),
               )
             ],
           )
@@ -206,38 +238,45 @@ class WIFIStatusState extends OverviewWidgetBaseState {
   }
 
   Future setWifiClientDeviceDialog(cli) async {
-    Alert(context: context, title: "Wifi Client Info", desc: "${cli["mac"]}\n\n${cli["hostname"]}", buttons: [
-      DialogButton(
-        color: Colors.red,
-        child: Text(
-          "Disconnect",
-          style: TextStyle(color: Colors.white, fontSize: 20),
-        ),
-        onPressed: () async {
-          var client = OpenWRTClient(widget.device, null);
-          Dialogs.showLoadingDialog(context);
-          var res = await client.deleteClient(widget.authenticationStatus, cli["ifname"], cli["mac"]);
-          if (res.status != ReplyStatus.Ok) {
-            Dialogs.simpleAlert(context, "Error", "Disconnect request returned error");
-          } else {
-            await new Future.delayed(
-                const Duration(seconds: 1)); // wait a little so refresh command will get updated data from ap
-            widget.doOverviewRefresh?.call();
-          }
-          Navigator.pop(context);
-          Navigator.pop(context);
-        },
-      ),
-      DialogButton(
-        child: Text(
-          "Close",
-          style: TextStyle(color: Colors.white, fontSize: 20),
-        ),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      )
-    ]).show();
+    Alert(
+        context: context,
+        title: "Wifi Client Info",
+        desc: "${cli["mac"]}\n\n${cli["hostname"]}",
+        buttons: [
+          DialogButton(
+            color: Colors.red,
+            child: Text(
+              "Disconnect",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () async {
+              var client = OpenWRTClient(widget.device, null);
+              Dialogs.showLoadingDialog(context);
+              var res = await client.deleteClient(
+                  widget.authenticationStatus, cli["ifname"], cli["mac"]);
+              if (res.status != ReplyStatus.Ok) {
+                Dialogs.simpleAlert(
+                    context, "Error", "Disconnect request returned error");
+              } else {
+                await new Future.delayed(const Duration(
+                    seconds:
+                        1)); // wait a little so refresh command will get updated data from ap
+                widget.doOverviewRefresh?.call();
+              }
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+          ),
+          DialogButton(
+            child: Text(
+              "Close",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )
+        ]).show();
   }
 }
 
@@ -252,8 +291,9 @@ Widget getSignalWidget(int signal) {
           padding: EdgeInsets.only(left: 2, right: 2),
           width: 42,
           height: 15,
-          decoration:
-              BoxDecoration(borderRadius: BorderRadius.circular(5), border: Border.all(width: 1, color: Colors.grey))),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(width: 1, color: Colors.grey))),
       SizedBox(width: 2),
       Text("$signal dBm"),
     ],

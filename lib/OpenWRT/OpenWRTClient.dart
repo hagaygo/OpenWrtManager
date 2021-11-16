@@ -42,6 +42,9 @@ class OpenWRTClient {
     return cli;
   }
 
+
+  static String lastJSONResponse;
+
   Future<List<CommandReplyBase>> getData(
       Cookie c, List<CommandReplyBase> commands) async {
     var http = _getClient();
@@ -69,6 +72,7 @@ class OpenWRTClient {
 
       request.headers.set('content-type', 'application/json');
       var jsonText = json.encode(data);
+      lastJSONResponse = jsonText;
       var body = utf8.encode(jsonText);
       request.contentLength = body.length;
       request.add(body);
