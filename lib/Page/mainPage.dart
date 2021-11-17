@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:openwrt_manager/Dialog/Dialogs.dart';
@@ -21,6 +22,7 @@ import 'package:openwrt_manager/ThemeChangeNotifier.dart';
 import 'package:openwrt_manager/settingsUtil.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 import 'Form/OverviewItemSelectionForm.dart';
 import 'identitiesPage.dart';
@@ -233,7 +235,17 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Text('Options'),
+                            Text('Options'),                            
+                            Expanded(child: 
+                            Row(mainAxisAlignment: MainAxisAlignment.end, children:[ IconButton(onPressed: () {
+                              Navigator.pop(context);
+                              SettingsUtil.getDevices().then((dvs) {
+                                Clipboard.setData(ClipboardData(text: OpenWRTClient.lastJSONRequest + "\n\n" + OpenWRTClient.lastJSONResponse + "\n\n" + jsonEncode(dvs)));
+                                Dialogs.simpleAlert(context, "", "Debug data\n Copied to clipboard");                              
+                              });
+                              
+                            }, icon: Icon(Icons.help_center))])
+                            )
                           ],
                         )
                       ],
@@ -284,9 +296,10 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                   leading: Container(width: drawerIconWidth, child: const Icon(Icons.device_hub)),
                   title: Text('Update Devices'),
                   onTap: () {
+                    var results = Map<String,List<String>>();
                     SettingsUtil.getIdentities().then((ids) {
                       SettingsUtil.getDevices().then((dvs) {
-                        Navigator.pop(context);
+                        Navigator.pop(context);                        
                         updateDevicesData(dvs).then((x) {
                           Navigator.pop(context);
                           if (x.length > 0) Dialogs.simpleAlert(context, "Update Device failed", x.join(","));
