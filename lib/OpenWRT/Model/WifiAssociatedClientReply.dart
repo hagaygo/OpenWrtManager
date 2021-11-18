@@ -7,13 +7,13 @@ class WifiAssociatedClientReply extends CommandReplyBase {
 
   Device device;
 
-  int interfaceIndex;
+  int interfaceIndex = 0;
 
   @override
   List<dynamic> get commandParameters {
     List<dynamic> lst = [];
     lst.addAll(["iwinfo", "assoclist"]);
-    if (device != null && device.wifiDevices.length > 0 && interfaceIndex != null)
+    if (device != null && device.wifiDevices.length > 0)
       lst.add({"device": device.wifiDevices[interfaceIndex]});
     return lst;
   }
