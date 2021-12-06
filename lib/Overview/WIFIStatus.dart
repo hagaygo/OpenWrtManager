@@ -105,12 +105,14 @@ class WIFIStatusState extends OverviewWidgetBaseState {
     for (var cli in wifiData) {
       if (cli["ifname"] != currentInterface) {
         var apData = ifnameToApData[cli["ifname"]];
-        if (ifCounter++ > 1) rows.add(SizedBox(height: 5));
-        rows.add(getApRow(apData));
-        rows.add(SizedBox(height: 5));
-        currentInterface = cli["ifname"];
-        apWithDevicesList.add(currentInterface);
-        firstClientInAP = true;
+        if (apData != null) {
+          if (ifCounter++ > 1) rows.add(SizedBox(height: 5));
+          rows.add(getApRow(apData));
+          rows.add(SizedBox(height: 5));
+          currentInterface = cli["ifname"];
+          apWithDevicesList.add(currentInterface);
+          firstClientInAP = true;
+        }
       }
 
       if (firstClientInAP)
