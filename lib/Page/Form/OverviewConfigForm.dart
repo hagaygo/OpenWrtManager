@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:openwrt_manager/Model/device.dart';
 import 'package:openwrt_manager/Overview/OverviewItemManager.dart';

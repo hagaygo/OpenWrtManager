@@ -295,8 +295,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                 ListTile(
                   leading: Container(width: drawerIconWidth, child: const Icon(Icons.device_hub)),
                   title: Text('Update Devices'),
-                  onTap: () {
-                    var results = Map<String,List<String>>();
+                  onTap: () {                    
                     SettingsUtil.getIdentities().then((ids) {
                       SettingsUtil.getDevices().then((dvs) {
                         Navigator.pop(context);                        
