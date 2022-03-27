@@ -14,7 +14,7 @@ dependencies:
   rflutter_alert: ^2.0.4
   uuid: ^3.0.5
   http: ^0.13.4
-  package_info: ^2.0.2
+  package_info_plus: ^1.4.0
   feature_discovery: ^0.14.0
   provider: ^5.0.0  
 

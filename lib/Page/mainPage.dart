@@ -20,7 +20,7 @@ import 'package:openwrt_manager/Overview/WIFIStatus.dart';
 import 'package:openwrt_manager/Page/devicesPage.dart';
 import 'package:openwrt_manager/ThemeChangeNotifier.dart';
 import 'package:openwrt_manager/settingsUtil.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
@@ -46,9 +46,14 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   String _appVersion = "";
 
   initVersionState() async {
-    final PackageInfo info = await PackageInfo.fromPlatform();
-    _appVersion = info.version;
-    if (_appVersion.endsWith(".0")) _appVersion = _appVersion.substring(0, _appVersion.length - 2);
+    try {
+      final PackageInfo info = await PackageInfo.fromPlatform();
+      _appVersion = info.version;
+      if (_appVersion.endsWith(".0"))
+        _appVersion = _appVersion.substring(0, _appVersion.length - 2);
+    } catch (exception) {
+      _appVersion = "1.10"; // currently there is an error on windows build
+    }
   }
 
   static const addOverviewFeatureId = "addOverviewFeatureId";
@@ -70,10 +75,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 
     FeatureDiscovery.discoverFeatures(
       context,
-      const <String>{
-        showDrawerFeatureId,
-        addOverviewFeatureId
-      },
+      const <String>{showDrawerFeatureId, addOverviewFeatureId},
     );
   }
 
@@ -104,7 +106,9 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 
   void initAutoRefreshTimer() {
     if (_autoRefresh) {
-      autoRefreshTimer = new Timer.periodic(Duration(seconds: SettingsUtil.appSettings.autoRefreshInterval), (Timer t) {
+      autoRefreshTimer = new Timer.periodic(
+          Duration(seconds: SettingsUtil.appSettings.autoRefreshInterval),
+          (Timer t) {
         var route = ModalRoute.of(context);
         if (route != null && route.isCurrent) {
           refreshOverviews();
@@ -114,11 +118,10 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   }
 
   void showAddDialog() {
-    if (SettingsUtil.devices.length == 0)
-    {
-        Dialogs.simpleAlert(context, "No devices found", "You must add at least one device on devices menu");
-    }
-    else
+    if (SettingsUtil.devices.length == 0) {
+      Dialogs.simpleAlert(context, "No devices found",
+          "You must add at least one device on devices menu");
+    } else
       showOverviewDialog("Add Overview Item for a device", null);
   }
 
@@ -158,7 +161,8 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                 featureId: showDrawerFeatureId,
                 tapTarget: Icon(Icons.menu),
                 title: Text('Click here to open menu'),
-                description: Text('On the menu you can setup identities, devices and more settings'),                
+                description: Text(
+                    'On the menu you can setup identities, devices and more settings'),
                 child: Icon(Icons.menu),
               ))),
       body: RefreshIndicator(
@@ -177,7 +181,8 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
         featureId: addOverviewFeatureId,
         tapTarget: const Icon(Icons.add),
         title: Text('Add new overview to main view'),
-        description: Text('After setting up your device, you can add an overview for that device'),        
+        description: Text(
+            'After setting up your device, you can add an overview for that device'),
         child: FloatingActionButton(
           onPressed: () {
             showAddDialog();
@@ -219,6 +224,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
     SettingsUtil.appSettings.darkTheme = val;
     SettingsUtil.saveAppSettings();
   }
+
   Widget buildDrawer(BuildContext context) {
     return Container(
         width: 250,
@@ -235,27 +241,40 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Text('Options'),                            
-                            Expanded(child: 
-                            Row(mainAxisAlignment: MainAxisAlignment.end, children:[ IconButton(onPressed: () {
-                              Navigator.pop(context);
-                              SettingsUtil.getDevices().then((dvs) {
-                                Clipboard.setData(ClipboardData(text: OpenWRTClient.lastJSONRequest + "\n\n" + OpenWRTClient.lastJSONResponse + "\n\n" + jsonEncode(dvs)));
-                                Dialogs.simpleAlert(context, "", "Debug data\n Copied to clipboard");                              
-                              });
-                              
-                            }, icon: Icon(Icons.help_center))])
-                            )
+                            Text('Options'),
+                            Expanded(
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                  IconButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        SettingsUtil.getDevices().then((dvs) {
+                                          Clipboard.setData(ClipboardData(
+                                              text: OpenWRTClient
+                                                      .lastJSONRequest +
+                                                  "\n\n" +
+                                                  OpenWRTClient
+                                                      .lastJSONResponse +
+                                                  "\n\n" +
+                                                  jsonEncode(dvs)));
+                                          Dialogs.simpleAlert(context, "",
+                                              "Debug data\n Copied to clipboard");
+                                        });
+                                      },
+                                      icon: Icon(Icons.help_center))
+                                ]))
                           ],
                         )
                       ],
-                    ),                    
+                    ),
                     padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                     margin: EdgeInsets.all(0.0),
                   ),
                 ),
                 ListTile(
-                  leading: Container(width: drawerIconWidth, child: const Icon(Icons.refresh)),
+                  leading: Container(
+                      width: drawerIconWidth, child: const Icon(Icons.refresh)),
                   title: Text('Refresh'),
                   onTap: () {
                     Navigator.pop(context);
@@ -263,20 +282,24 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                   },
                 ),
                 ListTile(
-                  leading: Container(width: drawerIconWidth, child: const Icon(Icons.account_circle)),
+                  leading: Container(
+                      width: drawerIconWidth,
+                      child: const Icon(Icons.account_circle)),
                   title: Text('Identities'),
                   onTap: () {
                     SettingsUtil.getIdentities().then((ids) {
                       Navigator.pop(context);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => IdentitiesPage()),
+                        MaterialPageRoute(
+                            builder: (context) => IdentitiesPage()),
                       );
                     });
                   },
                 ),
                 ListTile(
-                  leading: Container(width: drawerIconWidth, child: const Icon(Icons.router)),
+                  leading: Container(
+                      width: drawerIconWidth, child: const Icon(Icons.router)),
                   title: Text('Devices'),
                   onTap: () {
                     SettingsUtil.getIdentities().then((ids) {
@@ -284,7 +307,8 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                         Navigator.pop(context);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => DevicesPage()),
+                          MaterialPageRoute(
+                              builder: (context) => DevicesPage()),
                         ).then((value) {
                           refreshOverviews();
                         });
@@ -293,22 +317,26 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                   },
                 ),
                 ListTile(
-                  leading: Container(width: drawerIconWidth, child: const Icon(Icons.device_hub)),
+                  leading: Container(
+                      width: drawerIconWidth,
+                      child: const Icon(Icons.device_hub)),
                   title: Text('Update Devices'),
-                  onTap: () {                    
+                  onTap: () {
                     SettingsUtil.getIdentities().then((ids) {
                       SettingsUtil.getDevices().then((dvs) {
-                        Navigator.pop(context);                        
+                        Navigator.pop(context);
                         updateDevicesData(dvs).then((x) {
                           Navigator.pop(context);
-                          if (x.length > 0) Dialogs.simpleAlert(context, "Update Device failed", x.join(","));
+                          if (x.length > 0)
+                            Dialogs.simpleAlert(
+                                context, "Update Device failed", x.join(","));
                         });
                         Dialogs.showLoadingDialog(context);
                       });
                     });
                   },
                 ),
-                    ListTile(
+                ListTile(
                     leading: Container(
                         width: 60,
                         child: Row(
@@ -318,9 +346,11 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                             Switch(
                               onChanged: (bool value) {
                                 setState(() {
-                                  _darkTheme = value;                                                                     
-                                  Provider.of<ThemeChangeNotifier>(context, listen: false).toggleTheme();
-                                });                                
+                                  _darkTheme = value;
+                                  Provider.of<ThemeChangeNotifier>(context,
+                                          listen: false)
+                                      .toggleTheme();
+                                });
                               },
                               value: _darkTheme,
                             ),
@@ -345,7 +375,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                             ),
                           ],
                         )),
-                    title: Text("Auto Refresh")),                    
+                    title: Text("Auto Refresh")),
                 Visibility(
                     visible: _autoRefresh,
                     child: ListTile(
@@ -368,13 +398,14 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                           )
                         ],
                       ),
-                    )),                
+                    )),
               ])),
           Column(children: <Widget>[
             Expanded(
                 child: Align(
                     alignment: Alignment.bottomLeft,
-                    child: Container(padding: EdgeInsets.all(10), child: Text(_appVersion))))
+                    child: Container(
+                        padding: EdgeInsets.all(10), child: Text(_appVersion))))
           ])
         ]));
   }
@@ -397,12 +428,16 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
       });
     } else {
       for (var oi in SettingsUtil.overviews) {
-        if (!requestMap.containsKey(oi.deviceGuid)) requestMap[oi.deviceGuid] = [];
+        if (!requestMap.containsKey(oi.deviceGuid))
+          requestMap[oi.deviceGuid] = [];
         var l = requestMap[oi.deviceGuid];
         for (var n in OverviewItemManager.items[oi.overiviewItemGuid].commands)
-          if (l.firstWhere((x) => x.runtimeType == n.runtimeType, orElse: () => null) == null) {
+          if (l.firstWhere((x) => x.runtimeType == n.runtimeType,
+                  orElse: () => null) ==
+              null) {
             var nr = n.createReply(ReplyStatus.Ok, null,
-                device: SettingsUtil.devices.firstWhere((d) => d.guid == oi.deviceGuid));
+                device: SettingsUtil.devices
+                    .firstWhere((d) => d.guid == oi.deviceGuid));
             if (nr is CommandReplyBase) {
               l.add(nr);
             } else
@@ -416,20 +451,27 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
       }
     }
 
-    if (_deviceAuthentication.keys.length > 0) // means at least one device got authentication result
+    if (_deviceAuthentication.keys.length >
+        0) // means at least one device got authentication result
     {
-      if (_deviceReply.keys.length > 0) // at least one device got command replies
+      if (_deviceReply.keys.length >
+          0) // at least one device got command replies
       {
         setState(() {});
       }
     } else if (_refreshing && requestMap.keys.length > 0) {
       for (var deviceGuid in requestMap.keys) {
         var d = SettingsUtil.devices.firstWhere((x) => x.guid == deviceGuid);
-        var oc = OpenWRTClient(d, SettingsUtil.identities.firstWhere((x) => x.guid == d.identityGuid));
+        var oc = OpenWRTClient(
+            d,
+            SettingsUtil.identities
+                .firstWhere((x) => x.guid == d.identityGuid));
         oc.authenticate().then((res) {
           _deviceAuthentication[d] = res;
           if (res.status == ReplyStatus.Ok) {
-            oc.getData(res.authenticationCookie, requestMap[d.guid]).then((dataResult) {
+            oc
+                .getData(res.authenticationCookie, requestMap[d.guid])
+                .then((dataResult) {
               setState(() {
                 _deviceReply[d] = dataResult;
               });
@@ -439,8 +481,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
         });
       }
     }
-    if (lst.length == 0)
-    {
+    if (lst.length == 0) {
       setupEmptyOverviewText(lst);
     }
 
@@ -448,17 +489,22 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   }
 
   void setupEmptyOverviewText(List<Widget> lst) {
-    if (SettingsUtil.devices.length > 0)
-    {
+    if (SettingsUtil.devices.length > 0) {
       lst.add(Container(
-        padding: EdgeInsets.all(5),
-        child: Center(child:Text("No overview added.\nUse + button to add overview for your device(s).", textAlign: TextAlign.center,))));
-    }
-    else
-    {
+          padding: EdgeInsets.all(5),
+          child: Center(
+              child: Text(
+            "No overview added.\nUse + button to add overview for your device(s).",
+            textAlign: TextAlign.center,
+          ))));
+    } else {
       lst.add(Container(
-        padding: EdgeInsets.all(5),
-        child: Center(child:Text("No devices added.\nAdd them from menu option.", textAlign: TextAlign.center,))));        
+          padding: EdgeInsets.all(5),
+          child: Center(
+              child: Text(
+            "No devices added.\nAdd them from menu option.",
+            textAlign: TextAlign.center,
+          ))));
     }
   }
 
@@ -476,36 +522,42 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 
   getOverviewMainWidget(SelectedOverviewItem oi) {
     var ovi = OverviewItemManager.items[oi.overiviewItemGuid];
-    var device = SettingsUtil.devices.firstWhere((x) => oi.deviceGuid == x.guid, orElse: () => null);
+    var device = SettingsUtil.devices
+        .firstWhere((x) => oi.deviceGuid == x.guid, orElse: () => null);
     if (device == null) return Text("Bad device");
     AuthenticateReply deviceAuthenticationStatus;
-    if (_deviceAuthentication.containsKey(device)) deviceAuthenticationStatus = _deviceAuthentication[device];
+    if (_deviceAuthentication.containsKey(device))
+      deviceAuthenticationStatus = _deviceAuthentication[device];
     List<CommandReplyBase> deviceReplies;
     if (_deviceReply.containsKey(device)) deviceReplies = _deviceReply[device];
     var inRefresh = _refreshing &&
         deviceReplies == null &&
-        (deviceAuthenticationStatus == null || deviceAuthenticationStatus.status == ReplyStatus.Ok);
+        (deviceAuthenticationStatus == null ||
+            deviceAuthenticationStatus.status == ReplyStatus.Ok);
     switch (ovi.type) {
       case OverviewItemType.SystemInfo:
-        return SystemInfo(device, inRefresh, deviceAuthenticationStatus, deviceReplies, ovi, oi.guid, refreshOverviews);
+        return SystemInfo(device, inRefresh, deviceAuthenticationStatus,
+            deviceReplies, ovi, oi.guid, refreshOverviews);
         break;
       case OverviewItemType.NetworkStatus:
-        return NetworkStatus(
-            device, inRefresh, deviceAuthenticationStatus, deviceReplies, ovi, oi.guid, refreshOverviews);
+        return NetworkStatus(device, inRefresh, deviceAuthenticationStatus,
+            deviceReplies, ovi, oi.guid, refreshOverviews);
         break;
       case OverviewItemType.NetworkTraffic:
-        return NetworkTraffic(
-            device, inRefresh, deviceAuthenticationStatus, deviceReplies, ovi, oi.guid, refreshOverviews);
+        return NetworkTraffic(device, inRefresh, deviceAuthenticationStatus,
+            deviceReplies, ovi, oi.guid, refreshOverviews);
         break;
       case OverviewItemType.WifiStatus:
-        return WIFIStatus(device, inRefresh, deviceAuthenticationStatus, deviceReplies, ovi, oi.guid, refreshOverviews);
+        return WIFIStatus(device, inRefresh, deviceAuthenticationStatus,
+            deviceReplies, ovi, oi.guid, refreshOverviews);
         break;
       case OverviewItemType.DHCPLeaseInfo:
-        return DHCPLeaseStatus(device, inRefresh, deviceAuthenticationStatus, deviceReplies, ovi, oi.guid, refreshOverviews);
+        return DHCPLeaseStatus(device, inRefresh, deviceAuthenticationStatus,
+            deviceReplies, ovi, oi.guid, refreshOverviews);
         break;
-        case OverviewItemType.ActiveConnections:
-        return ActiveConnections(
-            device, inRefresh, deviceAuthenticationStatus, deviceReplies, ovi, oi.guid, refreshOverviews);
+      case OverviewItemType.ActiveConnections:
+        return ActiveConnections(device, inRefresh, deviceAuthenticationStatus,
+            deviceReplies, ovi, oi.guid, refreshOverviews);
         break;
     }
   }
@@ -515,13 +567,18 @@ Future<List<String>> updateDevicesData(List<Device> devices) async {
   List<String> failedDevices = [];
 
   for (var d in devices) {
-    var cli = OpenWRTClient(d, SettingsUtil.identities.firstWhere((i) => i.guid == d.identityGuid));
+    var cli = OpenWRTClient(
+        d, SettingsUtil.identities.firstWhere((i) => i.guid == d.identityGuid));
 
     try {
       await cli.authenticate().then((c) {
-        cli.getData(c.authenticationCookie, [NetworkDeviceReply(ReplyStatus.Ok)]).then((res) {
-          var interfaces = (res[0].data['result'] as List)[1] as Map<String, dynamic>;
-          d.wifiDevices = interfaces.keys.where((i) => interfaces[i]['wireless'] == true).toList();
+        cli.getData(c.authenticationCookie,
+            [NetworkDeviceReply(ReplyStatus.Ok)]).then((res) {
+          var interfaces =
+              (res[0].data['result'] as List)[1] as Map<String, dynamic>;
+          d.wifiDevices = interfaces.keys
+              .where((i) => interfaces[i]['wireless'] == true)
+              .toList();
           SettingsUtil.saveDevices();
         }).catchError((e) {
           failedDevices.add(d.displayName);
