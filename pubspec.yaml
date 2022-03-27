@@ -15,8 +15,8 @@ dependencies:
   uuid: ^3.0.5
   http: ^0.13.4
   package_info_plus: ^1.4.0
-  feature_discovery: ^0.14.0
-  provider: ^5.0.0  
+  feature_discovery: ^0.14.1
+  provider: ^6.0.0  
 
 dev_dependencies:
   flutter_test:
