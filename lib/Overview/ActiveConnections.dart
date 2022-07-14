@@ -28,6 +28,7 @@ class ActiveConnections extends OverviewWidgetBase {
 }
 
 class ActiveConnectionsState extends OverviewWidgetBaseState {
+  static const int MAX_PROCESSED_CONNECTIONS = 50;
   static const int MAX_ROWS = 5;
   static const int EXPANDED_MAX_ROWS = 15;
 
@@ -53,8 +54,7 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
     }
   }
 
-  int getBytes(dynamic b)
-  {
+  int getBytes(dynamic b) {
     return double.parse(b.toString()).round();
   }
 
@@ -68,17 +68,20 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
         children: [Text("No active connections")],
       ));
     } else {
-      connectionsList.sort((a, b) =>
-          getBytes(b["bytes"]) - getBytes(a["bytes"]));
+      connectionsList
+          .sort((a, b) => getBytes(b["bytes"]) - getBytes(a["bytes"]));
 
       List<String> ipToResolve = [];
       var currentTimeStamp = new DateTime.now().millisecondsSinceEpoch;
-      for (var con in connectionsList.take(expanded ? EXPANDED_MAX_ROWS : MAX_ROWS)) {
+      var shownConnectionList = connectionsList
+          .take(MAX_PROCESSED_CONNECTIONS)
+          .toList(); // sort be speed up to MAX_PROCESSED_CONNECTIONS which are sorted by bytes transfer      
+
+      for (var con in shownConnectionList) {
         var bytes = double.parse(con["bytes"].toString()).round();
         checkIpForLookup(con["src"], ipToResolve);
         checkIpForLookup(con["dst"], ipToResolve);
-
-        String speedText;
+        if (con["speed"] == null) con["speed"] = 0;
 
         var connectionKey = getProtocolText(con, "src", "sport") +
             "," +
@@ -93,24 +96,38 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
             if (timeDiff > 0) {
               var byteDiff = newTrafficDataBytes - oldTrafficData["traffic"];
               var speed = (byteDiff / timeDiff).round();
-              speedText = Utils.formatBytes(speed, decimals: 2) + "/s";
-              oldTrafficData["speedText"] = speedText;
+              con["speed"] = speed;
+              con["speedText"] = Utils.formatBytes(speed, decimals: 2) + "/s";              
+              oldTrafficData["speedText"] = con["speedText"];
               oldTrafficData["traffic"] = newTrafficDataBytes;
             }
           } else {
-            speedText = oldTrafficData["speedText"];
+            con["speedText"] = oldTrafficData["speedText"];
           }
         } else {
           _trafficMap[connectionKey] = Map();
           _trafficMap[connectionKey]["traffic"] = bytes;
-        }                
+        }
+      }
+      
+        shownConnectionList
+            .sort((a, b) 
+            { 
+              var speedDiff = getBytes(b["speed"]) - getBytes(a["speed"]);
+              if (speedDiff != 0)
+                return speedDiff;
+              return getBytes(b["bytes"]) - getBytes(a["bytes"]);
+            });
 
-        rows.add(Container(                    
-          margin: EdgeInsets.fromLTRB(10, 0, 10, 15),          
+      for (var con in shownConnectionList
+          .take(expanded ? EXPANDED_MAX_ROWS : MAX_ROWS)) {
+        var bytes = double.parse(con["bytes"].toString()).round();
+        rows.add(Container(
+          margin: EdgeInsets.fromLTRB(10, 0, 10, 15),
           child: Column(
             children: [
               Row(children: [
-                Container(                    
+                Container(
                     width: 150,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -124,13 +141,17 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
                     child: Container(
                         width: 100,
                         child: Center(
-                            child: Text(
-                                speedText != null ? speedText : (Utils.NoSpeedCalculationText + " Kb/s"))))),
+                            child: Text(con["speedText"] != null
+                                ? con["speedText"]
+                                : (Utils.NoSpeedCalculationText + " Kb/s"))))),
                 Container(
                     width: 100,
-                    child: Align(alignment: Alignment.centerRight,
-                        child:
-                            Text(Utils.formatBytes(bytes, decimals: 2), style: TextStyle(fontWeight: FontWeight.bold),)))
+                    child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          Utils.formatBytes(bytes, decimals: 2),
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )))
               ]),
               SizedBox(
                 height: 5,
