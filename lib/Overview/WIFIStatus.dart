@@ -29,7 +29,23 @@ class WIFIStatus extends OverviewWidgetBase {
   WIFIStatusState createState() => WIFIStatusState();
 }
 
+class HostHintData
+{
+  HostHintData(this.host, this.ipV4);
+  final String host;
+  final String ipV4;  
+}
+
 class WIFIStatusState extends OverviewWidgetBaseState {
+
+  String getIpAddressStringFromList(dynamic lst)
+  {      
+      for (var ip in lst)
+        if (ip != null)
+          return ip;
+    return null;     
+  }
+
   @override
   Widget get myWidget {
     const String infoText =
@@ -42,12 +58,12 @@ class WIFIStatusState extends OverviewWidgetBaseState {
     if (data != null) {
       var hostHintData = data[0];
 
-      var macToHostsMap = Map<String, String>();
+      var macToHostHintMap = Map<String, HostHintData>();
       for (var mac in (hostHintData[1] as Map).keys)
         try {
           if (hostHintData[1][mac] != null &&
               hostHintData[1][mac]["name"] != null)
-            macToHostsMap[mac] = hostHintData[1][mac]["name"];
+            macToHostHintMap[mac] = HostHintData(hostHintData[1][mac]["name"],getIpAddressStringFromList(hostHintData[1][mac]["ipaddrs"]));
         } catch (e) {}
 
       var wirelessDeviceData = data[1];
@@ -75,15 +91,19 @@ class WIFIStatusState extends OverviewWidgetBaseState {
           wifiDeviceCounter++;
           wifiInterfaces.add(wifiInterface);
           var results = interface[1]["results"];
-          for (var cli in results) {
+          for (var cli in results) {            
             var i = cli;
-            if (macToHostsMap[i["mac"]] != null)
-              i["hostname"] = macToHostsMap[i["mac"]];
+            var hostHint = macToHostHintMap[i["mac"]] ?? null;
+            if (hostHint != null)
+              i["hostname"] = hostHint.host;
             i["ip"] = "";
             if (DataCache.macAddressMap.containsKey(i["mac"])) {
               var d = DataCache.macAddressMap[i["mac"]];
               i["ip"] = d.ipAddress;
             }
+            else
+              if (hostHint != null)
+              i["ip"] = hostHint.ipV4;
             i["ifname"] = wifiInterface;
             wifiData.add(i);
           }
