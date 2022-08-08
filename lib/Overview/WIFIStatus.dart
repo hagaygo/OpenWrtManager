@@ -70,7 +70,7 @@ class WIFIStatusState extends OverviewWidgetBaseState {
 
       for (var radio in (wirelessDeviceData[1] as Map).keys) {
         var interfaces = wirelessDeviceData[1][radio]["interfaces"];
-        for (var interface in interfaces) {
+        for (var interface in interfaces.where((x) => x["ifname"] != null)) {
           ifnameToApData[interface["ifname"]] = {
             "ssid": interface["iwinfo"]["ssid"],
             "noise": interface["iwinfo"]["noise"],
