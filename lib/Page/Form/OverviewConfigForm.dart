@@ -42,7 +42,7 @@ class OverviewConfigFormState extends State<OverviewConfigForm> {
             ),
             Text(
               "${widget.device.displayName} - ${widget.item.displayName} Config",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
             SizedBox(
               height: 30,
@@ -55,10 +55,10 @@ class OverviewConfigFormState extends State<OverviewConfigForm> {
               width: 250,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                      primary: Colors.blue,
-                      onPrimary: Colors.white,
-                      )                ,
-                child: Text("Save"),                
+                  primary: Colors.blue,
+                  onPrimary: Colors.white,
+                ),
+                child: Text("Save"),
                 onPressed: () {
                   saveConfig();
                 },

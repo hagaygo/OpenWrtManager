@@ -29,21 +29,16 @@ class WIFIStatus extends OverviewWidgetBase {
   WIFIStatusState createState() => WIFIStatusState();
 }
 
-class HostHintData
-{
+class HostHintData {
   HostHintData(this.host, this.ipV4);
   final String host;
-  final String ipV4;  
+  final String ipV4;
 }
 
 class WIFIStatusState extends OverviewWidgetBaseState {
-
-  String getIpAddressStringFromList(dynamic lst)
-  {      
-      for (var ip in lst)
-        if (ip != null)
-          return ip;
-    return null;     
+  String getIpAddressStringFromList(dynamic lst) {
+    for (var ip in lst) if (ip != null) return ip;
+    return null;
   }
 
   @override
@@ -63,7 +58,8 @@ class WIFIStatusState extends OverviewWidgetBaseState {
         try {
           if (hostHintData[1][mac] != null &&
               hostHintData[1][mac]["name"] != null)
-            macToHostHintMap[mac] = HostHintData(hostHintData[1][mac]["name"],getIpAddressStringFromList(hostHintData[1][mac]["ipaddrs"]));
+            macToHostHintMap[mac] = HostHintData(hostHintData[1][mac]["name"],
+                getIpAddressStringFromList(hostHintData[1][mac]["ipaddrs"]));
         } catch (e) {}
 
       var wirelessDeviceData = data[1];
@@ -91,19 +87,15 @@ class WIFIStatusState extends OverviewWidgetBaseState {
           wifiDeviceCounter++;
           wifiInterfaces.add(wifiInterface);
           var results = interface[1]["results"];
-          for (var cli in results) {            
+          for (var cli in results) {
             var i = cli;
             var hostHint = macToHostHintMap[i["mac"]] ?? null;
-            if (hostHint != null)
-              i["hostname"] = hostHint.host;
+            if (hostHint != null) i["hostname"] = hostHint.host;
             i["ip"] = "";
             if (DataCache.macAddressMap.containsKey(i["mac"])) {
               var d = DataCache.macAddressMap[i["mac"]];
               i["ip"] = d.ipAddress;
-            }
-            else
-              if (hostHint != null)
-              i["ip"] = hostHint.ipV4;
+            } else if (hostHint != null) i["ip"] = hostHint.ipV4;
             i["ifname"] = wifiInterface;
             wifiData.add(i);
           }
@@ -267,7 +259,7 @@ class WIFIStatusState extends OverviewWidgetBaseState {
             color: Colors.red,
             child: Text(
               "Disconnect",
-              style: TextStyle(color: Colors.white, fontSize: 20),
+              style: TextStyle(color: Colors.white),
             ),
             onPressed: () async {
               var client = OpenWRTClient(widget.device, null);
@@ -290,7 +282,7 @@ class WIFIStatusState extends OverviewWidgetBaseState {
           DialogButton(
             child: Text(
               "Close",
-              style: TextStyle(color: Colors.white, fontSize: 20),
+              style: TextStyle(color: Colors.white),
             ),
             onPressed: () {
               Navigator.pop(context);

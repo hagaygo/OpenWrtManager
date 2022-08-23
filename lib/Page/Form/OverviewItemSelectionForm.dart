@@ -30,7 +30,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
   final _formKey = GlobalKey<FormState>();
   Device _selectedDevice;
   String _selectedOverview;
-  String _editedGuid;  
+  String _editedGuid;
 
   static const double InputMargin = 7;
   @override
@@ -39,7 +39,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
         key: _formKey,
         child: SingleChildScrollView(
           reverse: true,
-          child: Container(            
+          child: Container(
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Column(
@@ -53,7 +53,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                           margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
                           child: Text(
                             widget.title,
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ))
                     ],
                   ),
@@ -102,7 +102,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                     onChanged: (o) {
                       setState(() => _selectedOverview = o);
                     },
-                  ),                  
+                  ),
                   Column(mainAxisAlignment: MainAxisAlignment.end, children: <
                       Widget>[
                     Visibility(
@@ -116,26 +116,27 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                 child: SizedBox(
                                   width: 135.0,
                                   child: ElevatedButton(
-                                      onPressed: () {
-                                        var soi = SettingsUtil.overviews
-                                            .firstWhere(
-                                                (o) => o.guid == _editedGuid);
-                                        var idx =
-                                            SettingsUtil.overviews.indexOf(soi);
-                                        if (idx > 0) {
-                                          SettingsUtil.overviews.removeAt(idx);
-                                          SettingsUtil.overviews
-                                              .insert(idx - 1, soi);
-                                        }
-                                        SettingsUtil.saveOverviews();
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text(
-                                        "Move Up",
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                      primary: Colors.green),),
+                                    onPressed: () {
+                                      var soi = SettingsUtil.overviews
+                                          .firstWhere(
+                                              (o) => o.guid == _editedGuid);
+                                      var idx =
+                                          SettingsUtil.overviews.indexOf(soi);
+                                      if (idx > 0) {
+                                        SettingsUtil.overviews.removeAt(idx);
+                                        SettingsUtil.overviews
+                                            .insert(idx - 1, soi);
+                                      }
+                                      SettingsUtil.saveOverviews();
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(
+                                      "Move Up",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Colors.green),
+                                  ),
                                 )),
                             Container(
                                 margin: EdgeInsets.fromLTRB(5, 10, 0, 0),
@@ -162,7 +163,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                         style: TextStyle(color: Colors.white),
                                       ),
                                       style: ElevatedButton.styleFrom(
-                      primary: Colors.green)),
+                                          primary: Colors.green)),
                                 ))
                           ],
                         ))),
@@ -171,7 +172,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                         child: Container(
                             margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                             height: 40,
-                            child: SizedBox.expand(                              
+                            child: SizedBox.expand(
                               child: ElevatedButton(
                                   onPressed: () async {
                                     var res = await Dialogs.confirmDialog(
@@ -191,12 +192,12 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   style: ElevatedButton.styleFrom(
-                      primary: Colors.red)),
+                                      primary: Colors.red)),
                             ))),
                     Container(
                         height: 40,
                         margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: SizedBox.expand(                          
+                        child: SizedBox.expand(
                           child: ElevatedButton(
                               onPressed: () {
                                 if (_formKey.currentState.validate()) {
@@ -221,7 +222,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                 style: TextStyle(color: Colors.white),
                               ),
                               style: ElevatedButton.styleFrom(
-                      primary: Colors.blue)),
+                                  primary: Colors.blue)),
                         ))
                   ])
                 ],
