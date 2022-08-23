@@ -111,10 +111,9 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                             child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Container(
-                                margin: EdgeInsets.fromLTRB(0, 10, 5, 0),
-                                child: SizedBox(
-                                  width: 135.0,
+                            Expanded(
+                              child: Container(
+                                  margin: EdgeInsets.fromLTRB(0, 10, 5, 0),
                                   child: ElevatedButton(
                                     onPressed: () {
                                       var soi = SettingsUtil.overviews
@@ -136,12 +135,11 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                     ),
                                     style: ElevatedButton.styleFrom(
                                         primary: Colors.green),
-                                  ),
-                                )),
-                            Container(
-                                margin: EdgeInsets.fromLTRB(5, 10, 0, 0),
-                                child: SizedBox(
-                                  width: 135.0,
+                                  )),
+                            ),
+                            Expanded(
+                              child: Container(
+                                  margin: EdgeInsets.fromLTRB(5, 10, 0, 0),
                                   child: ElevatedButton(
                                       onPressed: () {
                                         var soi = SettingsUtil.overviews
@@ -163,8 +161,8 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                         style: TextStyle(color: Colors.white),
                                       ),
                                       style: ElevatedButton.styleFrom(
-                                          primary: Colors.green)),
-                                ))
+                                          primary: Colors.green))),
+                            )
                           ],
                         ))),
                     Visibility(

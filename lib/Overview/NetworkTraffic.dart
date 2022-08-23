@@ -186,7 +186,11 @@ class NetworkTrafficState extends OverviewWidgetBaseState {
         SizedBox(width: 2),
         Icon(ico, size: 12),
         SizedBox(width: 2),
-        Container(width: 90, child: Text(speed))
+        Expanded(
+          child: Container(
+            child: Text(speed),
+          ),
+        )
       ],
     );
   }

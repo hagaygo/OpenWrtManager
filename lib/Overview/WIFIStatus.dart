@@ -197,15 +197,16 @@ class WIFIStatusState extends OverviewWidgetBaseState {
           Row(
             children: <Widget>[
               getSignalWidget(cli["signal"]),
+              SizedBox(width: 5),
               Expanded(
                   child: Center(
                 child:
                     Text(cli["hostname"] != null ? "${cli["hostname"]}" : ""),
               )),
-              Expanded(
-                  child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(cli["mac"].toString()))),
+              SizedBox(width: 5),
+              Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(cli["mac"].toString())),
             ],
           ),
           SizedBox(height: 5),
