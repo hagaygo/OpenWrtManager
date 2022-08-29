@@ -175,6 +175,7 @@ class NetworkTrafficState extends OverviewWidgetBaseState {
   }
 
   static Widget getTrafficWidgetBytes(int bytes, IconData ico, String speed) {
+    const int MoreDecimalThreshold = 1024 * 1024 * 1024 * 1024;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -182,7 +183,7 @@ class NetworkTrafficState extends OverviewWidgetBaseState {
             width: 75,
             child: Align(
                 alignment: Alignment.centerRight,
-                child: Text("${Utils.formatBytes(bytes, decimals: 1)}"))),
+                child: Text("${Utils.formatBytes(bytes, decimals: bytes > MoreDecimalThreshold  ? 3 : 1)}"))),
         SizedBox(width: 2),
         Icon(ico, size: 12),
         SizedBox(width: 2),
