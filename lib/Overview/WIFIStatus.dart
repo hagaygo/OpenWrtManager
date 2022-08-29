@@ -224,7 +224,7 @@ class WIFIStatusState extends OverviewWidgetBaseState {
               Expanded(
                   child: Align(
                 alignment: Alignment.centerRight,
-                child: Text(cli["ip"]),
+                child: Text(cli["ip"] ?? ""),
               )),
             ],
           ),
