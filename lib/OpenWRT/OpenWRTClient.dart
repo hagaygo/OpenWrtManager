@@ -170,7 +170,7 @@ class OpenWRTClient {
       http.close();
       if (response.statusCode == 302) {
         for (var c in response.cookies) {
-          if (c.name == "sysauth")
+          if (c.name.contains("sysauth"))
             return Future.value(AuthenticateReply(ReplyStatus.Ok, c));
         }
       }
