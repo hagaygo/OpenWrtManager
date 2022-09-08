@@ -134,7 +134,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                       style: TextStyle(color: Colors.white),
                                     ),
                                     style: ElevatedButton.styleFrom(
-                                        primary: Colors.green),
+                                        backgroundColor: Colors.green),
                                   )),
                             ),
                             Expanded(
@@ -161,7 +161,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                         style: TextStyle(color: Colors.white),
                                       ),
                                       style: ElevatedButton.styleFrom(
-                                          primary: Colors.green))),
+                                          backgroundColor: Colors.green))),
                             )
                           ],
                         ))),
@@ -190,7 +190,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   style: ElevatedButton.styleFrom(
-                                      primary: Colors.red)),
+                                      backgroundColor: Colors.red)),
                             ))),
                     Container(
                         height: 40,
@@ -220,7 +220,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                 style: TextStyle(color: Colors.white),
                               ),
                               style: ElevatedButton.styleFrom(
-                                  primary: Colors.blue)),
+                                  backgroundColor: Colors.blue)),
                         ))
                   ])
                 ],

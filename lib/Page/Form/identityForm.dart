@@ -44,7 +44,7 @@ class IdentityFormState extends State<IdentityForm> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [                
+              children: [
                 Text("Display Name"),
                 TextFormField(
                   decoration: InputDecoration(
@@ -121,8 +121,8 @@ class IdentityFormState extends State<IdentityForm> {
                                   style: TextStyle(color: Colors.white),
                                 ),
                                 style: ElevatedButton.styleFrom(
-                      primary: Colors.red,
-                      )),
+                                  backgroundColor: Colors.red,
+                                )),
                           ))),
                   Container(
                       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -151,8 +151,8 @@ class IdentityFormState extends State<IdentityForm> {
                               style: TextStyle(color: Colors.white),
                             ),
                             style: ElevatedButton.styleFrom(
-                      primary: Colors.blue,
-                      )),
+                              backgroundColor: Colors.blue,
+                            )),
                       ))
                 ])
               ],

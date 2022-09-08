@@ -218,8 +218,8 @@ class DeviceFormState extends State<DeviceForm> {
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   style: ElevatedButton.styleFrom(
-                      primary: Colors.red,
-                      )),
+                                    backgroundColor: Colors.red,
+                                  )),
                             ))),
                     Container(
                         height: 40,
@@ -244,8 +244,8 @@ class DeviceFormState extends State<DeviceForm> {
                                 style: TextStyle(color: Colors.white),
                               ),
                               style: ElevatedButton.styleFrom(
-                      primary: Colors.green,
-                      )),
+                                backgroundColor: Colors.green,
+                              )),
                         )),
                     Container(
                         margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -272,8 +272,8 @@ class DeviceFormState extends State<DeviceForm> {
                                 style: TextStyle(color: Colors.white),
                               ),
                               style: ElevatedButton.styleFrom(
-                      primary: Colors.blue,
-                      )),
+                                backgroundColor: Colors.blue,
+                              )),
                         ))
                   ])
                 ],

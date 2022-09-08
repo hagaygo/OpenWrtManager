@@ -20,10 +20,12 @@ class DevicesPage extends StatefulWidget {
 class _DevicesPageState extends State<DevicesPage> {
   void showAddDialog() {
     if (SettingsUtil.identities.length == 0) {
-      Dialogs.simpleAlert(context, "", "No identities are defined\nAdd at least one identity",
+      Dialogs.simpleAlert(
+          context, "", "No identities are defined\nAdd at least one identity",
           buttonText: "Add identity", closeAction: () {
         Navigator.pop(context);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => IdentitiesPage()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => IdentitiesPage()));
       });
       return;
     }
@@ -68,32 +70,40 @@ class _DevicesPageState extends State<DevicesPage> {
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.red,
-                      onPrimary: Colors.white,
-                      ),                    
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                    ),
                     onPressed: () async {
-                      var res = await Dialogs.confirmDialog(
-                                        context,
-                                        title: 'Reboot ${d.displayName} ?',
-                                        text: 'Please confirm device reboot');
-                                    if (res == ConfirmAction.CANCEL) return;
-                      var cli = OpenWRTClient(d, SettingsUtil.identities.firstWhere((x) => x.guid == d.identityGuid));
+                      var res = await Dialogs.confirmDialog(context,
+                          title: 'Reboot ${d.displayName} ?',
+                          text: 'Please confirm device reboot');
+                      if (res == ConfirmAction.CANCEL) return;
+                      var cli = OpenWRTClient(
+                          d,
+                          SettingsUtil.identities
+                              .firstWhere((x) => x.guid == d.identityGuid));
                       cli.authenticate().then((res) {
                         if (res.status == ReplyStatus.Ok) {
-                          cli.getData(res.authenticationCookie, [RebootReply(ReplyStatus.Ok)]).then((rebootRes) {
+                          cli.getData(res.authenticationCookie,
+                              [RebootReply(ReplyStatus.Ok)]).then((rebootRes) {
                             try {
-                              var responseCode = (rebootRes[0].data["result"] as List)[0];
+                              var responseCode =
+                                  (rebootRes[0].data["result"] as List)[0];
                               if (responseCode == 0) {
-                                Dialogs.simpleAlert(context, "Success", "Device should reboot");
+                                Dialogs.simpleAlert(
+                                    context, "Success", "Device should reboot");
                               } else {
-                                Dialogs.simpleAlert(context, "Error", "Device returned unexpected result");
+                                Dialogs.simpleAlert(context, "Error",
+                                    "Device returned unexpected result");
                               }
                             } catch (e) {
-                              Dialogs.simpleAlert(context, "Error", "Bad response from device");
+                              Dialogs.simpleAlert(
+                                  context, "Error", "Bad response from device");
                             }
                           });
                         } else {
-                          Dialogs.simpleAlert(context, "Error", "Authentication failed");
+                          Dialogs.simpleAlert(
+                              context, "Error", "Authentication failed");
                         }
                       });
                     },
@@ -102,7 +112,9 @@ class _DevicesPageState extends State<DevicesPage> {
                 ))
               ]),
               onTap: () => {showEditDialog(d)}),
-          decoration: new BoxDecoration(border: new Border(bottom: new BorderSide(width: 0.5, color: Colors.grey))));
+          decoration: new BoxDecoration(
+              border: new Border(
+                  bottom: new BorderSide(width: 0.5, color: Colors.grey))));
       lst.add(lt);
     }
     return lst;
