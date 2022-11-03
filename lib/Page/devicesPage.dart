@@ -2,9 +2,7 @@ import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
 import 'package:openwrt_manager/Dialog/Dialogs.dart';
 import 'package:openwrt_manager/Model/device.dart';
-import 'package:openwrt_manager/OpenWRT/Model/RebootReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/ReplyBase.dart';
-import 'package:openwrt_manager/OpenWRT/OpenWRTClient.dart';
+import 'package:openwrt_manager/Page/Form/deviceActionForm.dart';
 import 'package:openwrt_manager/Page/identitiesPage.dart';
 import 'package:openwrt_manager/settingsUtil.dart';
 
@@ -50,6 +48,22 @@ class _DevicesPageState extends State<DevicesPage> {
                 ))).then((_) => setState(() {}));
   }
 
+  void showDeviceActionDialog(Device d) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Scaffold(
+                  appBar: AppBar(
+                    title: Text(d.displayName + " Device Actions"),
+                  ),
+                  body: Center(
+                    child: ListView(
+                      children: [DeviceActionForm(d)],
+                    ),
+                  ),
+                ))).then((_) => setState(() {}));
+  }
+
   void showEditDialog(Device d) {
     showDeviceDialog(DeviceForm(
       device: d,
@@ -69,46 +83,14 @@ class _DevicesPageState extends State<DevicesPage> {
                     child: Align(
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                    ),
-                    onPressed: () async {
-                      var res = await Dialogs.confirmDialog(context,
-                          title: 'Reboot ${d.displayName} ?',
-                          text: 'Please confirm device reboot');
-                      if (res == ConfirmAction.CANCEL) return;
-                      var cli = OpenWRTClient(
-                          d,
-                          SettingsUtil.identities
-                              .firstWhere((x) => x.guid == d.identityGuid));
-                      cli.authenticate().then((res) {
-                        if (res.status == ReplyStatus.Ok) {
-                          cli.getData(res.authenticationCookie,
-                              [RebootReply(ReplyStatus.Ok)]).then((rebootRes) {
-                            try {
-                              var responseCode =
-                                  (rebootRes[0].data["result"] as List)[0];
-                              if (responseCode == 0) {
-                                Dialogs.simpleAlert(
-                                    context, "Success", "Device should reboot");
-                              } else {
-                                Dialogs.simpleAlert(context, "Error",
-                                    "Device returned unexpected result");
-                              }
-                            } catch (e) {
-                              Dialogs.simpleAlert(
-                                  context, "Error", "Bad response from device");
-                            }
-                          });
-                        } else {
-                          Dialogs.simpleAlert(
-                              context, "Error", "Authentication failed");
-                        }
-                      });
-                    },
-                    child: Text("Reboot"),
-                  ),
+                      child: Text("Actions"),
+                      onPressed: () {
+                        showDeviceActionDialog(d);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                      )),
                 ))
               ]),
               onTap: () => {showEditDialog(d)}),
