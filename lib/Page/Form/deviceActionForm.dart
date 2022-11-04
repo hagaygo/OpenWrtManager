@@ -25,14 +25,10 @@ class DeviceActionFormState extends State<DeviceActionForm> {
   Map _boardData;
 
   DeviceActionFormState(this.device) {
-    var cli = OpenWRTClient(
-        device,
-        SettingsUtil.identities
-            .firstWhere((x) => x.guid == device.identityGuid));
+    var cli = OpenWRTClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
     cli.authenticate().then((res) {
       if (res.status == ReplyStatus.Ok) {
-        cli.getData(res.authenticationCookie,
-            [SystemBoardReply(ReplyStatus.Ok)]).then((boardInfoRes) {
+        cli.getData(res.authenticationCookie, [SystemBoardReply(ReplyStatus.Ok)]).then((boardInfoRes) {
           try {
             setState(() {
               _boardData = (boardInfoRes[0].data["result"] as List)[1] as Map;
@@ -54,8 +50,7 @@ class DeviceActionFormState extends State<DeviceActionForm> {
         if (_boardData[key] is String)
           addBoardInfoItem(lst, _boardData, key);
         else if (_boardData[key] is Map)
-          for (var vv in (_boardData[key] as Map).keys)
-            addBoardInfoItem(lst, _boardData[key], vv);
+          for (var vv in (_boardData[key] as Map).keys) addBoardInfoItem(lst, _boardData[key], vv);
       }
 
       return Column(
@@ -64,12 +59,37 @@ class DeviceActionFormState extends State<DeviceActionForm> {
     }
   }
 
+  Future<void> doReboot() async {
+    var res = await Dialogs.confirmDialog(context,
+        title: 'Reboot ${device.displayName} ?', text: 'Please confirm device reboot');
+    if (res == ConfirmAction.CANCEL) return;
+    var cli = OpenWRTClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
+    cli.authenticate().then((res) {
+      if (res.status == ReplyStatus.Ok) {
+        cli.getData(res.authenticationCookie, [RebootReply(ReplyStatus.Ok)]).then((rebootRes) {
+          try {
+            var responseCode = (rebootRes[0].data["result"] as List)[0];
+            if (responseCode == 0) {
+              Dialogs.simpleAlert(context, "Success", "Device should reboot");
+            } else {
+              Dialogs.simpleAlert(context, "Error", "Device returned unexpected result");
+            }
+          } catch (e) {
+            Dialogs.simpleAlert(context, "Error", "Bad response from device");
+          }
+        });
+      } else {
+        Dialogs.simpleAlert(context, "Error", "Authentication failed");
+      }
+    });
+  }
+
   void addBoardInfoItem(List<Widget> lst, Map m, key) {
     lst.add(Row(
       children: [
         SizedBox(
           child: Text(key),
-          width: 100,
+          width: 120,
         ),
         SizedBox(width: 10),
         Flexible(child: Text(m[key]))
@@ -86,45 +106,34 @@ class DeviceActionFormState extends State<DeviceActionForm> {
           Column(
             children: [getBoardInfoWidget()],
           ),
-          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () async {
+                
+              },
+              child: Text("Kernel Log"),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () async {
+                
+              },
+              child: Text("System Log"),
+            ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
               ),
               onPressed: () async {
-                var res = await Dialogs.confirmDialog(context,
-                    title: 'Reboot ${device.displayName} ?',
-                    text: 'Please confirm device reboot');
-                if (res == ConfirmAction.CANCEL) return;
-                var cli = OpenWRTClient(
-                    device,
-                    SettingsUtil.identities
-                        .firstWhere((x) => x.guid == device.identityGuid));
-                cli.authenticate().then((res) {
-                  if (res.status == ReplyStatus.Ok) {
-                    cli.getData(res.authenticationCookie,
-                        [RebootReply(ReplyStatus.Ok)]).then((rebootRes) {
-                      try {
-                        var responseCode =
-                            (rebootRes[0].data["result"] as List)[0];
-                        if (responseCode == 0) {
-                          Dialogs.simpleAlert(
-                              context, "Success", "Device should reboot");
-                        } else {
-                          Dialogs.simpleAlert(context, "Error",
-                              "Device returned unexpected result");
-                        }
-                      } catch (e) {
-                        Dialogs.simpleAlert(
-                            context, "Error", "Bad response from device");
-                      }
-                    });
-                  } else {
-                    Dialogs.simpleAlert(
-                        context, "Error", "Authentication failed");
-                  }
-                });
+                doReboot();
               },
               child: Text("Reboot"),
             )
