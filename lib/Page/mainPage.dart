@@ -52,7 +52,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
       if (_appVersion.endsWith(".0"))
         _appVersion = _appVersion.substring(0, _appVersion.length - 2);
     } catch (exception) {
-      _appVersion = "1.15"; // currently there is an error on windows build
+      _appVersion = "1.20"; // currently there is an error on windows build
     }
   }
 
