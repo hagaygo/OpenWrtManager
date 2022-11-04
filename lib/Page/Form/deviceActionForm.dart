@@ -5,6 +5,7 @@ import 'package:openwrt_manager/OpenWRT/OpenWRTClient.dart';
 import 'package:openwrt_manager/Dialog/Dialogs.dart';
 import 'package:openwrt_manager/OpenWRT/Model/RebootReply.dart';
 import 'package:openwrt_manager/OpenWRT/Model/ReplyBase.dart';
+import 'package:openwrt_manager/Page/Form/logViewerForm.dart';
 import 'package:openwrt_manager/settingsUtil.dart';
 
 class DeviceActionForm extends StatefulWidget {
@@ -84,6 +85,28 @@ class DeviceActionFormState extends State<DeviceActionForm> {
     });
   }
 
+  Future<String> getSystemLog() async {
+    var cli = OpenWRTClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
+    var responseText = "Authentication failed";
+    await cli.authenticate().then((res) async {
+      if (res.status == ReplyStatus.Ok) {
+        responseText = await cli.executeCgiExec(res.authenticationCookie.value, "/sbin/logread -e ^");
+      }
+    });
+    return responseText;
+  }
+
+  Future<String> getKernelLog() async {
+    var cli = OpenWRTClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
+    var responseText = "Authentication failed";
+    await cli.authenticate().then((res) async {
+      if (res.status == ReplyStatus.Ok) {
+        responseText = await cli.executeCgiExec(res.authenticationCookie.value, "/bin/dmesg -r");        
+      }
+    });
+    return responseText;
+  }
+
   void addBoardInfoItem(List<Widget> lst, Map m, key) {
     lst.add(Row(
       children: [
@@ -113,7 +136,8 @@ class DeviceActionFormState extends State<DeviceActionForm> {
                 foregroundColor: Colors.white,
               ),
               onPressed: () async {
-                
+                var kernelLog = await getKernelLog();
+                Dialogs.showPage(context, device.displayName + " Kernel Log", LogViewerForm(kernelLog));
               },
               child: Text("Kernel Log"),
             ),
@@ -123,7 +147,8 @@ class DeviceActionFormState extends State<DeviceActionForm> {
                 foregroundColor: Colors.white,
               ),
               onPressed: () async {
-                
+                var systemLog = await getSystemLog();
+                Dialogs.showPage(context, device.displayName + " System Log", LogViewerForm(systemLog));
               },
               child: Text("System Log"),
             ),
