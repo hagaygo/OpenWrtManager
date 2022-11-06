@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:openwrt_manager/Model/device.dart';
 import 'package:openwrt_manager/OpenWRT/Model/SystemBoardReply.dart';
@@ -24,6 +26,7 @@ class DeviceActionFormState extends State<DeviceActionForm> {
   final Device device;
 
   Map _boardData;
+  String _boardDataStatusText = "Loading Device Info";
 
   DeviceActionFormState(this.device) {
     var cli = OpenWRTClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
@@ -38,13 +41,16 @@ class DeviceActionFormState extends State<DeviceActionForm> {
             Dialogs.simpleAlert(context, "Error", "Bad response from device");
           }
         });
-      }
+      } else
+        setState(() {
+          _boardDataStatusText = "Error getting device data - authentication failed";
+        });
     });
   }
 
   Widget getBoardInfoWidget() {
     if (_boardData == null || _boardData.keys.length == 0)
-      return Text("No device data");
+      return Text(_boardDataStatusText);
     else {
       List<Widget> lst = [];
       for (var key in _boardData.keys) {
@@ -85,26 +91,30 @@ class DeviceActionFormState extends State<DeviceActionForm> {
     });
   }
 
-  Future<String> getSystemLog() async {
+  Future<List<String>> getSystemLog() async {
     var cli = OpenWRTClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
-    var responseText = "Authentication failed";
+    var lst = ["Authentication failed"];
     await cli.authenticate().then((res) async {
       if (res.status == ReplyStatus.Ok) {
-        responseText = await cli.executeCgiExec(res.authenticationCookie.value, "/sbin/logread -e ^");
+        var responseText = await cli.executeCgiExec(res.authenticationCookie.value, "/sbin/logread -e ^");
+        lst = new LineSplitter().convert(responseText).toList();
       }
     });
-    return responseText;
+    return lst;
   }
 
-  Future<String> getKernelLog() async {
+  Future<List<String>> getKernelLog() async {
     var cli = OpenWRTClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
-    var responseText = "Authentication failed";
+    var lst = ["Authentication failed"];
     await cli.authenticate().then((res) async {
       if (res.status == ReplyStatus.Ok) {
-        responseText = await cli.executeCgiExec(res.authenticationCookie.value, "/bin/dmesg -r");        
+        var responseText = await cli.executeCgiExec(res.authenticationCookie.value, "/bin/dmesg -r");
+        lst = new LineSplitter().convert(responseText).toList();
+        for (int i = 0; i < lst.length; i++)
+          if (lst[i].startsWith("<") && lst[i].contains(">")) lst[i] = lst[i].substring(lst[i].indexOf(">") + 1);
       }
     });
-    return responseText;
+    return lst;
   }
 
   void addBoardInfoItem(List<Widget> lst, Map m, key) {
@@ -118,6 +128,20 @@ class DeviceActionFormState extends State<DeviceActionForm> {
         Flexible(child: Text(m[key]))
       ],
     ));
+  }
+
+  void showLogPage(String title, LogViewerForm logView) {
+    Dialogs.showPage(context, title, logView, actions: <Widget>[
+      IconButton(
+        icon: Icon(
+          Icons.refresh,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          logView.refresh();
+        },
+      )
+    ]);
   }
 
   @override
@@ -136,8 +160,10 @@ class DeviceActionFormState extends State<DeviceActionForm> {
                 foregroundColor: Colors.white,
               ),
               onPressed: () async {
-                var kernelLog = await getKernelLog();
-                Dialogs.showPage(context, device.displayName + " Kernel Log", LogViewerForm(kernelLog));
+                var logView = LogViewerForm(() async {
+                  return await getKernelLog();
+                });
+                showLogPage(device.displayName + " Kernel Log", logView);
               },
               child: Text("Kernel Log"),
             ),
@@ -147,8 +173,10 @@ class DeviceActionFormState extends State<DeviceActionForm> {
                 foregroundColor: Colors.white,
               ),
               onPressed: () async {
-                var systemLog = await getSystemLog();
-                Dialogs.showPage(context, device.displayName + " System Log", LogViewerForm(systemLog));
+                var logView = LogViewerForm(() async {
+                  return await getSystemLog();
+                });
+                showLogPage(device.displayName + " System Log", logView);
               },
               child: Text("System Log"),
             ),

@@ -86,12 +86,13 @@ class Dialogs {
         });
   }
 
-  static void showPage(BuildContext context, String title, Widget widget) {
+  static void showPage(BuildContext context, String title, Widget widget, {List<Widget> actions}) {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => Scaffold(
                   appBar: AppBar(
+                    actions: actions,
                     title: Text(title),
                   ),
                   body: Center(
