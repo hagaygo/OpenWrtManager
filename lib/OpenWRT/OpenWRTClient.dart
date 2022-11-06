@@ -37,23 +37,19 @@ class OpenWRTClient {
   HttpClient _getClient() {
     var cli = HttpClient();
     if (_device.ignoreBadCertificate)
-      cli.badCertificateCallback =
-          ((X509Certificate cert, String host, int port) => true);
+      cli.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
     return cli;
   }
-
 
   static String lastJSONResponse;
   static String lastJSONRequest;
 
-  Future<List<CommandReplyBase>> getData(
-      Cookie c, List<CommandReplyBase> commands) async {
+  Future<List<CommandReplyBase>> getData(Cookie c, List<CommandReplyBase> commands) async {
     var http = _getClient();
     http.connectionTimeout = Duration(seconds: Timeout);
 
     try {
-      var request =
-          await http.postUrl(Uri.parse(_baseURL + "/cgi-bin/luci/admin/ubus"));
+      var request = await http.postUrl(Uri.parse(_baseURL + "/cgi-bin/luci/admin/ubus"));
       List<Map<String, Object>> data = [];
       var counter = 1;
       for (var cmd in commands) {
@@ -62,12 +58,7 @@ class OpenWRTClient {
           params.add(prm);
         }
         if (params.length < 4) params.add({});
-        var jsonRPC = {
-          "jsonrpc": "2.0",
-          "id": counter++,
-          "method": "call",
-          "params": params
-        };
+        var jsonRPC = {"jsonrpc": "2.0", "id": counter++, "method": "call", "params": params};
         data.add(jsonRPC);
       }
 
@@ -78,14 +69,12 @@ class OpenWRTClient {
       request.contentLength = body.length;
       request.add(body);
 
-      HttpClientResponse response =
-          await request.close().timeout(const Duration(seconds: Timeout));
+      HttpClientResponse response = await request.close().timeout(const Duration(seconds: Timeout));
       http.close();
       if (response.statusCode == 200) {
         var jsonText = await response.transform(utf8.decoder).join();
         lastJSONResponse = jsonText;
-        var jsonData = (json.decode(jsonText) as List<dynamic>)
-            .map((x) => x as Map<String, Object>);
+        var jsonData = (json.decode(jsonText) as List<dynamic>).map((x) => x as Map<String, Object>);
         List<CommandReplyBase> lstResponse = [];
         var idCounter = 1;
         for (var cmd in commands) {
@@ -96,16 +85,14 @@ class OpenWRTClient {
         return Future.value(lstResponse);
       } else if (response.statusCode == 403)
         return Future.value([SystemInfoReply(ReplyStatus.Forbidden)]);
-      else if (response.statusCode == 404)
-        return Future.value([SystemInfoReply(ReplyStatus.NotFound)]);
+      else if (response.statusCode == 404) return Future.value([SystemInfoReply(ReplyStatus.NotFound)]);
     } on Exception {
       return Future.value([SystemInfoReply(ReplyStatus.Error)]);
     }
     return Future.value([SystemInfoReply(ReplyStatus.Error)]);
   }
 
-  Future<RRDNSReply> getRemoteDns(
-      AuthenticateReply auth, List<String> ips) async {
+  Future<RRDNSReply> getRemoteDns(AuthenticateReply auth, List<String> ips) async {
     try {
       var cmd = RRDNSReply(ReplyStatus.Ok);
       cmd.ipList = ips;
@@ -120,8 +107,7 @@ class OpenWRTClient {
     }
   }
 
-  Future<RestartInterfaceReply> restartInterface(
-      AuthenticateReply auth, String interfaceName) async {
+  Future<RestartInterfaceReply> restartInterface(AuthenticateReply auth, String interfaceName) async {
     try {
       var cmd = RestartInterfaceReply(ReplyStatus.Ok);
       cmd.interfaceName = interfaceName;
@@ -136,8 +122,7 @@ class OpenWRTClient {
     }
   }
 
-  Future<DeleteClientReply> deleteClient(
-      AuthenticateReply auth, String interfaceName, String mac) async {
+  Future<DeleteClientReply> deleteClient(AuthenticateReply auth, String interfaceName, String mac) async {
     try {
       var cmd = DeleteClientReply(ReplyStatus.Ok);
       cmd.interfaceName = interfaceName;
@@ -153,6 +138,31 @@ class OpenWRTClient {
     }
   }
 
+  Future<String> executeCgiExec(String authKey, String command) async {
+    var http = _getClient();
+    http.connectionTimeout = Duration(seconds: Timeout);
+    try {
+      var request = await http.postUrl(Uri.parse(_baseURL + "/cgi-bin/cgi-exec"));
+      var params = 'sessionid=$authKey&command=${Uri.encodeComponent(command)}';
+      var body = utf8.encode(params);
+      request.headers.set('content-type', 'application/x-www-form-urlencoded');
+      request.contentLength = body.length;
+      request.add(body);
+
+      HttpClientResponse response = await request.close().timeout(const Duration(seconds: 10));
+      http.close();
+      if (response.statusCode == 200) {
+        var base64 = await response.transform(utf8.decoder).join();
+
+        return base64;
+      } else
+        throw Exception('got $response.statusCode');
+    } on Exception catch (ex) {
+      if (Utils.ReleaseMode) debugPrint(ex.toString());
+      return 'Error running command $command $ex';
+    }
+  }
+
   Future<AuthenticateReply> authenticate() async {
     var http = _getClient();
     http.connectionTimeout = Duration(seconds: Timeout);
@@ -165,13 +175,11 @@ class OpenWRTClient {
       request.contentLength = body.length;
       request.add(body);
 
-      HttpClientResponse response =
-          await request.close().timeout(const Duration(seconds: 10));
+      HttpClientResponse response = await request.close().timeout(const Duration(seconds: 10));
       http.close();
       if (response.statusCode == 302) {
         for (var c in response.cookies) {
-          if (c.name.contains("sysauth"))
-            return Future.value(AuthenticateReply(ReplyStatus.Ok, c));
+          if (c.name.contains("sysauth")) return Future.value(AuthenticateReply(ReplyStatus.Ok, c));
         }
       }
       return Future.value(AuthenticateReply(ReplyStatus.Forbidden, null));

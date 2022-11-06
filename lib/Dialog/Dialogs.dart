@@ -4,15 +4,13 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 enum ConfirmAction { CANCEL, ACCEPT }
 
 class Dialogs {
-  static Future<ConfirmAction> confirmDialog(BuildContext context,
-      {String text, String title}) async {
+  static Future<ConfirmAction> confirmDialog(BuildContext context, {String text, String title}) async {
     return showDialog<ConfirmAction>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
           title: Text(title),
           content: Text(text),
           actions: <Widget>[
@@ -57,8 +55,7 @@ class Dialogs {
     );
   }
 
-  static void simpleAlert(BuildContext context, String title, String text,
-      {Function closeAction, String buttonText}) {
+  static void simpleAlert(BuildContext context, String title, String text, {Function closeAction, String buttonText}) {
     Alert(
         //style: AlertStyle,
         context: context,
@@ -85,10 +82,24 @@ class Dialogs {
     return await showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Dialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5.0)),
-              child: dialogWidget);
+          return Dialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)), child: dialogWidget);
         });
+  }
+
+  static void showPage(BuildContext context, String title, Widget widget, {List<Widget> actions}) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Scaffold(
+                  appBar: AppBar(
+                    actions: actions,
+                    title: Text(title),
+                  ),
+                  body: Center(
+                    child: ListView(
+                      children: [widget],
+                    ),
+                  ),
+                )));
   }
 }
