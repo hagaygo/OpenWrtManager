@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:openwrt_manager/Model/device.dart';
-import 'package:openwrt_manager/OpenWRT/Model/AuthenticateReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
+import 'package:openwrt_manager/OpenWrt/Model/AuthenticateReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/CommandReplyBase.dart';
 import 'package:openwrt_manager/Overview/OverviewItemManager.dart';
 import 'package:openwrt_manager/Overview/OverviewWidgetBase.dart';
 import 'package:openwrt_manager/Utils.dart';

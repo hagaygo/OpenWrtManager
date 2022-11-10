@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:openwrt_manager/Dialog/Dialogs.dart';
 import 'package:openwrt_manager/Model/device.dart';
-import 'package:openwrt_manager/OpenWRT/Model/AuthenticateReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
-import 'package:openwrt_manager/OpenWRT/Model/ReplyBase.dart';
-import 'package:openwrt_manager/OpenWRT/OpenWRTClient.dart';
+import 'package:openwrt_manager/OpenWrt/Model/AuthenticateReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/CommandReplyBase.dart';
+import 'package:openwrt_manager/OpenWrt/Model/ReplyBase.dart';
+import 'package:openwrt_manager/OpenWrt/OpenWrtClient.dart';
 import 'package:openwrt_manager/Overview/OverviewItemManager.dart';
 import 'package:openwrt_manager/Page/Form/OverviewConfigForm.dart';
 import 'package:openwrt_manager/settingsUtil.dart';
@@ -252,9 +252,9 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
                       "\n" +
                       stackTrace.toString() +
                       "\n" +
-                      OpenWRTClient.lastJSONRequest +
+                      OpenWrtClient.lastJSONRequest +
                       "\n" +
-                      OpenWRTClient.lastJSONResponse));
+                      OpenWrtClient.lastJSONResponse));
             })
       ]),
     ]);
@@ -265,10 +265,10 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
     if (widget.replies != null && widget.replies.length > 0) {
       if (widget.replies.any((x) => x.status == ReplyStatus.NotFound))
         errorText =
-            "Authentication is successful but command not found on device.\nplease verify your device OpenWRT version is supported by this app.";
+            "Authentication is successful but command not found on device.\nplease verify your device OpenWrt version is supported by this app.";
       else if (widget.replies.any((x) => x.status != ReplyStatus.Ok))
         errorText =
-            "Authentication is successful but error response returned from device.\nplease verify your device OpenWRT version is supported by this app.";
+            "Authentication is successful but error response returned from device.\nplease verify your device OpenWrt version is supported by this app.";
     }
     if (errorText == "") {
       switch (widget.authenticationStatus?.status) {

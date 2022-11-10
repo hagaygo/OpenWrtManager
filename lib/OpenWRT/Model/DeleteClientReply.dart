@@ -1,6 +1,6 @@
 import 'package:openwrt_manager/Model/device.dart';
-import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
-import 'package:openwrt_manager/OpenWRT/Model/ReplyBase.dart';
+import 'package:openwrt_manager/OpenWrt/Model/CommandReplyBase.dart';
+import 'package:openwrt_manager/OpenWrt/Model/ReplyBase.dart';
 
 class DeleteClientReply extends CommandReplyBase {
   DeleteClientReply(ReplyStatus status) : super(status);

@@ -28,7 +28,7 @@ class _DevicesPageState extends State<DevicesPage> {
       return;
     }
     showDeviceDialog(DeviceForm(
-      title: "Add OpenWRT Device",
+      title: "Add OpenWrt Device",
     ));
   }
 
@@ -67,7 +67,7 @@ class _DevicesPageState extends State<DevicesPage> {
   void showEditDialog(Device d) {
     showDeviceDialog(DeviceForm(
       device: d,
-      title: "Edit OpenWRT Device",
+      title: "Edit OpenWrt Device",
     ));
   }
 
@@ -117,7 +117,7 @@ class _DevicesPageState extends State<DevicesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('OpenWRT Devices'),
+          title: Text('OpenWrt Devices'),
         ),
         body: Center(
           child: ListView(
@@ -129,7 +129,7 @@ class _DevicesPageState extends State<DevicesPage> {
           tapTarget: const Icon(Icons.add),
           title: Text('Add new device'),
           description: Text(
-              'Device contains your OpenWRT device info (Identity & Ip address).\nAfter setting up a device you can add overview on main page to view specified info for that device.'),
+              'Device contains your OpenWrt device info (Identity & Ip address).\nAfter setting up a device you can add overview on main page to view specified info for that device.'),
           child: FloatingActionButton(
             onPressed: () {
               showAddDialog();

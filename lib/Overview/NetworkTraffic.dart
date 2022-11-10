@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:openwrt_manager/Dialog/Dialogs.dart';
 import 'package:openwrt_manager/Model/device.dart';
-import 'package:openwrt_manager/OpenWRT/Model/AuthenticateReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
-import 'package:openwrt_manager/OpenWRT/Model/ReplyBase.dart';
-import 'package:openwrt_manager/OpenWRT/OpenWRTClient.dart';
+import 'package:openwrt_manager/OpenWrt/Model/AuthenticateReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/CommandReplyBase.dart';
+import 'package:openwrt_manager/OpenWrt/Model/ReplyBase.dart';
+import 'package:openwrt_manager/OpenWrt/OpenWrtClient.dart';
 import 'package:openwrt_manager/Overview/OverviewItemManager.dart';
 import 'package:openwrt_manager/Overview/OverviewWidgetBase.dart';
 import 'package:openwrt_manager/Utils.dart';
@@ -226,7 +226,7 @@ class NetworkTrafficState extends OverviewWidgetBaseState {
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () async {
-              var client = OpenWRTClient(widget.device, null);
+              var client = OpenWrtClient(widget.device, null);
               Dialogs.showLoadingDialog(context);
               var res = await client.restartInterface(
                   widget.authenticationStatus, interface["interface"]);

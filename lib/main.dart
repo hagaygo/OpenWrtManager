@@ -8,27 +8,26 @@ import 'Page/mainPage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SettingsUtil.loadAppSettings().then((x) 
-    {
-    runApp(    
-        ChangeNotifierProvider<ThemeChangeNotifier>(
-      create: (BuildContext context) => ThemeChangeNotifier(),
-      child: MyApp(),
-    ),
-  );
-    });  
-} 
+  SettingsUtil.loadAppSettings().then((x) {
+    runApp(
+      ChangeNotifierProvider<ThemeChangeNotifier>(
+        create: (BuildContext context) => ThemeChangeNotifier(),
+        child: MyApp(),
+      ),
+    );
+  });
+}
 
-class MyApp extends StatelessWidget {  
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return FeatureDiscovery(
       child: MaterialApp(
-        title: 'OpenWRT Manager',
+        title: 'OpenWrt Manager',
         theme: Provider.of<ThemeChangeNotifier>(context, listen: true).currentTheme,
         home: MainPage(),
       ),

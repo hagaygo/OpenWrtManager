@@ -1,14 +1,14 @@
-import 'package:openwrt_manager/OpenWRT/Model/ActiveConnectionsReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
-import 'package:openwrt_manager/OpenWRT/Model/DHCPLeaseReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/HostHintReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/NetworkDeviceReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/NetworkInterfaceReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/ReplyBase.dart';
-import 'package:openwrt_manager/OpenWRT/Model/SystemBoardReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/SystemInfoReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/WifiAssociatedClientReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/WirelessDeviceReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/ActiveConnectionsReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/CommandReplyBase.dart';
+import 'package:openwrt_manager/OpenWrt/Model/DHCPLeaseReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/HostHintReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/NetworkDeviceReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/NetworkInterfaceReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/ReplyBase.dart';
+import 'package:openwrt_manager/OpenWrt/Model/SystemBoardReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/SystemInfoReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/WifiAssociatedClientReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/WirelessDeviceReply.dart';
 
 enum OverviewItemType
 {

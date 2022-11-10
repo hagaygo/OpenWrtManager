@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:openwrt_manager/Model/device.dart';
-import 'package:openwrt_manager/OpenWRT/Model/AuthenticateReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
-import 'package:openwrt_manager/OpenWRT/Model/ReplyBase.dart';
-import 'package:openwrt_manager/OpenWRT/OpenWRTClient.dart';
+import 'package:openwrt_manager/OpenWrt/Model/AuthenticateReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/CommandReplyBase.dart';
+import 'package:openwrt_manager/OpenWrt/Model/ReplyBase.dart';
+import 'package:openwrt_manager/OpenWrt/OpenWrtClient.dart';
 import 'package:openwrt_manager/Overview/OverviewItemManager.dart';
 import 'package:openwrt_manager/Overview/OverviewWidgetBase.dart';
 import 'package:openwrt_manager/Utils.dart';
@@ -184,7 +184,7 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
       if (gotNewData) lastTrafficDataTimeStamp = currentTimeStamp;
 
       if (ipToResolve.length > 0) {
-        var cli = OpenWRTClient(widget.device, null);
+        var cli = OpenWrtClient(widget.device, null);
         cli.getRemoteDns(widget.authenticationStatus, ipToResolve).then((res) {
           if (res.status == ReplyStatus.Ok) {
             var data = (res.data["result"] as dynamic)[1];

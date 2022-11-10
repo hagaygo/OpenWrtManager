@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:openwrt_manager/Model/device.dart';
-import 'package:openwrt_manager/OpenWRT/Model/SystemBoardReply.dart';
-import 'package:openwrt_manager/OpenWRT/OpenWRTClient.dart';
+import 'package:openwrt_manager/OpenWrt/Model/SystemBoardReply.dart';
+import 'package:openwrt_manager/OpenWrt/OpenWrtClient.dart';
 import 'package:openwrt_manager/Dialog/Dialogs.dart';
-import 'package:openwrt_manager/OpenWRT/Model/RebootReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/ReplyBase.dart';
+import 'package:openwrt_manager/OpenWrt/Model/RebootReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/ReplyBase.dart';
 import 'package:openwrt_manager/Page/Form/logViewerForm.dart';
 import 'package:openwrt_manager/settingsUtil.dart';
 
@@ -29,7 +29,7 @@ class DeviceActionFormState extends State<DeviceActionForm> {
   String _boardDataStatusText = "Loading Device Info";
 
   DeviceActionFormState(this.device) {
-    var cli = OpenWRTClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
+    var cli = OpenWrtClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
     cli.authenticate().then((res) {
       if (res.status == ReplyStatus.Ok) {
         cli.getData(res.authenticationCookie, [SystemBoardReply(ReplyStatus.Ok)]).then((boardInfoRes) {
@@ -70,7 +70,7 @@ class DeviceActionFormState extends State<DeviceActionForm> {
     var res = await Dialogs.confirmDialog(context,
         title: 'Reboot ${device.displayName} ?', text: 'Please confirm device reboot');
     if (res == ConfirmAction.CANCEL) return;
-    var cli = OpenWRTClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
+    var cli = OpenWrtClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
     cli.authenticate().then((res) {
       if (res.status == ReplyStatus.Ok) {
         cli.getData(res.authenticationCookie, [RebootReply(ReplyStatus.Ok)]).then((rebootRes) {
@@ -92,7 +92,7 @@ class DeviceActionFormState extends State<DeviceActionForm> {
   }
 
   Future<List<String>> getSystemLog() async {
-    var cli = OpenWRTClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
+    var cli = OpenWrtClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
     var lst = ["Authentication failed"];
     await cli.authenticate().then((res) async {
       if (res.status == ReplyStatus.Ok) {
@@ -104,7 +104,7 @@ class DeviceActionFormState extends State<DeviceActionForm> {
   }
 
   Future<List<String>> getKernelLog() async {
-    var cli = OpenWRTClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
+    var cli = OpenWrtClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
     var lst = ["Authentication failed"];
     await cli.authenticate().then((res) async {
       if (res.status == ReplyStatus.Ok) {

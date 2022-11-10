@@ -4,16 +4,16 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:openwrt_manager/Model/Identity.dart';
 import 'package:openwrt_manager/Model/device.dart';
-import 'package:openwrt_manager/OpenWRT/Model/AuthenticateReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
-import 'package:openwrt_manager/OpenWRT/Model/ReplyBase.dart';
-import 'package:openwrt_manager/OpenWRT/Model/DeleteClientReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/RestartInterfaceReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/RRDNSReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/AuthenticateReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/CommandReplyBase.dart';
+import 'package:openwrt_manager/OpenWrt/Model/ReplyBase.dart';
+import 'package:openwrt_manager/OpenWrt/Model/DeleteClientReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/RestartInterfaceReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/RRDNSReply.dart';
 import 'package:openwrt_manager/Utils.dart';
 import 'Model/SystemInfoReply.dart';
 
-class OpenWRTClient {
+class OpenWrtClient {
   Identity _identity;
   Device _device;
 
@@ -29,7 +29,7 @@ class OpenWRTClient {
     return url;
   }
 
-  OpenWRTClient(Device d, Identity i) {
+  OpenWrtClient(Device d, Identity i) {
     _identity = i;
     _device = d;
   }

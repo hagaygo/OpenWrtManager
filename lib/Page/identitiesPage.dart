@@ -71,7 +71,7 @@ class _IdentitiesPageState extends State<IdentitiesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('OpenWRT Identities'),
+          title: Text('OpenWrt Identities'),
         ),
         body: Center(
           child: ListView(
@@ -83,7 +83,7 @@ class _IdentitiesPageState extends State<IdentitiesPage> {
           tapTarget: const Icon(Icons.add),
           title: Text('Add new identity'),
           description: Text(
-              'Identity contains your credentials (username & password) for authenticating against your OpenWRT device.\nYou must setup at least one identity in order to connect your OpenWRT device(s).'),
+              'Identity contains your credentials (username & password) for authenticating against your OpenWrt device.\nYou must setup at least one identity in order to connect your OpenWrt device(s).'),
           child: FloatingActionButton(
             onPressed: () {
               showAddDialog();

@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:openwrt_manager/Dialog/Dialogs.dart';
 import 'package:openwrt_manager/Model/SelectedOverviewItem.dart';
 import 'package:openwrt_manager/Model/device.dart';
-import 'package:openwrt_manager/OpenWRT/Model/AuthenticateReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/CommandReplyBase.dart';
-import 'package:openwrt_manager/OpenWRT/Model/NetworkDeviceReply.dart';
-import 'package:openwrt_manager/OpenWRT/Model/ReplyBase.dart';
-import 'package:openwrt_manager/OpenWRT/OpenWRTClient.dart';
+import 'package:openwrt_manager/OpenWrt/Model/AuthenticateReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/CommandReplyBase.dart';
+import 'package:openwrt_manager/OpenWrt/Model/NetworkDeviceReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/ReplyBase.dart';
+import 'package:openwrt_manager/OpenWrt/OpenWrtClient.dart';
 import 'package:openwrt_manager/Overview/ActiveConnections.dart';
 import 'package:openwrt_manager/Overview/DHCPLeaseStatus.dart';
 import 'package:openwrt_manager/Overview/NetworkTraffic.dart';
@@ -148,7 +148,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
       key: _scaffoldKey,
       drawer: buildDrawer(context),
       appBar: AppBar(
-          title: Text('OpenWRT Overview'),
+          title: Text('OpenWrt Overview'),
           leading: GestureDetector(
               onTap: () {
                 if (_scaffoldKey.currentState.isDrawerOpen) {
@@ -251,10 +251,10 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                                         Navigator.pop(context);
                                         SettingsUtil.getDevices().then((dvs) {
                                           Clipboard.setData(ClipboardData(
-                                              text: OpenWRTClient
+                                              text: OpenWrtClient
                                                       .lastJSONRequest +
                                                   "\n\n" +
-                                                  OpenWRTClient
+                                                  OpenWrtClient
                                                       .lastJSONResponse +
                                                   "\n\n" +
                                                   jsonEncode(dvs)));
@@ -462,7 +462,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
     } else if (_refreshing && requestMap.keys.length > 0) {
       for (var deviceGuid in requestMap.keys) {
         var d = SettingsUtil.devices.firstWhere((x) => x.guid == deviceGuid);
-        var oc = OpenWRTClient(
+        var oc = OpenWrtClient(
             d,
             SettingsUtil.identities
                 .firstWhere((x) => x.guid == d.identityGuid));
@@ -567,7 +567,7 @@ Future<List<String>> updateDevicesData(List<Device> devices) async {
   List<String> failedDevices = [];
 
   for (var d in devices) {
-    var cli = OpenWRTClient(
+    var cli = OpenWrtClient(
         d, SettingsUtil.identities.firstWhere((i) => i.guid == d.identityGuid));
 
     try {

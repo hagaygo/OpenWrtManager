@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:openwrt_manager/Dialog/Dialogs.dart';
 import 'package:openwrt_manager/Model/Identity.dart';
 import 'package:openwrt_manager/Model/device.dart';
-import 'package:openwrt_manager/OpenWRT/OpenWRTClient.dart';
+import 'package:openwrt_manager/OpenWrt/OpenWrtClient.dart';
 import 'package:openwrt_manager/settingsUtil.dart';
 import 'package:uuid/uuid.dart';
 
@@ -230,7 +230,7 @@ class DeviceFormState extends State<DeviceForm> {
                                 if (_formKey.currentState.validate()) {
                                   var d = Device();
                                   getDevice(d);
-                                  var oc = OpenWRTClient(d, selectedIdentity);
+                                  var oc = OpenWrtClient(d, selectedIdentity);
                                   oc.authenticate().then((res) {
                                     Navigator.pop(context);
                                     Dialogs.simpleAlert(context, "Test Result",
