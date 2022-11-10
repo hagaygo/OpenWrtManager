@@ -7,6 +7,7 @@ import 'package:openwrt_manager/OpenWrt/OpenWrtClient.dart';
 import 'package:openwrt_manager/Dialog/Dialogs.dart';
 import 'package:openwrt_manager/OpenWrt/Model/RebootReply.dart';
 import 'package:openwrt_manager/OpenWrt/Model/ReplyBase.dart';
+import 'package:openwrt_manager/Page/Form/ServicesForm.dart';
 import 'package:openwrt_manager/Page/Form/logViewerForm.dart';
 import 'package:openwrt_manager/settingsUtil.dart';
 
@@ -153,7 +154,7 @@ class DeviceActionFormState extends State<DeviceActionForm> {
           Column(
             children: [getBoardInfoWidget()],
           ),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
@@ -182,15 +183,30 @@ class DeviceActionFormState extends State<DeviceActionForm> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                backgroundColor: Colors.green,
                 foregroundColor: Colors.white,
               ),
               onPressed: () async {
-                doReboot();
+                Dialogs.showPage(context, device.displayName + " Startup", ServicesForm(device));
               },
-              child: Text("Reboot"),
+              child: Text("Startup"),
             )
           ]),
+          Container(
+            padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () async {
+                  doReboot();
+                },
+                child: Text("Reboot"),
+              )
+            ]),
+          )
         ],
       ),
     );
