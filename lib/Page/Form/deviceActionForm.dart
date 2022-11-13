@@ -151,9 +151,6 @@ class DeviceActionFormState extends State<DeviceActionForm> {
       padding: EdgeInsets.all(10),
       child: Column(
         children: [
-          Column(
-            children: [getBoardInfoWidget()],
-          ),
           Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -206,6 +203,10 @@ class DeviceActionFormState extends State<DeviceActionForm> {
                 child: Text("Reboot"),
               )
             ]),
+          ),
+          Container(padding: EdgeInsets.all(10), child: Text("Device Info", textScaleFactor: 1.5)),
+          Column(
+            children: [getBoardInfoWidget()],
           )
         ],
       ),
