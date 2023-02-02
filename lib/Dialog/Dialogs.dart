@@ -86,7 +86,8 @@ class Dialogs {
         });
   }
 
-  static void showPage(BuildContext context, String title, Widget widget, {List<Widget> actions}) {
+  static void showPage(BuildContext context, String title, Widget widget,
+      {bool useListView = true, List<Widget> actions}) {
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -96,9 +97,11 @@ class Dialogs {
                     title: Text(title),
                   ),
                   body: Center(
-                    child: ListView(
-                      children: [widget],
-                    ),
+                    child: useListView
+                        ? ListView(
+                            children: [widget],
+                          )
+                        : widget,
                   ),
                 )));
   }
