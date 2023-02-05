@@ -134,14 +134,6 @@ class DeviceActionFormState extends State<DeviceActionForm> {
   void showLogPage(String title, LogViewerForm logView) {
     Dialogs.showPage(context, title, logView, useListView: false, actions: <Widget>[
       IconButton(
-          onPressed: () {
-            // var lst = logView.getCurrentLines();
-            // var idx = lst.indexOf("[    0.004845] Zone ranges:");
-            // var scrollX = (idx * 12).toDouble();
-            // logView.scroll(scrollX, 0);
-          },
-          icon: Icon(Icons.search)),
-      IconButton(
           icon: Icon(
             Icons.refresh,
             color: Colors.white,

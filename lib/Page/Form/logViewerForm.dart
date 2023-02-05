@@ -18,10 +18,6 @@ class LogViewerForm extends StatefulWidget {
     return _state._currentLines;
   }
 
-  void scroll(double y, double x) {
-    _state.verticalScrollController.animateTo(y, duration: Duration(milliseconds: 500), curve: Curves.ease);
-  }
-
   void refresh() {
     _state.refresh();
   }
@@ -35,6 +31,7 @@ class LogViewerFormState extends State<LogViewerForm> {
     List<Widget> lst = [];
 
     var textSpans = <TextSpan>[];
+    _foundTextLines = [];
     int counter = 0;
     for (var line in _currentLines) {
       if (_searchText != null && _searchText.length > 0 && line.contains(_searchText)) {
@@ -88,7 +85,6 @@ class LogViewerFormState extends State<LogViewerForm> {
 
   ScrollController verticalScrollController = ScrollController();
   ScrollController horizontalScrollController = ScrollController();
-  String _lastSearchText;
   int _lastFoundIndex = 0;
 
   final searchTextController = TextEditingController();
@@ -109,16 +105,28 @@ class LogViewerFormState extends State<LogViewerForm> {
                 IconButton(
                     onPressed: () {
                       setState(() {
-                        _searchText = searchTextController.text;
+                        if (_searchText != searchTextController.text) {
+                          _lastFoundIndex = 0;
+                          _searchText = searchTextController.text;
+                        }
                         getLines().then((l) {
                           _lines = l;
                           if (_foundTextLines.length > 0) {
-                            verticalScrollController.jumpTo((_foundTextLines[0] * 12).toDouble());
+                            if (_lastFoundIndex >= _foundTextLines.length) _lastFoundIndex = 0;
+                            var lineHeight =
+                                (verticalScrollController.position.maxScrollExtent / _currentLines.length).floor();
+                            verticalScrollController.jumpTo((verticalScrollController.position.viewportDimension +
+                                    _foundTextLines[_lastFoundIndex] * lineHeight)
+                                .toDouble());
+                            _lastFoundIndex++;
                           }
                         });
                       });
                     },
-                    icon: Icon(Icons.search))
+                    icon: Icon(Icons.search)),
+                Visibility(
+                    visible: _foundTextLines.length > 0,
+                    child: Text(_lastFoundIndex.toString() + "/" + _foundTextLines.length.toString()))
               ],
             )),
         Expanded(
