@@ -31,7 +31,7 @@ class Utils
 
   static String formatBytes(int bytes, {int decimals = 0}) {
     if (bytes <= 0) return "0 B";
-    const suffixes = ["B", "Kb", "Mb", "Gb", "Tb", "Pb"];
+    const suffixes = ["B", "KB", "MB", "GB", "TB", "PB"];
     var i = (log(bytes) / log(1024)).floor();
     var number = (bytes / pow(1024, i));
     return (number).toStringAsFixed(number.truncateToDouble() == number ? 0 : decimals) +
