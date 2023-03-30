@@ -10,16 +10,9 @@ import 'package:openwrt_manager/Utils.dart';
 import 'dart:math' as math;
 
 class ActiveConnections extends OverviewWidgetBase {
-  ActiveConnections(
-      Device device,
-      bool loading,
-      AuthenticateReply authenticationStatus,
-      List<CommandReplyBase> replies,
-      OverviewItem item,
-      String overviewItemGuid,
-      Function doOverviewRefresh)
-      : super(device, loading, authenticationStatus, replies, item,
-            overviewItemGuid, doOverviewRefresh);
+  ActiveConnections(Device device, bool loading, AuthenticateReply authenticationStatus, List<CommandReplyBase> replies,
+      OverviewItem item, String overviewItemGuid, Function doOverviewRefresh)
+      : super(device, loading, authenticationStatus, replies, item, overviewItemGuid, doOverviewRefresh);
 
   @override
   State<StatefulWidget> createState() {
@@ -68,14 +61,13 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
         children: [Text("No active connections")],
       ));
     } else {
-      connectionsList
-          .sort((a, b) => getBytes(b["bytes"]) - getBytes(a["bytes"]));
+      connectionsList.sort((a, b) => getBytes(b["bytes"]) - getBytes(a["bytes"]));
 
       List<String> ipToResolve = [];
       var currentTimeStamp = new DateTime.now().millisecondsSinceEpoch;
       var shownConnectionList = connectionsList
           .take(MAX_PROCESSED_CONNECTIONS)
-          .toList(); // sort be speed up to MAX_PROCESSED_CONNECTIONS which are sorted by bytes transfer      
+          .toList(); // sort be speed up to MAX_PROCESSED_CONNECTIONS which are sorted by bytes transfer
 
       for (var con in shownConnectionList) {
         var bytes = double.parse(con["bytes"].toString()).round();
@@ -83,9 +75,7 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
         checkIpForLookup(con["dst"], ipToResolve);
         if (con["speed"] == null) con["speed"] = 0;
 
-        var connectionKey = getProtocolText(con, "src", "sport") +
-            "," +
-            getProtocolText(con, "dst", "dport");
+        var connectionKey = getProtocolText(con, "src", "sport") + "," + getProtocolText(con, "dst", "dport");
 
         if (_trafficMap.containsKey(connectionKey)) {
           var oldTrafficData = _trafficMap[connectionKey];
@@ -97,7 +87,7 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
               var byteDiff = newTrafficDataBytes - oldTrafficData["traffic"];
               var speed = (byteDiff / timeDiff).round();
               con["speed"] = speed;
-              con["speedText"] = Utils.formatBytes(speed, decimals: 2) + "/s";              
+              con["speedText"] = Utils.formatBytes(speed, decimals: 2) + "/s";
               oldTrafficData["speedText"] = con["speedText"];
               oldTrafficData["traffic"] = newTrafficDataBytes;
             }
@@ -109,18 +99,14 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
           _trafficMap[connectionKey]["traffic"] = bytes;
         }
       }
-      
-        shownConnectionList
-            .sort((a, b) 
-            { 
-              var speedDiff = getBytes(b["speed"]) - getBytes(a["speed"]);
-              if (speedDiff != 0)
-                return speedDiff;
-              return getBytes(b["bytes"]) - getBytes(a["bytes"]);
-            });
 
-      for (var con in shownConnectionList
-          .take(expanded ? EXPANDED_MAX_ROWS : MAX_ROWS)) {
+      shownConnectionList.sort((a, b) {
+        var speedDiff = getBytes(b["speed"]) - getBytes(a["speed"]);
+        if (speedDiff != 0) return speedDiff;
+        return getBytes(b["bytes"]) - getBytes(a["bytes"]);
+      });
+
+      for (var con in shownConnectionList.take(expanded ? EXPANDED_MAX_ROWS : MAX_ROWS)) {
         var bytes = double.parse(con["bytes"].toString()).round();
         rows.add(Container(
           margin: EdgeInsets.fromLTRB(10, 0, 10, 15),
@@ -141,9 +127,8 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
                     child: Container(
                         width: 100,
                         child: Center(
-                            child: Text(con["speedText"] != null
-                                ? con["speedText"]
-                                : (Utils.NoSpeedCalculationText + " Kb/s"))))),
+                            child:
+                                Text(con["speedText"] != null ? con["speedText"] : (Utils.NoSpeedCalculationText))))),
                 Container(
                     width: 100,
                     child: Align(
@@ -160,9 +145,7 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
                 Transform(
                   alignment: Alignment.center,
                   transform: Matrix4.rotationY(math.pi),
-                  child: RotatedBox(
-                      quarterTurns: 3,
-                      child: Icon(Icons.subdirectory_arrow_left, size: 12)),
+                  child: RotatedBox(quarterTurns: 3, child: Icon(Icons.subdirectory_arrow_left, size: 12)),
                 ),
                 Expanded(child: Text(getProtocolText(con, "src", "sport"))),
               ]),
@@ -172,8 +155,7 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
               Row(children: [
                 Icon(Icons.subdirectory_arrow_right, size: 12),
                 Expanded(
-                  child:
-                      Text(getProtocolText(con, "dst", "dport"), maxLines: 2),
+                  child: Text(getProtocolText(con, "dst", "dport"), maxLines: 2),
                 ),
               ])
             ],
