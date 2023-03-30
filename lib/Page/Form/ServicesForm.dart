@@ -28,7 +28,9 @@ class ServicesFormState extends State<ServicesForm> {
     var cli = OpenWrtClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
     cli.authenticate().then((res) {
       if (res.status == ReplyStatus.Ok) {
-        cli.getData(res.authenticationCookie, [StartupServiceReply(ReplyStatus.Ok)]).then((startupReplyRes) {
+        cli
+            .getData(res.authenticationCookie, [StartupServiceReply(ReplyStatus.Ok)], pTimeout: 8)
+            .then((startupReplyRes) {
           try {
             setState(() {
               _startupData = (startupReplyRes[0].data["result"] as List)[1] as Map;
@@ -51,7 +53,11 @@ class ServicesFormState extends State<ServicesForm> {
   @override
   Widget build(BuildContext context) {
     if (_startupData == null || _startupData.keys.length == 0)
-      return Text(_boardDataStatusText);
+      return Center(
+          child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Text(_boardDataStatusText),
+      ));
     else {
       return Column(
         children: getServicesRows(_startupData),

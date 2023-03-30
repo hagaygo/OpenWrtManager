@@ -44,7 +44,7 @@ class OpenWrtClient {
   static String lastJSONResponse;
   static String lastJSONRequest;
 
-  Future<List<CommandReplyBase>> getData(Cookie c, List<CommandReplyBase> commands) async {
+  Future<List<CommandReplyBase>> getData(Cookie c, List<CommandReplyBase> commands, {pTimeout = Timeout}) async {
     var http = _getClient();
     http.connectionTimeout = Duration(seconds: Timeout);
 
@@ -69,7 +69,7 @@ class OpenWrtClient {
       request.contentLength = body.length;
       request.add(body);
 
-      HttpClientResponse response = await request.close().timeout(const Duration(seconds: Timeout));
+      HttpClientResponse response = await request.close().timeout(Duration(seconds: pTimeout));
       http.close();
       if (response.statusCode == 200) {
         var jsonText = await response.transform(utf8.decoder).join();
