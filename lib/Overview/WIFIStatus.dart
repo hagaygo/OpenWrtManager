@@ -228,7 +228,7 @@ class WIFIStatusState extends OverviewWidgetBaseState {
   }
 
   Future setWifiClientDeviceDialog(cli) async {
-    Alert(context: context, title: "Wifi Client Info", desc: "${cli["mac"]}\n\n${cli["hostname"]}", buttons: [
+    Alert(context: context, title: "Wifi Client Info", desc: "${cli["mac"]}\n\n${cli["hostname"] ?? ""}", buttons: [
       DialogButton(
         color: Colors.red,
         child: Text(
