@@ -9,8 +9,8 @@ import 'package:openwrt_manager/Overview/OverviewWidgetBase.dart';
 import 'package:openwrt_manager/dataCache.dart';
 
 class DHCPLeaseStatus extends OverviewWidgetBase {
-  DHCPLeaseStatus(Device device, bool loading, AuthenticateReply authenticationStatus, List<CommandReplyBase> replies,
-      OverviewItem item, String overviewItemGuid, Function doOverviewRefresh)
+  DHCPLeaseStatus(Device device, bool loading, AuthenticateReply? authenticationStatus, List<CommandReplyBase>? replies,
+      OverviewItem? item, String? overviewItemGuid, Function doOverviewRefresh)
       : super(device, loading, authenticationStatus, replies, item, overviewItemGuid, doOverviewRefresh);
 
   @override
@@ -36,13 +36,13 @@ class DHCPLeaseStatusState extends OverviewWidgetBaseState with TickerProviderSt
       dhcpLeaseList.add(i);
     }
 
-    dhcpLeaseList.sort((a,b) => b.expires - a.expires);
+    dhcpLeaseList.sort((a,b) => b.expires! - a.expires!);
     return dhcpLeaseList;
   }
 
   @override
   Widget get myWidget {
-    var infoData = data[0][1];    
+    var infoData = data![0][1];    
 
     var dhcpLeaseList  = getDHCPLeaseListFromJSON(infoData["dhcp_leases"]);    
     DataCache.updateData(dhcpLeaseList);
@@ -60,13 +60,13 @@ class DHCPLeaseStatusState extends OverviewWidgetBaseState with TickerProviderSt
           child: Column(
             children: <Widget>[
               Row(children: <Widget>[
-              Expanded(child: Text(d.macAddress)),
-              Expanded(child: Align(alignment: Alignment.center, child: Text(d.ipAddress)))
+              Expanded(child: Text(d.macAddress!)),
+              Expanded(child: Align(alignment: Alignment.center, child: Text(d.ipAddress!)))
               ],),
               SizedBox(height: 5),
               Row(children: <Widget>[
               Expanded(child: Text(d.expiresText)),
-              Expanded(child: Align(alignment: Alignment.center, child: Text(d.hostName)))
+              Expanded(child: Align(alignment: Alignment.center, child: Text(d.hostName!)))
               ],)
             ],
           ));

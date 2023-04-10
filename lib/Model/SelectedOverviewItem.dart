@@ -1,8 +1,8 @@
 class SelectedOverviewItem 
 {
-  String guid;
-  String overiviewItemGuid;
-  String deviceGuid;
+  String? guid;
+  String? overiviewItemGuid;
+  String? deviceGuid;
 
   Map toJson() => {        
         'guid': guid,

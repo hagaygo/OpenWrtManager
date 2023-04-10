@@ -4,15 +4,15 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 enum ConfirmAction { CANCEL, ACCEPT }
 
 class Dialogs {
-  static Future<ConfirmAction> confirmDialog(BuildContext context, {String text, String title}) async {
+  static Future<ConfirmAction?> confirmDialog(BuildContext context, {String? text, String? title}) async {
     return showDialog<ConfirmAction>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-          title: Text(title),
-          content: Text(text),
+          title: Text(title!),
+          content: Text(text!),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancel'),
@@ -55,7 +55,7 @@ class Dialogs {
     );
   }
 
-  static void simpleAlert(BuildContext context, String title, String text, {Function closeAction, String buttonText}) {
+  static void simpleAlert(BuildContext context, String title, String text, {Function? closeAction, String? buttonText}) {
     Alert(
         //style: AlertStyle,
         context: context,
@@ -63,7 +63,7 @@ class Dialogs {
         desc: text,
         buttons: [
           DialogButton(
-            color: Theme.of(context).buttonTheme.colorScheme.background,
+            color: Theme.of(context).buttonTheme.colorScheme!.background,
             child: Text(
               buttonText ?? "Close",
             ),
@@ -87,7 +87,7 @@ class Dialogs {
   }
 
   static void showPage(BuildContext context, String title, Widget widget,
-      {bool useListView = true, List<Widget> actions}) {
+      {bool useListView = true, List<Widget>? actions}) {
     Navigator.push(
         context,
         MaterialPageRoute(

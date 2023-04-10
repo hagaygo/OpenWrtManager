@@ -6,10 +6,10 @@ class SystemBoardReply extends CommandReplyBase {
   SystemBoardReply(ReplyStatus status) : super(status);
 
   @override
-  List<String> get commandParameters => ["system", "board"];  
+  List<String> get commandParameters => ["system", "board"];
 
   @override
-  SystemBoardReply createReply(ReplyStatus status, Map<String, Object> data, {Device device}) {
+  SystemBoardReply createReply(ReplyStatus status, Map<String, dynamic>? data, {Device? device}) {
     var i = SystemBoardReply(status);
     i.data = data;
     return i;

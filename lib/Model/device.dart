@@ -1,11 +1,11 @@
 class Device {
-  String guid;
-  String displayName;
-  String address;
-  String port;
-  String identityGuid;
-  bool useSecureConnection;
-  bool ignoreBadCertificate;
+  String? guid;
+  String? displayName;
+  String? address;
+  String? port;
+  String? identityGuid;
+  bool? useSecureConnection;
+  bool? ignoreBadCertificate;
   List<String> wifiDevices = [];
 
   static const String defaultPort = "80/443";

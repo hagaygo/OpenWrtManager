@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
 import 'package:openwrt_manager/Dialog/Dialogs.dart';
 import 'package:openwrt_manager/Model/Identity.dart';
@@ -7,26 +8,26 @@ import 'package:openwrt_manager/settingsUtil.dart';
 import 'package:uuid/uuid.dart';
 
 class DeviceForm extends StatefulWidget {
-  final Device device;
-  final String title;
+  final Device? device;
+  final String? title;
 
-  const DeviceForm({Key key, this.device, this.title}) : super(key: key);
+  const DeviceForm({Key? key, this.device, this.title}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
     var s = DeviceFormState();
     if (device != null) {
-      s._address.text = device.address;
-      s._port.text = device.port;
-      s._displayName.text = device.displayName;
-      s._editedGuid = device.guid;
-      s._secureConnection = device.useSecureConnection;
-      s._ignoreBadCertificate = device.ignoreBadCertificate;
-      s.selectedIdentity = SettingsUtil.identities
-          .firstWhere((i) => i.guid == device.identityGuid, orElse: () => null);
+      s._address.text = device!.address!;
+      s._port.text = device!.port!;
+      s._displayName.text = device!.displayName!;
+      s._editedGuid = device!.guid;
+      s._secureConnection = device!.useSecureConnection;
+      s._ignoreBadCertificate = device!.ignoreBadCertificate;
+      s.selectedIdentity = SettingsUtil.identities!
+          .firstWhereOrNull((i) => i.guid == device!.identityGuid);
     }
-    if (SettingsUtil.identities.length == 1)
-      s.selectedIdentity = SettingsUtil.identities[0];
+    if (SettingsUtil.identities!.length == 1)
+      s.selectedIdentity = SettingsUtil.identities![0];
     return s;
   }
 }
@@ -38,11 +39,11 @@ class DeviceFormState extends State<DeviceForm> {
   final _port = TextEditingController();
   final _displayName = TextEditingController();
 
-  bool _secureConnection = false;
-  bool _ignoreBadCertificate = false;
-  String _editedGuid;
+  bool? _secureConnection = false;
+  bool? _ignoreBadCertificate = false;
+  String? _editedGuid;
 
-  Identity selectedIdentity;
+  Identity? selectedIdentity;
 
   static const double InputMargin = 7;
   @override
@@ -72,7 +73,7 @@ class DeviceFormState extends State<DeviceForm> {
                                 top: InputMargin, bottom: InputMargin)),
                         controller: _displayName,
                         validator: (value) {
-                          if (value.isEmpty) {
+                          if (value!.isEmpty) {
                             return 'Display name is missing';
                           }
                           return null;
@@ -95,9 +96,9 @@ class DeviceFormState extends State<DeviceForm> {
                           }
                           return null;
                         },
-                        items: SettingsUtil.identities
+                        items: SettingsUtil.identities!
                             .map((i) => DropdownMenuItem(
-                                  child: Text(i.name),
+                                  child: Text(i.name!),
                                   value: i,
                                 ))
                             .toList(),
@@ -123,7 +124,7 @@ class DeviceFormState extends State<DeviceForm> {
                                       top: InputMargin, bottom: InputMargin)),
                               controller: _address,
                               validator: (value) {
-                                if (value.isEmpty) {
+                                if (value!.isEmpty) {
                                   return 'Address is missing';
                                 }
                                 return null;
@@ -152,7 +153,7 @@ class DeviceFormState extends State<DeviceForm> {
                               dense: true,
                               controlAffinity: ListTileControlAffinity.leading,
                               title: Text("Use https"),
-                              onChanged: (bool value) {
+                              onChanged: (bool? value) {
                                 setState(() {
                                   _secureConnection = value;
                                 });
@@ -161,7 +162,7 @@ class DeviceFormState extends State<DeviceForm> {
                             ),
                           ),
                           Visibility(
-                            visible: _secureConnection,
+                            visible: _secureConnection!,
                             child: Container(
                               width: 210,
                               child: CheckboxListTile(
@@ -169,7 +170,7 @@ class DeviceFormState extends State<DeviceForm> {
                                 controlAffinity:
                                     ListTileControlAffinity.leading,
                                 title: Text("Ignore certificate errors"),
-                                onChanged: (bool value) {
+                                onChanged: (bool? value) {
                                   setState(() {
                                     _ignoreBadCertificate = value;
                                   });
@@ -197,13 +198,12 @@ class DeviceFormState extends State<DeviceForm> {
                                         title: 'Delete Device ?',
                                         text: 'Please confirm device deletion');
                                     if (res == ConfirmAction.CANCEL) return;
-                                    var i = SettingsUtil.devices.firstWhere(
+                                    var i = SettingsUtil.devices!.firstWhere(
                                         (x) => x.guid == _editedGuid);
-                                    var o = SettingsUtil.overviews.firstWhere(
-                                        (x) => x.deviceGuid == _editedGuid,
-                                        orElse: () => null);
+                                    var o = SettingsUtil.overviews!.firstWhereOrNull(
+                                        (x) => x.deviceGuid == _editedGuid);
                                     if (o == null) {
-                                      SettingsUtil.devices.remove(i);
+                                      SettingsUtil.devices!.remove(i);
                                       SettingsUtil.saveDevices();
                                       Navigator.pop(context);
                                     } else {
@@ -227,7 +227,7 @@ class DeviceFormState extends State<DeviceForm> {
                         child: SizedBox.expand(
                           child: ElevatedButton(
                               onPressed: () {
-                                if (_formKey.currentState.validate()) {
+                                if (_formKey.currentState!.validate()) {
                                   var d = Device();
                                   getDevice(d);
                                   var oc = OpenWrtClient(d, selectedIdentity);
@@ -253,15 +253,15 @@ class DeviceFormState extends State<DeviceForm> {
                         child: SizedBox.expand(
                           child: ElevatedButton(
                               onPressed: () {
-                                if (_formKey.currentState.validate()) {
+                                if (_formKey.currentState!.validate()) {
                                   var d = Device();
                                   if (_editedGuid != null)
-                                    d = SettingsUtil.devices.firstWhere(
+                                    d = SettingsUtil.devices!.firstWhere(
                                         (x) => x.guid == _editedGuid);
                                   getDevice(d);
                                   if (_editedGuid == null) {
                                     d.guid = Uuid().v4().toString();
-                                    SettingsUtil.devices.add(d);
+                                    SettingsUtil.devices!.add(d);
                                   }
                                   SettingsUtil.saveDevices();
                                   Navigator.pop(context);
@@ -287,7 +287,7 @@ class DeviceFormState extends State<DeviceForm> {
     d.displayName = _displayName.text;
     d.address = _address.text;
     d.port = _port.text;
-    d.identityGuid = selectedIdentity.guid;
+    d.identityGuid = selectedIdentity!.guid;
     d.useSecureConnection = _secureConnection;
     d.ignoreBadCertificate = _ignoreBadCertificate;
   }

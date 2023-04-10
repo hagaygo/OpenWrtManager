@@ -25,9 +25,9 @@ class SettingsUtil {
 
 // overview configs
 
-static OverviewConfig _overviewConfig;
+static OverviewConfig? _overviewConfig;
 
-  static OverviewConfig get overviewConfig {
+  static OverviewConfig? get overviewConfig {
     return _overviewConfig;
   }
 
@@ -57,9 +57,9 @@ static OverviewConfig _overviewConfig;
 
 // app settings
 
-  static AppSetting _appSetting;
+  static AppSetting? _appSetting;
 
-  static AppSetting get appSettings {
+  static AppSetting? get appSettings {
     return _appSetting;
   }
 
@@ -103,9 +103,9 @@ static OverviewConfig _overviewConfig;
     return File(filename);
   }
 
-  static List<SelectedOverviewItem> _overviews;
+  static List<SelectedOverviewItem>? _overviews;
 
-  static List<SelectedOverviewItem> get overviews {
+  static List<SelectedOverviewItem>? get overviews {
     if (_overviews == null) {
       _overviews = [];
       loadOverviews();
@@ -113,7 +113,7 @@ static OverviewConfig _overviewConfig;
     return _overviews;
   }
 
-  static Future<List<SelectedOverviewItem>> getOverviews() async {
+  static Future<List<SelectedOverviewItem>?> getOverviews() async {
     if (_overviews == null) {
       await loadOverviews();
     }
@@ -145,9 +145,9 @@ static OverviewConfig _overviewConfig;
     return File(filename);
   }
 
-  static List<Device> _devices;
+  static List<Device>? _devices;
 
-  static List<Device> get devices {
+  static List<Device>? get devices {
     if (_devices == null) {
       _devices = [];
       loadDevices();
@@ -155,7 +155,7 @@ static OverviewConfig _overviewConfig;
     return _devices;
   }
 
-  static Future<List<Device>> getDevices() async {
+  static Future<List<Device>?> getDevices() async {
     if (_devices == null) {
       await loadDevices();
     }
@@ -184,9 +184,9 @@ static OverviewConfig _overviewConfig;
     return File(filename);
   }
 
-  static List<Identity> _identitites;
+  static List<Identity>? _identitites;
 
-  static List<Identity> get identities {
+  static List<Identity>? get identities {
     if (_identitites == null) {
       _identitites = [];
       loadIdentities();
@@ -194,7 +194,7 @@ static OverviewConfig _overviewConfig;
     return _identitites;
   }
 
-  static Future<List<Identity>> getIdentities() async {
+  static Future<List<Identity>?> getIdentities() async {
     if (_identitites == null) {
       await loadIdentities();
     }

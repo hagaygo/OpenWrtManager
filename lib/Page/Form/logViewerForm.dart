@@ -6,7 +6,7 @@ class LogViewerForm extends StatefulWidget {
 
   final Future<List<String>> Function() getContent;
 
-  LogViewerFormState _state;
+  late LogViewerFormState _state;
 
   @override
   State<StatefulWidget> createState() {
@@ -14,7 +14,7 @@ class LogViewerForm extends StatefulWidget {
     return _state;
   }
 
-  List<String> getCurrentLines() {
+  List<String>? getCurrentLines() {
     return _state._currentLines;
   }
 
@@ -33,12 +33,12 @@ class LogViewerFormState extends State<LogViewerForm> {
     var textSpans = <TextSpan>[];
     _foundTextLines = [];
     int counter = 0;
-    for (var line in _currentLines) {
-      if (_searchText != null && _searchText.length > 0 && line.contains(_searchText)) {
-        textSpans.add(TextSpan(text: line.substring(0, line.indexOf(_searchText))));
+    for (var line in _currentLines!) {
+      if (_searchText != null && _searchText!.length > 0 && line.contains(_searchText!)) {
+        textSpans.add(TextSpan(text: line.substring(0, line.indexOf(_searchText!))));
         var ts = TextSpan(text: _searchText, style: TextStyle(backgroundColor: Colors.yellow));
         textSpans.add(ts);
-        textSpans.add(TextSpan(text: line.substring(line.indexOf(_searchText) + _searchText.length)));
+        textSpans.add(TextSpan(text: line.substring(line.indexOf(_searchText!) + _searchText!.length)));
         _foundTextLines.add(counter);
       } else
         textSpans.add(TextSpan(text: line));
@@ -55,8 +55,8 @@ class LogViewerFormState extends State<LogViewerForm> {
   }
 
   final Future<List<String>> Function() getContent;
-  List<String> _currentLines;
-  String _searchText;
+  List<String>? _currentLines;
+  String? _searchText;
 
   LogViewerFormState(this.getContent) {
     refresh();
@@ -114,7 +114,7 @@ class LogViewerFormState extends State<LogViewerForm> {
                           if (_foundTextLines.length > 0) {
                             if (_lastFoundIndex >= _foundTextLines.length) _lastFoundIndex = 0;
                             var lineHeight =
-                                (verticalScrollController.position.maxScrollExtent / _currentLines.length).floor();
+                                (verticalScrollController.position.maxScrollExtent / _currentLines!.length).floor();
                             verticalScrollController.jumpTo((verticalScrollController.position.viewportDimension +
                                     _foundTextLines[_lastFoundIndex] * lineHeight)
                                 .toDouble());

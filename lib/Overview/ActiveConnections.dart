@@ -10,8 +10,8 @@ import 'package:openwrt_manager/Utils.dart';
 import 'dart:math' as math;
 
 class ActiveConnections extends OverviewWidgetBase {
-  ActiveConnections(Device device, bool loading, AuthenticateReply authenticationStatus, List<CommandReplyBase> replies,
-      OverviewItem item, String overviewItemGuid, Function doOverviewRefresh)
+  ActiveConnections(Device device, bool loading, AuthenticateReply? authenticationStatus, List<CommandReplyBase>? replies,
+      OverviewItem? item, String? overviewItemGuid, Function doOverviewRefresh)
       : super(device, loading, authenticationStatus, replies, item, overviewItemGuid, doOverviewRefresh);
 
   @override
@@ -25,22 +25,22 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
   static const int MAX_ROWS = 5;
   static const int EXPANDED_MAX_ROWS = 15;
 
-  Map<String, String> _ipLookup = Map<String, String>();
+  Map<String?, String?> _ipLookup = Map<String?, String?>();
   Map<String, dynamic> _trafficMap = Map<String, dynamic>();
   int lastTrafficDataTimeStamp = 0;
 
   @override
   bool get supportsExpand => true;
 
-  String getProtocolText(dynamic data, String ipPropName, String portPropName) {
+  String? getProtocolText(dynamic data, String ipPropName, String portPropName) {
     var ip = data[ipPropName];
     if (ip == null) return "";
     var str = _ipLookup[ip];
-    if (data[portPropName] != null) str = str + ":" + data[portPropName];
+    if (data[portPropName] != null) str = str! + ":" + data[portPropName];
     return str;
   }
 
-  void checkIpForLookup(String ip, List<String> ipToResolve) {
+  void checkIpForLookup(String? ip, List<String?> ipToResolve) {
     if (!_ipLookup.containsKey(ip)) {
       ipToResolve.add(ip);
       _ipLookup[ip] = ip;
@@ -54,7 +54,7 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
   @override
   Widget get myWidget {
     List<Widget> rows = [];
-    var connectionsList = data[0][1]["result"] as List;
+    var connectionsList = data![0][1]["result"] as List;
     if (connectionsList.length == 0) {
       rows.add(Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -63,7 +63,7 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
     } else {
       connectionsList.sort((a, b) => getBytes(b["bytes"]) - getBytes(a["bytes"]));
 
-      List<String> ipToResolve = [];
+      List<String?> ipToResolve = [];
       var currentTimeStamp = new DateTime.now().millisecondsSinceEpoch;
       var shownConnectionList = connectionsList
           .take(MAX_PROCESSED_CONNECTIONS)
@@ -75,13 +75,13 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
         checkIpForLookup(con["dst"], ipToResolve);
         if (con["speed"] == null) con["speed"] = 0;
 
-        var connectionKey = getProtocolText(con, "src", "sport") + "," + getProtocolText(con, "dst", "dport");
+        var connectionKey = getProtocolText(con, "src", "sport")! + "," + getProtocolText(con, "dst", "dport")!;
 
         if (_trafficMap.containsKey(connectionKey)) {
           var oldTrafficData = _trafficMap[connectionKey];
           var newTrafficDataBytes = bytes;
 
-          if (gotNewData) {
+          if (gotNewData!) {
             var timeDiff = (currentTimeStamp - lastTrafficDataTimeStamp) / 1000;
             if (timeDiff > 0) {
               var byteDiff = newTrafficDataBytes - oldTrafficData["traffic"];
@@ -147,7 +147,7 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
                   transform: Matrix4.rotationY(math.pi),
                   child: RotatedBox(quarterTurns: 3, child: Icon(Icons.subdirectory_arrow_left, size: 12)),
                 ),
-                Expanded(child: Text(getProtocolText(con, "src", "sport"))),
+                Expanded(child: Text(getProtocolText(con, "src", "sport")!)),
               ]),
               SizedBox(
                 height: 5,
@@ -155,7 +155,7 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
               Row(children: [
                 Icon(Icons.subdirectory_arrow_right, size: 12),
                 Expanded(
-                  child: Text(getProtocolText(con, "dst", "dport"), maxLines: 2),
+                  child: Text(getProtocolText(con, "dst", "dport")!, maxLines: 2),
                 ),
               ])
             ],
@@ -163,15 +163,15 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
         ));
       }
 
-      if (gotNewData) lastTrafficDataTimeStamp = currentTimeStamp;
+      if (gotNewData!) lastTrafficDataTimeStamp = currentTimeStamp;
 
       if (ipToResolve.length > 0) {
         var cli = OpenWrtClient(widget.device, null);
-        cli.getRemoteDns(widget.authenticationStatus, ipToResolve).then((res) {
+        cli.getRemoteDns(widget.authenticationStatus!, ipToResolve).then((res) {
           if (res.status == ReplyStatus.Ok) {
-            var data = (res.data["result"] as dynamic)[1];
+            var data = (res.data!["result"] as dynamic)[1];
             if (data != null && data is Map) {
-              for (String ip in data.keys) {
+              for (String ip in data.keys as Iterable<String>) {
                 _ipLookup[ip] = data[ip];
               }
             }

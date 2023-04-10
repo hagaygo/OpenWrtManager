@@ -13,15 +13,15 @@ import 'package:flutter/services.dart';
 abstract class OverviewWidgetBase extends StatefulWidget {
   final Device device;
   final bool loading;
-  final AuthenticateReply authenticationStatus;
-  final List<CommandReplyBase> replies;
-  final OverviewItem item;
-  final String overviewItemGuid;
+  final AuthenticateReply? authenticationStatus;
+  final List<CommandReplyBase>? replies;
+  final OverviewItem? item;
+  final String? overviewItemGuid;
   final Function doOverviewRefresh;
-  OverviewWidgetBase(this.device, this.loading, this.authenticationStatus,
-      this.replies, this.item, this.overviewItemGuid, this.doOverviewRefresh);
+  OverviewWidgetBase(this.device, this.loading, this.authenticationStatus, this.replies, this.item,
+      this.overviewItemGuid, this.doOverviewRefresh);
 
-  List<Type> get replyTypes => item.commands.map((x) => x.runtimeType).toList();
+  List<Type> get replyTypes => item!.commands.map((x) => x.runtimeType).toList();
 }
 
 abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
@@ -52,15 +52,11 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
                               height: iconSize,
                               child: Container(
                                 decoration: BoxDecoration(
-                                    borderRadius: new BorderRadius.all(
-                                        Radius.circular(10)),
+                                    borderRadius: new BorderRadius.all(Radius.circular(10)),
                                     gradient: LinearGradient(
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
-                                      colors: [
-                                        Color.fromARGB(255, 255, 255, 0),
-                                        Color.fromARGB(255, 128, 128, 0)
-                                      ],
+                                      colors: [Color.fromARGB(255, 255, 255, 0), Color.fromARGB(255, 128, 128, 0)],
                                       tileMode: TileMode.repeated,
                                     )),
                               )),
@@ -73,22 +69,15 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
                                   ? LinearGradient(
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
-                                      colors: [
-                                        Color.fromARGB(255, 0, 255, 0),
-                                        Color.fromARGB(255, 0, 50, 0)
-                                      ],
+                                      colors: [Color.fromARGB(255, 0, 255, 0), Color.fromARGB(255, 0, 50, 0)],
                                       tileMode: TileMode.repeated,
                                     )
                                   : LinearGradient(
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
-                                      colors: [
-                                        Color.fromARGB(255, 255, 0, 0),
-                                        Color.fromARGB(255, 100, 0, 0)
-                                      ],
+                                      colors: [Color.fromARGB(255, 255, 0, 0), Color.fromARGB(255, 100, 0, 0)],
                                     ),
-                              borderRadius:
-                                  new BorderRadius.all(Radius.circular(10)),
+                              borderRadius: new BorderRadius.all(Radius.circular(10)),
                             ),
                             margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
                             height: iconSize,
@@ -97,7 +86,7 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
                         ),
                         Expanded(child: Container()),
                         Text(
-                          "${widget.device.displayName} ${widget.item.displayName}",
+                          "${widget.device.displayName} ${widget.item!.displayName}",
                         ),
                         Expanded(child: Container()),
                         Container(
@@ -119,9 +108,7 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
                                           height: iconSize * 1.5,
                                           child: FittedBox(
                                               fit: BoxFit.fill,
-                                              child: expanded
-                                                  ? Icon(Icons.expand_less)
-                                                  : Icon(Icons.expand_more))))),
+                                              child: expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more))))),
                               Visibility(
                                   visible: supportsConfig,
                                   child: InkWell(
@@ -131,8 +118,7 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
                                     child: Container(
                                         width: iconSize * 1.5,
                                         height: iconSize * 1.5,
-                                        child: FittedBox(
-                                            child: Icon(Icons.settings))),
+                                        child: FittedBox(child: Icon(Icons.settings))),
                                   )),
                             ],
                           ),
@@ -147,8 +133,7 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
   }
 
   @protected
-  List<Widget> getRows(Map<dynamic, dynamic> data,
-      {double firstRowWidth = 120}) {
+  List<Widget> getRows(Map<dynamic, dynamic> data, {double firstRowWidth = 120}) {
     List<Widget> lst = [];
     for (var k in data.keys) {
       var r = Container(
@@ -166,7 +151,7 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
   }
 
   @protected
-  List<dynamic> oldData;
+  List<dynamic>? oldData;
 
   @protected
   bool expanded = false;
@@ -179,13 +164,11 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
     return false;
   }
 
-  List<dynamic> get data {
-    var rp =
-        widget.replies?.where((x) => widget.replyTypes.contains(x.runtimeType));
+  List<dynamic>? get data {
+    var rp = widget.replies?.where((x) => widget.replyTypes.contains(x.runtimeType));
     if (rp != null && rp.length > 0) {
       List<dynamic> orderdList = [];
-      for (var r in widget
-          .replyTypes) // pass reply data in the order of replyTypes property
+      for (var r in widget.replyTypes) // pass reply data in the order of replyTypes property
       {
         var f = rp.where((x) => x.runtimeType == r);
         orderdList.addAll(f);
@@ -204,28 +187,27 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
   @protected
   bool badReplyData = false;
 
-  int lastReplyTimeStamp = 0;
+  int? lastReplyTimeStamp = 0;
 
   bool get noDataAtAll {
     return oldData == null && data == null;
   }
 
-  bool _gotNewData;
+  bool? _gotNewData;
 
   @protected
-  bool get gotNewData {
+  bool? get gotNewData {
     return _gotNewData;
   }
 
-  int get currentReplyTimeStamp {
-    if (widget.replies == null || widget.replies.length == 0) return 0;
-    return widget.replies.first.replyTimeStamp;
+  int? get currentReplyTimeStamp {
+    if (widget.replies == null || widget.replies!.length == 0) return 0;
+    return widget.replies!.first.replyTimeStamp;
   }
 
   Widget _getMyWidget() {
     try {
-      _gotNewData = currentReplyTimeStamp > 0 &&
-          currentReplyTimeStamp != lastReplyTimeStamp;
+      _gotNewData = currentReplyTimeStamp! > 0 && currentReplyTimeStamp != lastReplyTimeStamp;
       var w = myWidget;
       lastReplyTimeStamp = currentReplyTimeStamp;
       _gotNewData = false;
@@ -233,16 +215,13 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
       return w;
     } catch (e, stackTrace) {
       badReplyData = true;
-      return generateErrorText(
-          e, stackTrace, "Error parsing reply from device");
+      return generateErrorText(e, stackTrace, "Error parsing reply from device");
     }
   }
 
   Column generateErrorText(e, StackTrace stackTrace, String text) {
     return Column(children: [
-      Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [Expanded(child: Text(text))]),
+      Row(mainAxisAlignment: MainAxisAlignment.center, children: [Expanded(child: Text(text))]),
       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         ElevatedButton(
             child: Text("Copy Debug Trace To Clipboard"),
@@ -262,11 +241,11 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
 
   Widget getWidget() {
     var errorText = "";
-    if (widget.replies != null && widget.replies.length > 0) {
-      if (widget.replies.any((x) => x.status == ReplyStatus.NotFound))
+    if (widget.replies != null && widget.replies!.length > 0) {
+      if (widget.replies!.any((x) => x.status == ReplyStatus.NotFound))
         errorText =
             "Authentication is successful but command not found on device.\nplease verify your device OpenWrt version is supported by this app.";
-      else if (widget.replies.any((x) => x.status != ReplyStatus.Ok))
+      else if (widget.replies!.any((x) => x.status != ReplyStatus.Ok))
         errorText =
             "Authentication is successful but error response returned from device.\nplease verify your device OpenWrt version is supported by this app.";
     }
@@ -285,17 +264,14 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
           errorText = "Secure connection error , bad certificate ?";
           break;
         case ReplyStatus.NotFound:
-          errorText =
-              "Url not found , check if your openwrt version is supported";
+          errorText = "Url not found , check if your openwrt version is supported";
           break;
         default:
       }
     }
 
     return Column(children: <Widget>[
-      Visibility(
-          visible: !(noDataAtAll),
-          child: data == null ? Text("No Data Available") : _getMyWidget()),
+      Visibility(visible: !(noDataAtAll), child: data == null ? Text("No Data Available") : _getMyWidget()),
       Row(
         children: <Widget>[
           Expanded(
@@ -314,23 +290,21 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
         !badReplyData);
   }
 
-  Map<String, dynamic> get configData {
-    return SettingsUtil.overviewConfig.data[widget.overviewItemGuid];
+  Map<String?, dynamic>? get configData {
+    return SettingsUtil.overviewConfig!.data![widget.overviewItemGuid];
   }
 
   @protected
-  List<Map<String, dynamic>> get configItems {
+  List<Map<String, dynamic>>? get configItems {
     return null;
   }
 
   void showConfig() {
-    if (configItems == null || configItems.length == 0)
+    if (configItems == null || configItems!.length == 0)
       showConfigAlert();
     else
       Dialogs.showMyDialog(
-              context,
-              OverviewConfigForm(configItems, widget.device, widget.item,
-                  widget.overviewItemGuid))
+              context, OverviewConfigForm(configItems, widget.device, widget.item, widget.overviewItemGuid))
           .then((_) => setState(() {}));
   }
 

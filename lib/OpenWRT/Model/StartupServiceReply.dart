@@ -9,7 +9,7 @@ class StartupServiceReply extends CommandReplyBase {
   List<String> get commandParameters => ["luci", "getInitList"];
 
   @override
-  Object createReply(ReplyStatus status, Map<String, Object> data, {Device device}) {
+  Object createReply(ReplyStatus status, Map<String, dynamic>? data, {Device? device}) {
     var i = StartupServiceReply(status);
     i.data = data;
     return i;
@@ -31,7 +31,7 @@ class StartupServiceCommandReply extends CommandReplyBase {
   }
 
   @override
-  Object createReply(ReplyStatus status, Map<String, Object> data, {Device device}) {
+  Object createReply(ReplyStatus status, Map<String, dynamic>? data, {Device? device}) {
     var i = StartupServiceReply(status);
     i.data = data;
     return i;

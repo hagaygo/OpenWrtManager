@@ -9,7 +9,7 @@ class ActiveConnectionsReply extends CommandReplyBase {
   List<String> get commandParameters => ["luci", "getConntrackList"];
 
   @override
-  Object createReply(ReplyStatus status, Map<String, Object> data,{Device device}) {
+  Object createReply(ReplyStatus status, Map<String, dynamic>? data, {Device? device}) {
     var i = ActiveConnectionsReply(status);
     i.data = data;
     return i;

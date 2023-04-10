@@ -26,17 +26,17 @@ class DeviceActionForm extends StatefulWidget {
 class DeviceActionFormState extends State<DeviceActionForm> {
   final Device device;
 
-  Map _boardData;
+  Map? _boardData;
   String _boardDataStatusText = "Loading Device Info";
 
   DeviceActionFormState(this.device) {
-    var cli = OpenWrtClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
+    var cli = OpenWrtClient(device, SettingsUtil.identities!.firstWhere((x) => x.guid == device.identityGuid));
     cli.authenticate().then((res) {
       if (res.status == ReplyStatus.Ok) {
         cli.getData(res.authenticationCookie, [SystemBoardReply(ReplyStatus.Ok)]).then((boardInfoRes) {
           try {
             setState(() {
-              _boardData = (boardInfoRes[0].data["result"] as List)[1] as Map;
+              _boardData = (boardInfoRes[0].data!["result"] as List)[1] as Map;
             });
           } catch (e) {
             Dialogs.simpleAlert(context, "Error", "Bad response from device");
@@ -50,15 +50,15 @@ class DeviceActionFormState extends State<DeviceActionForm> {
   }
 
   Widget getBoardInfoWidget() {
-    if (_boardData == null || _boardData.keys.length == 0)
+    if (_boardData == null || _boardData!.keys.length == 0)
       return Text(_boardDataStatusText);
     else {
       List<Widget> lst = [];
-      for (var key in _boardData.keys) {
-        if (_boardData[key] is String)
-          addBoardInfoItem(lst, _boardData, key);
-        else if (_boardData[key] is Map)
-          for (var vv in (_boardData[key] as Map).keys) addBoardInfoItem(lst, _boardData[key], vv);
+      for (var key in _boardData!.keys) {
+        if (_boardData![key] is String)
+          addBoardInfoItem(lst, _boardData!, key);
+        else if (_boardData![key] is Map)
+          for (var vv in (_boardData![key] as Map).keys) addBoardInfoItem(lst, _boardData![key], vv);
       }
 
       return Column(
@@ -71,12 +71,12 @@ class DeviceActionFormState extends State<DeviceActionForm> {
     var res = await Dialogs.confirmDialog(context,
         title: 'Reboot ${device.displayName} ?', text: 'Please confirm device reboot');
     if (res == ConfirmAction.CANCEL) return;
-    var cli = OpenWrtClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
+    var cli = OpenWrtClient(device, SettingsUtil.identities!.firstWhere((x) => x.guid == device.identityGuid));
     cli.authenticate().then((res) {
       if (res.status == ReplyStatus.Ok) {
         cli.getData(res.authenticationCookie, [RebootReply(ReplyStatus.Ok)]).then((rebootRes) {
           try {
-            var responseCode = (rebootRes[0].data["result"] as List)[0];
+            var responseCode = (rebootRes[0].data!["result"] as List)[0];
             if (responseCode == 0) {
               Dialogs.simpleAlert(context, "Success", "Device should reboot");
             } else {
@@ -93,11 +93,11 @@ class DeviceActionFormState extends State<DeviceActionForm> {
   }
 
   Future<List<String>> getSystemLog() async {
-    var cli = OpenWrtClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
+    var cli = OpenWrtClient(device, SettingsUtil.identities!.firstWhere((x) => x.guid == device.identityGuid));
     var lst = ["Authentication failed"];
     await cli.authenticate().then((res) async {
       if (res.status == ReplyStatus.Ok) {
-        var responseText = await cli.executeCgiExec(res.authenticationCookie.value, "/sbin/logread -e ^");
+        var responseText = await cli.executeCgiExec(res.authenticationCookie!.value, "/sbin/logread -e ^");
         lst = new LineSplitter().convert(responseText).toList();
       }
     });
@@ -105,11 +105,11 @@ class DeviceActionFormState extends State<DeviceActionForm> {
   }
 
   Future<List<String>> getKernelLog() async {
-    var cli = OpenWrtClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
+    var cli = OpenWrtClient(device, SettingsUtil.identities!.firstWhere((x) => x.guid == device.identityGuid));
     var lst = ["Authentication failed"];
     await cli.authenticate().then((res) async {
       if (res.status == ReplyStatus.Ok) {
-        var responseText = await cli.executeCgiExec(res.authenticationCookie.value, "/bin/dmesg -r");
+        var responseText = await cli.executeCgiExec(res.authenticationCookie!.value, "/bin/dmesg -r");
         lst = new LineSplitter().convert(responseText).toList();
         for (int i = 0; i < lst.length; i++)
           if (lst[i].startsWith("<") && lst[i].contains(">")) lst[i] = lst[i].substring(lst[i].indexOf(">") + 1);
@@ -160,7 +160,7 @@ class DeviceActionFormState extends State<DeviceActionForm> {
                 var logView = LogViewerForm(() async {
                   return await getKernelLog();
                 });
-                showLogPage(device.displayName + " Kernel Log", logView);
+                showLogPage(device.displayName! + " Kernel Log", logView);
               },
               child: Text("Kernel Log"),
             ),
@@ -173,7 +173,7 @@ class DeviceActionFormState extends State<DeviceActionForm> {
                 var logView = LogViewerForm(() async {
                   return await getSystemLog();
                 });
-                showLogPage(device.displayName + " System Log", logView);
+                showLogPage(device.displayName! + " System Log", logView);
               },
               child: Text("System Log"),
             ),
@@ -183,7 +183,7 @@ class DeviceActionFormState extends State<DeviceActionForm> {
                 foregroundColor: Colors.white,
               ),
               onPressed: () async {
-                Dialogs.showPage(context, device.displayName + " Startup", ServicesForm(device));
+                Dialogs.showPage(context, device.displayName! + " Startup", ServicesForm(device));
               },
               child: Text("Startup"),
             )

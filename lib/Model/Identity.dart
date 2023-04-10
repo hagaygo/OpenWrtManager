@@ -1,11 +1,11 @@
 class Identity
 {
-  String guid;
-  String displayName;
-  String username;
-  String password;  
+  String? guid;
+  String? displayName;
+  String? username;
+  String? password;  
 
-  String get name 
+  String? get name 
   {
     return displayName ?? username;
   }

@@ -1,7 +1,7 @@
 class AppSetting 
 {
   bool autoRefresh = false;
-  int autoRefreshInterval = 10;
+  int? autoRefreshInterval = 10;
   bool darkTheme = false;
 
   Map toJson() => {

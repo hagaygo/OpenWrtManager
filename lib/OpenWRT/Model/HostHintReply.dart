@@ -9,7 +9,7 @@ class HostHintReply extends CommandReplyBase {
   List<String> get commandParameters => ["luci-rpc", "getHostHints"];
 
   @override
-  HostHintReply createReply(ReplyStatus status, Map<String, Object> data, {Device device}) {
+  HostHintReply createReply(ReplyStatus status, Map<String, dynamic>? data, {Device? device}) {
     var i = HostHintReply(status);
     i.data = data;
     return i;

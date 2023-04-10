@@ -4,10 +4,10 @@ import 'package:openwrt_manager/Overview/OverviewItemManager.dart';
 import 'package:openwrt_manager/settingsUtil.dart';
 
 class OverviewConfigForm extends StatefulWidget {
-  final List<Map<String, dynamic>> configItems;
+  final List<Map<String, dynamic>>? configItems;
   final Device device;
-  final OverviewItem item;
-  final String overviewItemGuid;
+  final OverviewItem? item;
+  final String? overviewItemGuid;
 
   OverviewConfigForm(
       this.configItems, this.device, this.item, this.overviewItemGuid);
@@ -19,15 +19,15 @@ class OverviewConfigForm extends StatefulWidget {
 }
 
 class OverviewConfigFormState extends State<OverviewConfigForm> {
-  Map<String, dynamic> _data;
+  Map<String?, dynamic>? _data;
 
   @override
   void initState() {
     super.initState();
-    _data = Map<String, dynamic>();
-    var config = SettingsUtil.overviewConfig.data[widget.overviewItemGuid];
-    for (var ci in widget.configItems) {
-      _data[ci["name"]] = config == null ? true : config[ci["name"]] ?? false;
+    _data = Map<String?, dynamic>();
+    var config = SettingsUtil.overviewConfig!.data![widget.overviewItemGuid];
+    for (var ci in widget.configItems!) {
+      _data![ci["name"]] = config == null ? true : config[ci["name"]] ?? false;
     }
   }
 
@@ -41,7 +41,7 @@ class OverviewConfigFormState extends State<OverviewConfigForm> {
               height: 15,
             ),
             Text(
-              "${widget.device.displayName} - ${widget.item.displayName} Config",
+              "${widget.device.displayName} - ${widget.item!.displayName} Config",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             SizedBox(
@@ -72,8 +72,8 @@ class OverviewConfigFormState extends State<OverviewConfigForm> {
 
   getConfigItems() {
     List<Widget> lst = [];
-    String lastCategory;
-    for (var ci in widget.configItems) {
+    String? lastCategory;
+    for (var ci in widget.configItems!) {
       var category = ci["category"];
       if (category != lastCategory) {
         lst.add(Row(
@@ -97,12 +97,12 @@ class OverviewConfigFormState extends State<OverviewConfigForm> {
               ),
               (ci["type"] == "bool")
                   ? Checkbox(
-                      onChanged: (bool value) {
+                      onChanged: (bool? value) {
                         setState(() {
-                          _data[ci["name"]] = value;
+                          _data![ci["name"]] = value;
                         });
                       },
-                      value: _data[ci["name"]],
+                      value: _data![ci["name"]],
                     )
                   : Text("not implemented"),
             ],
@@ -113,7 +113,7 @@ class OverviewConfigFormState extends State<OverviewConfigForm> {
   }
 
   void saveConfig() {
-    SettingsUtil.overviewConfig.data[widget.overviewItemGuid] = _data;
+    SettingsUtil.overviewConfig!.data![widget.overviewItemGuid] = _data;
     SettingsUtil.saveOverviewConfig();
     Navigator.pop(context);
   }

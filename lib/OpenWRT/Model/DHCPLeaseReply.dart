@@ -6,9 +6,9 @@ class DHCPLeaseReply extends CommandReplyBase {
 
   @override
   List<String> get commandParameters => ["luci-rpc", "getDHCPLeases"];
- 
+
   @override
-  DHCPLeaseReply createReply(status, Map<String, Object> data, {Device device}) {
+  DHCPLeaseReply createReply(status, Map<String, dynamic>? data, {Device? device}) {
     var i = DHCPLeaseReply(status);
     i.data = data;
     return i;

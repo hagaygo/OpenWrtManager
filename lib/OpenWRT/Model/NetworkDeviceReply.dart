@@ -9,7 +9,7 @@ class NetworkDeviceReply extends CommandReplyBase {
   List<String> get commandParameters => ["luci-rpc", "getNetworkDevices"];
 
   @override
-  Object createReply(ReplyStatus status, Map<String, Object> data,{Device device}) {
+  Object createReply(ReplyStatus status, Map<String, dynamic>? data, {Device? device}) {
     var i = NetworkDeviceReply(status);
     i.data = data;
     return i;

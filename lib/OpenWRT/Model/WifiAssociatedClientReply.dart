@@ -5,7 +5,7 @@ import 'package:openwrt_manager/OpenWrt/Model/ReplyBase.dart';
 class WifiAssociatedClientReply extends CommandReplyBase {
   WifiAssociatedClientReply(ReplyStatus status) : super(status);
 
-  Device device;
+  Device? device;
 
   int interfaceIndex = 0;
 
@@ -13,14 +13,12 @@ class WifiAssociatedClientReply extends CommandReplyBase {
   List<dynamic> get commandParameters {
     List<dynamic> lst = [];
     lst.addAll(["iwinfo", "assoclist"]);
-    if (device != null && device.wifiDevices.length > 0)
-      lst.add({"device": device.wifiDevices[interfaceIndex]});
+    if (device != null && device!.wifiDevices.length > 0) lst.add({"device": device!.wifiDevices[interfaceIndex]});
     return lst;
   }
 
   @override
-  Object createReply(ReplyStatus status, Map<String, Object> data,
-      {Device device}) {
+  Object createReply(ReplyStatus status, Map<String, dynamic>? data, {Device? device}) {
     if (device == null || device.wifiDevices.length == 1) {
       var i = WifiAssociatedClientReply(status);
       i.device = device;

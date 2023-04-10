@@ -14,7 +14,7 @@ class ThemeChangeNotifier extends ChangeNotifier {
   {
     try
     {
-        return (SettingsUtil.appSettings.darkTheme) ? ThemeData.dark() : ThemeData.light();
+        return (SettingsUtil.appSettings!.darkTheme) ? ThemeData.dark() : ThemeData.light();
     }
     catch (e) 
     {

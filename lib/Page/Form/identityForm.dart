@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
 import 'package:openwrt_manager/Dialog/Dialogs.dart';
 import 'package:openwrt_manager/Model/Identity.dart';
@@ -5,19 +6,19 @@ import 'package:openwrt_manager/settingsUtil.dart';
 import 'package:uuid/uuid.dart';
 
 class IdentityForm extends StatefulWidget {
-  final Identity identity;
-  final String title;
+  final Identity? identity;
+  final String? title;
 
-  const IdentityForm({Key key, this.identity, this.title}) : super(key: key);
+  const IdentityForm({Key? key, this.identity, this.title}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
     var s = IdentityFormState();
     if (identity != null) {
-      s._username.text = identity.username;
-      s._password.text = identity.password;
-      s._displayName.text = identity.displayName;
-      s._editedGuid = identity.guid;
+      s._username.text = identity!.username!;
+      s._password.text = identity!.password!;
+      s._displayName.text = identity!.displayName!;
+      s._editedGuid = identity!.guid;
     }
     return s;
   }
@@ -29,7 +30,7 @@ class IdentityFormState extends State<IdentityForm> {
   final _username = TextEditingController();
   final _password = TextEditingController();
   final _displayName = TextEditingController();
-  String _editedGuid;
+  String? _editedGuid;
 
   static const double InputMargin = 7;
 
@@ -62,7 +63,7 @@ class IdentityFormState extends State<IdentityForm> {
                           top: InputMargin, bottom: InputMargin)),
                   controller: _username,
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return 'Username is missing';
                     }
                     return null;
@@ -78,7 +79,7 @@ class IdentityFormState extends State<IdentityForm> {
                   controller: _password,
                   obscureText: true,
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return 'Password is missing';
                     }
                     return null;
@@ -98,19 +99,18 @@ class IdentityFormState extends State<IdentityForm> {
                                       title: 'Delete Identity ?',
                                       text: 'Please confirm identity deletion');
                                   if (res == ConfirmAction.CANCEL) return;
-                                  var i = SettingsUtil.identities
+                                  var i = SettingsUtil.identities!
                                       .firstWhere((x) => x.guid == _editedGuid);
                                   SettingsUtil.getDevices().then((dvs) {
-                                    var di = dvs.firstWhere(
-                                        (d) => d.identityGuid == i.guid,
-                                        orElse: () => null);
+                                    var di = dvs!.firstWhereOrNull(
+                                        (d) => d.identityGuid == i.guid);
                                     if (di != null) {
                                       Dialogs.simpleAlert(
                                           context,
                                           "Can not delete identity",
                                           "it is linked to a device");
                                     } else {
-                                      SettingsUtil.identities.remove(i);
+                                      SettingsUtil.identities!.remove(i);
                                       SettingsUtil.saveIdentities();
                                       Navigator.pop(context);
                                     }
@@ -130,10 +130,10 @@ class IdentityFormState extends State<IdentityForm> {
                       child: SizedBox.expand(
                         child: ElevatedButton(
                             onPressed: () {
-                              if (_formKey.currentState.validate()) {
+                              if (_formKey.currentState!.validate()) {
                                 var i = Identity();
                                 if (_editedGuid != null)
-                                  i = SettingsUtil.identities
+                                  i = SettingsUtil.identities!
                                       .firstWhere((x) => x.guid == _editedGuid);
                                 else
                                   i.guid = Uuid().v4().toString();
@@ -141,7 +141,7 @@ class IdentityFormState extends State<IdentityForm> {
                                 i.password = _password.text;
                                 i.username = _username.text;
                                 if (_editedGuid == null)
-                                  SettingsUtil.identities.add(i);
+                                  SettingsUtil.identities!.add(i);
                                 SettingsUtil.saveIdentities();
                                 Navigator.pop(context);
                               }

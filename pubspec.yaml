@@ -4,24 +4,25 @@ description: OpenWrt Manager app for your devices.
 version: 1.22.0+201220
 
 environment:
-  sdk: ">=2.3.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.3
-  path_provider: ^2.0.5
+  cupertino_icons: ^1.0.5
+  path_provider: ^2.0.14
   rflutter_alert: ^2.0.4
-  uuid: ^3.0.5
-  http: ^0.13.4
-  package_info_plus: ^3.0.1
+  uuid: ^3.0.7
+  http: ^0.13.5
+  package_info_plus: ^3.0.3
   feature_discovery: ^0.14.1
-  provider: ^6.0.0      
+  provider: ^6.0.5
+  collection: ^1.15.0-nullsafety.4      
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.11.0
+  flutter_launcher_icons: ^0.13.0
 
 flutter_icons:
   image_path: "assets/icon/openwrt_manager.png" 

@@ -14,37 +14,37 @@ import 'package:openwrt_manager/Utils.dart';
 import 'Model/SystemInfoReply.dart';
 
 class OpenWrtClient {
-  Identity _identity;
-  Device _device;
+  Identity? _identity;
+  late Device _device;
 
   static const int Timeout = 3;
 
   String get _baseURL {
     String url;
-    if (_device.useSecureConnection)
+    if (_device.useSecureConnection!)
       url = "https://${_device.address}";
     else
       url = "http://${_device.address}";
-    if (_device.port.length > 0) url += ":" + _device.port;
+    if (_device.port!.length > 0) url += ":" + _device.port!;
     return url;
   }
 
-  OpenWrtClient(Device d, Identity i) {
+  OpenWrtClient(Device d, Identity? i) {
     _identity = i;
     _device = d;
   }
 
   HttpClient _getClient() {
     var cli = HttpClient();
-    if (_device.ignoreBadCertificate)
+    if (_device.ignoreBadCertificate!)
       cli.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
     return cli;
   }
 
-  static String lastJSONResponse;
-  static String lastJSONRequest;
+  static late String lastJSONResponse;
+  static late String lastJSONRequest;
 
-  Future<List<CommandReplyBase>> getData(Cookie c, List<CommandReplyBase> commands, {pTimeout = Timeout}) async {
+  Future<List<CommandReplyBase>> getData(Cookie? c, List<CommandReplyBase> commands, {pTimeout = Timeout}) async {
     var http = _getClient();
     http.connectionTimeout = Duration(seconds: Timeout);
 
@@ -53,7 +53,7 @@ class OpenWrtClient {
       List<Map<String, Object>> data = [];
       var counter = 1;
       for (var cmd in commands) {
-        List<Object> params = ["${c.value}"];
+        List<Object> params = ["${c!.value}"];
         for (var prm in cmd.commandParameters) {
           params.add(prm);
         }
@@ -74,12 +74,12 @@ class OpenWrtClient {
       if (response.statusCode == 200) {
         var jsonText = await response.transform(utf8.decoder).join();
         lastJSONResponse = jsonText;
-        var jsonData = (json.decode(jsonText) as List<dynamic>).map((x) => x as Map<String, Object>);
+        var jsonData = (json.decode(jsonText));
         List<CommandReplyBase> lstResponse = [];
         var idCounter = 1;
         for (var cmd in commands) {
-          var cmdData = jsonData.firstWhere((x) => x["id"] as int == idCounter);
-          lstResponse.add(cmd.createReply(ReplyStatus.Ok, cmdData));
+          var cmdData = jsonData.firstWhere((x) => (x["id"] as int?) == idCounter);
+          lstResponse.add(cmd.createReply(ReplyStatus.Ok, cmdData) as CommandReplyBase);
           idCounter++;
         }
         return Future.value(lstResponse);
@@ -92,13 +92,13 @@ class OpenWrtClient {
     return Future.value([SystemInfoReply(ReplyStatus.Error)]);
   }
 
-  Future<RRDNSReply> getRemoteDns(AuthenticateReply auth, List<String> ips) async {
+  Future<RRDNSReply> getRemoteDns(AuthenticateReply auth, List<String?> ips) async {
     try {
       var cmd = RRDNSReply(ReplyStatus.Ok);
       cmd.ipList = ips;
       var res = await getData(auth.authenticationCookie, [cmd]);
       var data = res[0] as RRDNSReply;
-      if ((data.data["result"] as List)[0] == 0)
+      if ((data.data!["result"] as List)[0] == 0)
         return Future.value(data);
       else
         return RRDNSReply(ReplyStatus.Error);
@@ -107,13 +107,13 @@ class OpenWrtClient {
     }
   }
 
-  Future<RestartInterfaceReply> restartInterface(AuthenticateReply auth, String interfaceName) async {
+  Future<RestartInterfaceReply> restartInterface(AuthenticateReply auth, String? interfaceName) async {
     try {
       var cmd = RestartInterfaceReply(ReplyStatus.Ok);
       cmd.interfaceName = interfaceName;
       var res = await getData(auth.authenticationCookie, [cmd]);
       var data = res[0] as RestartInterfaceReply;
-      if ((data.data["result"] as List)[0] == 0)
+      if ((data.data!["result"] as List)[0] == 0)
         return Future.value(data);
       else
         return RestartInterfaceReply(ReplyStatus.Error);
@@ -122,14 +122,14 @@ class OpenWrtClient {
     }
   }
 
-  Future<DeleteClientReply> deleteClient(AuthenticateReply auth, String interfaceName, String mac) async {
+  Future<DeleteClientReply> deleteClient(AuthenticateReply auth, String? interfaceName, String? mac) async {
     try {
       var cmd = DeleteClientReply(ReplyStatus.Ok);
       cmd.interfaceName = interfaceName;
       cmd.mac = mac;
       var res = await getData(auth.authenticationCookie, [cmd]);
       var data = res[0] as DeleteClientReply;
-      if ((data.data["result"] as List)[0] == 0)
+      if ((data.data!["result"] as List)[0] == 0)
         return Future.value(data);
       else
         return DeleteClientReply(ReplyStatus.Error);
@@ -169,7 +169,7 @@ class OpenWrtClient {
     try {
       var request = await http.postUrl(Uri.parse(_baseURL + "/cgi-bin/luci/"));
       var params =
-          "luci_username=${Uri.encodeComponent(_identity.username)}&luci_password=${Uri.encodeComponent(_identity.password)}";
+          "luci_username=${Uri.encodeComponent(_identity!.username!)}&luci_password=${Uri.encodeComponent(_identity!.password!)}";
       var body = utf8.encode(params);
       request.headers.set('content-type', 'application/x-www-form-urlencoded');
       request.contentLength = body.length;

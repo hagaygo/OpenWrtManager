@@ -6,7 +6,7 @@ import 'package:openwrt_manager/settingsUtil.dart';
 import 'Form/identityForm.dart';
 
 class IdentitiesPage extends StatefulWidget {
-  IdentitiesPage({Key key}) : super(key: key);
+  IdentitiesPage({Key? key}) : super(key: key);
 
   @override
   _IdentitiesPageState createState() => _IdentitiesPageState();
@@ -25,7 +25,7 @@ class _IdentitiesPageState extends State<IdentitiesPage> {
         MaterialPageRoute(
             builder: (context) => Scaffold(
                   appBar: AppBar(
-                    title: Text(iForm.title),
+                    title: Text(iForm.title!),
                   ),
                   body: Center(
                     child: ListView(
@@ -53,11 +53,11 @@ class _IdentitiesPageState extends State<IdentitiesPage> {
 
   List<Widget> getIdentities() {
     List<Widget> lst = [];
-    for (var i in SettingsUtil.identities) {
+    for (var i in SettingsUtil.identities!) {
       var lt = Container(
           child: ListTile(
               leading: const Icon(Icons.account_circle),
-              title: Text(i.displayName.length == 0 ? i.username : i.displayName),
+              title: Text(i.displayName!.length == 0 ? i.username! : i.displayName!),
               onTap: () => {showEditDialog(i)}),
           decoration: new BoxDecoration(border: new Border(bottom: new BorderSide(width: 0.5, color: Colors.grey))));
       lst.add(lt);

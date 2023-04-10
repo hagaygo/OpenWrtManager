@@ -9,7 +9,7 @@ class NetworkInterfaceReply extends CommandReplyBase {
   List<String> get commandParameters => ["network.interface", "dump"];
 
   @override
-  NetworkInterfaceReply createReply(ReplyStatus status, Map<String, Object> data, {Device device}) {
+  NetworkInterfaceReply createReply(ReplyStatus status, Map<String, dynamic>? data, {Device? device}) {
     var i = NetworkInterfaceReply(status);
     i.data = data;
     return i;

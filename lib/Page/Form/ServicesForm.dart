@@ -22,10 +22,10 @@ class ServicesFormState extends State<ServicesForm> {
   final Device device;
 
   String _boardDataStatusText = "Loading Device Startup Info";
-  Map _startupData;
+  Map? _startupData;
 
   void refreshList() {
-    var cli = OpenWrtClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
+    var cli = OpenWrtClient(device, SettingsUtil.identities!.firstWhere((x) => x.guid == device.identityGuid));
     cli.authenticate().then((res) {
       if (res.status == ReplyStatus.Ok) {
         cli
@@ -33,7 +33,7 @@ class ServicesFormState extends State<ServicesForm> {
             .then((startupReplyRes) {
           try {
             setState(() {
-              _startupData = (startupReplyRes[0].data["result"] as List)[1] as Map;
+              _startupData = (startupReplyRes[0].data!["result"] as List)[1] as Map;
             });
           } catch (e) {
             Dialogs.simpleAlert(context, "Error", "Bad response from device");
@@ -52,7 +52,7 @@ class ServicesFormState extends State<ServicesForm> {
 
   @override
   Widget build(BuildContext context) {
-    if (_startupData == null || _startupData.keys.length == 0)
+    if (_startupData == null || _startupData!.keys.length == 0)
       return Center(
           child: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -60,19 +60,19 @@ class ServicesFormState extends State<ServicesForm> {
       ));
     else {
       return Column(
-        children: getServicesRows(_startupData),
+        children: getServicesRows(_startupData!),
       );
     }
   }
 
   Future<void> setInitAction(String serviceName, String action) async {
-    var cli = OpenWrtClient(device, SettingsUtil.identities.firstWhere((x) => x.guid == device.identityGuid));
+    var cli = OpenWrtClient(device, SettingsUtil.identities!.firstWhere((x) => x.guid == device.identityGuid));
     cli.authenticate().then((res) {
       if (res.status == ReplyStatus.Ok) {
         cli.getData(res.authenticationCookie, [StartupServiceCommandReply(ReplyStatus.Ok, serviceName, action)]).then(
             (commnadRes) {
           try {
-            var responseCode = (commnadRes[0].data["result"] as List)[0];
+            var responseCode = (commnadRes[0].data!["result"] as List)[0];
             if (responseCode == 0) {
               Dialogs.simpleAlert(context, "Success", "Action was successful");
             } else {
@@ -98,7 +98,7 @@ class ServicesFormState extends State<ServicesForm> {
       lst.add(Container(
           decoration: BoxDecoration(
             border: Border(
-              bottom: BorderSide(width: 1.5, color: Colors.grey[300]),
+              bottom: BorderSide(width: 1.5, color: Colors.grey[300]!),
             ),
           ),
           padding: EdgeInsets.fromLTRB(20, 5, 10, 5),

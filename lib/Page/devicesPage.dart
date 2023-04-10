@@ -9,7 +9,7 @@ import 'package:openwrt_manager/settingsUtil.dart';
 import 'Form/deviceForm.dart';
 
 class DevicesPage extends StatefulWidget {
-  DevicesPage({Key key}) : super(key: key);
+  DevicesPage({Key? key}) : super(key: key);
 
   @override
   _DevicesPageState createState() => _DevicesPageState();
@@ -17,7 +17,7 @@ class DevicesPage extends StatefulWidget {
 
 class _DevicesPageState extends State<DevicesPage> {
   void showAddDialog() {
-    if (SettingsUtil.identities.length == 0) {
+    if (SettingsUtil.identities!.length == 0) {
       Dialogs.simpleAlert(
           context, "", "No identities are defined\nAdd at least one identity",
           buttonText: "Add identity", closeAction: () {
@@ -38,7 +38,7 @@ class _DevicesPageState extends State<DevicesPage> {
         MaterialPageRoute(
             builder: (context) => Scaffold(
                   appBar: AppBar(
-                    title: Text(iForm.title),
+                    title: Text(iForm.title!),
                   ),
                   body: Center(
                     child: ListView(
@@ -54,7 +54,7 @@ class _DevicesPageState extends State<DevicesPage> {
         MaterialPageRoute(
             builder: (context) => Scaffold(
                   appBar: AppBar(
-                    title: Text(d.displayName + " Device Actions"),
+                    title: Text(d.displayName! + " Device Actions"),
                   ),
                   body: Center(
                     child: ListView(
@@ -73,12 +73,12 @@ class _DevicesPageState extends State<DevicesPage> {
 
   List<Widget> getDevices() {
     List<Widget> lst = [];
-    for (var d in SettingsUtil.devices) {
+    for (var d in SettingsUtil.devices!) {
       var lt = Container(
           child: ListTile(
               leading: const Icon(Icons.router),
               title: Row(children: <Widget>[
-                Text(d.displayName),
+                Text(d.displayName!),
                 Expanded(
                     child: Align(
                   alignment: Alignment.centerRight,

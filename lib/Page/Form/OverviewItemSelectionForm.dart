@@ -7,20 +7,20 @@ import 'package:openwrt_manager/settingsUtil.dart';
 import 'package:uuid/uuid.dart';
 
 class OverviewItemSelectionForm extends StatefulWidget {
-  final SelectedOverviewItem overviewItem;
-  final String title;
+  final SelectedOverviewItem? overviewItem;
+  final String? title;
 
-  const OverviewItemSelectionForm({Key key, this.overviewItem, this.title})
+  const OverviewItemSelectionForm({Key? key, this.overviewItem, this.title})
       : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
     var s = OverviewItemSelectionFormState();
     if (overviewItem != null) {
-      s._selectedOverview = overviewItem.overiviewItemGuid;
-      s._selectedDevice = SettingsUtil.devices
-          .firstWhere((d) => overviewItem.deviceGuid == d.guid);
-      s._editedGuid = overviewItem.guid;
+      s._selectedOverview = overviewItem!.overiviewItemGuid;
+      s._selectedDevice = SettingsUtil.devices!
+          .firstWhere((d) => overviewItem!.deviceGuid == d.guid);
+      s._editedGuid = overviewItem!.guid;
     }
     return s;
   }
@@ -28,9 +28,9 @@ class OverviewItemSelectionForm extends StatefulWidget {
 
 class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
   final _formKey = GlobalKey<FormState>();
-  Device _selectedDevice;
-  String _selectedOverview;
-  String _editedGuid;
+  Device? _selectedDevice;
+  String? _selectedOverview;
+  String? _editedGuid;
 
   static const double InputMargin = 7;
   @override
@@ -52,7 +52,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                       Container(
                           margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
                           child: Text(
-                            widget.title,
+                            widget.title!,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ))
                     ],
@@ -69,9 +69,9 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                       }
                       return null;
                     },
-                    items: SettingsUtil.devices
+                    items: SettingsUtil.devices!
                         .map((d) => DropdownMenuItem(
-                              child: Text(d.displayName),
+                              child: Text(d.displayName!),
                               value: d,
                             ))
                         .toList(),
@@ -95,7 +95,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                     items: OverviewItemManager.items.keys
                         .map((k) => DropdownMenuItem(
                               child: Text(
-                                  OverviewItemManager.items[k].displayName),
+                                  OverviewItemManager.items[k]!.displayName),
                               value: k,
                             ))
                         .toList(),
@@ -116,14 +116,14 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                   margin: EdgeInsets.fromLTRB(0, 10, 5, 0),
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      var soi = SettingsUtil.overviews
+                                      var soi = SettingsUtil.overviews!
                                           .firstWhere(
                                               (o) => o.guid == _editedGuid);
                                       var idx =
-                                          SettingsUtil.overviews.indexOf(soi);
+                                          SettingsUtil.overviews!.indexOf(soi);
                                       if (idx > 0) {
-                                        SettingsUtil.overviews.removeAt(idx);
-                                        SettingsUtil.overviews
+                                        SettingsUtil.overviews!.removeAt(idx);
+                                        SettingsUtil.overviews!
                                             .insert(idx - 1, soi);
                                       }
                                       SettingsUtil.saveOverviews();
@@ -142,15 +142,15 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                   margin: EdgeInsets.fromLTRB(5, 10, 0, 0),
                                   child: ElevatedButton(
                                       onPressed: () {
-                                        var soi = SettingsUtil.overviews
+                                        var soi = SettingsUtil.overviews!
                                             .firstWhere(
                                                 (o) => o.guid == _editedGuid);
                                         var idx =
-                                            SettingsUtil.overviews.indexOf(soi);
+                                            SettingsUtil.overviews!.indexOf(soi);
                                         if (idx <
-                                            SettingsUtil.overviews.length - 1) {
-                                          SettingsUtil.overviews.removeAt(idx);
-                                          SettingsUtil.overviews
+                                            SettingsUtil.overviews!.length - 1) {
+                                          SettingsUtil.overviews!.removeAt(idx);
+                                          SettingsUtil.overviews!
                                               .insert(idx + 1, soi);
                                         }
                                         SettingsUtil.saveOverviews();
@@ -179,9 +179,9 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                                         text:
                                             'Please confirm overview removal');
                                     if (res == ConfirmAction.CANCEL) return;
-                                    var soi = SettingsUtil.overviews.firstWhere(
+                                    var soi = SettingsUtil.overviews!.firstWhere(
                                         (o) => o.guid == _editedGuid);
-                                    SettingsUtil.overviews.remove(soi);
+                                    SettingsUtil.overviews!.remove(soi);
                                     SettingsUtil.saveOverviews();
                                     Navigator.pop(context);
                                   },
@@ -198,17 +198,17 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                         child: SizedBox.expand(
                           child: ElevatedButton(
                               onPressed: () {
-                                if (_formKey.currentState.validate()) {
+                                if (_formKey.currentState!.validate()) {
                                   if (_editedGuid == null) {
                                     var soi = SelectedOverviewItem();
-                                    soi.deviceGuid = _selectedDevice.guid;
+                                    soi.deviceGuid = _selectedDevice!.guid;
                                     soi.overiviewItemGuid = _selectedOverview;
                                     soi.guid = Uuid().v4().toString();
-                                    SettingsUtil.overviews.add(soi);
+                                    SettingsUtil.overviews!.add(soi);
                                   } else {
-                                    var soi = SettingsUtil.overviews.firstWhere(
+                                    var soi = SettingsUtil.overviews!.firstWhere(
                                         (o) => o.guid == _editedGuid);
-                                    soi.deviceGuid = _selectedDevice.guid;
+                                    soi.deviceGuid = _selectedDevice!.guid;
                                     soi.overiviewItemGuid = _selectedOverview;
                                   }
                                   SettingsUtil.saveOverviews();

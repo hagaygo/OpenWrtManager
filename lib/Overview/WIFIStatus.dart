@@ -14,8 +14,8 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'OverviewWidgetBase.dart';
 
 class WIFIStatus extends OverviewWidgetBase {
-  WIFIStatus(Device device, bool loading, AuthenticateReply authenticationStatus, List<CommandReplyBase> replies,
-      OverviewItem item, String overviewItemGuid, Function doOverviewRefresh)
+  WIFIStatus(Device device, bool loading, AuthenticateReply? authenticationStatus, List<CommandReplyBase>? replies,
+      OverviewItem? item, String? overviewItemGuid, Function doOverviewRefresh)
       : super(device, loading, authenticationStatus, replies, item, overviewItemGuid, doOverviewRefresh);
 
   @override
@@ -24,12 +24,12 @@ class WIFIStatus extends OverviewWidgetBase {
 
 class HostHintData {
   HostHintData(this.host, this.ipV4);
-  final String host;
-  final String ipV4;
+  final String? host;
+  final String? ipV4;
 }
 
 class WIFIStatusState extends OverviewWidgetBaseState {
-  String getIpAddressStringFromList(dynamic lst) {
+  String? getIpAddressStringFromList(dynamic lst) {
     for (var ip in lst) if (ip != null) return ip;
     return null;
   }
@@ -40,11 +40,11 @@ class WIFIStatusState extends OverviewWidgetBaseState {
         "\nUse \"Update Devices\" option on the drawer if you expect to have any WIFI interfaces on this device";
 
     var wifiData = [];
-    var ifnameToApData = Map<String, Map<String, dynamic>>();
+    var ifnameToApData = Map<String?, Map<String, dynamic>>();
     List<String> wifiInterfaces = [];
 
     if (data != null) {
-      var hostHintData = data[0];
+      var hostHintData = data![0];
 
       var macToHostHintMap = Map<String, HostHintData>();
       for (var mac in (hostHintData[1] as Map).keys)
@@ -54,7 +54,7 @@ class WIFIStatusState extends OverviewWidgetBaseState {
                 HostHintData(hostHintData[1][mac]["name"], getIpAddressStringFromList(hostHintData[1][mac]["ipaddrs"]));
         } catch (e) {}
 
-      var wirelessDeviceData = data[1];
+      var wirelessDeviceData = data![1];
 
       for (var radio in (wirelessDeviceData[1] as Map).keys) {
         var interfaces = wirelessDeviceData[1][radio]["interfaces"];
@@ -74,7 +74,7 @@ class WIFIStatusState extends OverviewWidgetBaseState {
 
       try {
         var wifiDeviceCounter = 0;
-        for (var interface in data.skip(2)) {
+        for (var interface in data!.skip(2)) {
           var wifiInterface = widget.device.wifiDevices[wifiDeviceCounter];
           wifiDeviceCounter++;
           wifiInterfaces.add(wifiInterface);
@@ -85,7 +85,7 @@ class WIFIStatusState extends OverviewWidgetBaseState {
             if (hostHint != null) i["hostname"] = hostHint.host;
             i["ip"] = "";
             if (DataCache.macAddressMap.containsKey(i["mac"])) {
-              var d = DataCache.macAddressMap[i["mac"]];
+              var d = DataCache.macAddressMap[i["mac"]]!;
               i["ip"] = d.ipAddress;
             } else if (hostHint != null) i["ip"] = hostHint.ipV4;
             i["ifname"] = wifiInterface;
@@ -100,9 +100,9 @@ class WIFIStatusState extends OverviewWidgetBaseState {
 
     List<Widget> rows = [];
 
-    String currentInterface = "";
+    String? currentInterface = "";
     int ifCounter = 1;
-    List<String> apWithDevicesList = [];
+    List<String?> apWithDevicesList = [];
     bool firstClientInAP = true;
     for (var cli in wifiData) {
       if (cli["ifname"] != currentInterface) {
@@ -134,7 +134,7 @@ class WIFIStatusState extends OverviewWidgetBaseState {
     for (var ifname in ifnameToApData.keys)
       if (!apWithDevicesList.contains(ifname)) {
         rows.add(SizedBox(height: 5));
-        rows.add(getApRow(ifnameToApData[ifname]));
+        rows.add(getApRow(ifnameToApData[ifname]!));
         rows.add(SizedBox(height: 5));
         rows.add(Text("No connected devices"));
       }
@@ -143,7 +143,7 @@ class WIFIStatusState extends OverviewWidgetBaseState {
     );
   }
 
-  var _trafficData = Map<String, Map<String, dynamic>>();
+  var _trafficData = Map<String?, Map<String, dynamic>>();
 
   Widget wifiClientRows(cli) {
     var incoming = cli["rx"]["bytes"];
@@ -151,30 +151,30 @@ class WIFIStatusState extends OverviewWidgetBaseState {
     var name = cli["mac"] + "_" + cli["ifname"];
 
     if (_trafficData[name] != null) {
-      var incomingDiff = incoming - _trafficData[name]["in"];
-      var outgoingDiff = outgoing - _trafficData[name]["out"];
-      if (gotNewData) {
+      var incomingDiff = incoming - _trafficData[name]!["in"];
+      var outgoingDiff = outgoing - _trafficData[name]!["out"];
+      if (gotNewData!) {
         var currentTimeStamp = new DateTime.now().millisecondsSinceEpoch;
-        var timeDiff = (currentTimeStamp - _trafficData[name]["timeStamp"]) / 1000; // miliseconds to seconds
-        _trafficData[name]["timeStamp"] = currentTimeStamp;
-        _trafficData[name]["inSpeed"] = Utils.formatBytes((incomingDiff / timeDiff).round(), decimals: 1);
-        _trafficData[name]["outSpeed"] = Utils.formatBytes((outgoingDiff / timeDiff).round(), decimals: 1);
+        var timeDiff = (currentTimeStamp - _trafficData[name]!["timeStamp"]) / 1000; // miliseconds to seconds
+        _trafficData[name]!["timeStamp"] = currentTimeStamp;
+        _trafficData[name]!["inSpeed"] = Utils.formatBytes((incomingDiff / timeDiff).round(), decimals: 1);
+        _trafficData[name]!["outSpeed"] = Utils.formatBytes((outgoingDiff / timeDiff).round(), decimals: 1);
       }
     }
 
     String incomingSpeed = " " + Utils.NoSpeedCalculationText;
     String outgoingSpeed = " " + Utils.NoSpeedCalculationText;
 
-    if (_trafficData[name] != null && _trafficData[name]["inSpeed"] != null) {
-      incomingSpeed = "${_trafficData[name]["inSpeed"]}/s";
-      outgoingSpeed = "${_trafficData[name]["outSpeed"]}/s";
+    if (_trafficData[name] != null && _trafficData[name]!["inSpeed"] != null) {
+      incomingSpeed = "${_trafficData[name]!["inSpeed"]}/s";
+      outgoingSpeed = "${_trafficData[name]!["outSpeed"]}/s";
     }
 
     if (_trafficData[name] == null) _trafficData[name] = Map<String, dynamic>();
-    _trafficData[name]["out"] = outgoing;
-    _trafficData[name]["in"] = incoming;
-    if (_trafficData[name]["timeStamp"] == null)
-      _trafficData[name]["timeStamp"] = new DateTime.now().millisecondsSinceEpoch;
+    _trafficData[name]!["out"] = outgoing;
+    _trafficData[name]!["in"] = incoming;
+    if (_trafficData[name]!["timeStamp"] == null)
+      _trafficData[name]!["timeStamp"] = new DateTime.now().millisecondsSinceEpoch;
 
     return Container(
       padding: EdgeInsets.all(2),
@@ -238,13 +238,13 @@ class WIFIStatusState extends OverviewWidgetBaseState {
         onPressed: () async {
           var client = OpenWrtClient(widget.device, null);
           Dialogs.showLoadingDialog(context);
-          var res = await client.deleteClient(widget.authenticationStatus, cli["ifname"], cli["mac"]);
+          var res = await client.deleteClient(widget.authenticationStatus!, cli["ifname"], cli["mac"]);
           if (res.status != ReplyStatus.Ok) {
             Dialogs.simpleAlert(context, "Error", "Disconnect request returned error");
           } else {
             await new Future.delayed(
                 const Duration(seconds: 1)); // wait a little so refresh command will get updated data from ap
-            widget.doOverviewRefresh?.call();
+            widget.doOverviewRefresh.call();
           }
           Navigator.pop(context);
           Navigator.pop(context);
