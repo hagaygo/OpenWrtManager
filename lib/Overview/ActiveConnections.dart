@@ -10,8 +10,8 @@ import 'package:openwrt_manager/Utils.dart';
 import 'dart:math' as math;
 
 class ActiveConnections extends OverviewWidgetBase {
-  ActiveConnections(Device device, bool loading, AuthenticateReply? authenticationStatus, List<CommandReplyBase>? replies,
-      OverviewItem? item, String? overviewItemGuid, Function doOverviewRefresh)
+  ActiveConnections(Device device, bool loading, AuthenticateReply? authenticationStatus,
+      List<CommandReplyBase>? replies, OverviewItem? item, String? overviewItemGuid, Function doOverviewRefresh)
       : super(device, loading, authenticationStatus, replies, item, overviewItemGuid, doOverviewRefresh);
 
   @override
@@ -36,7 +36,7 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
     var ip = data[ipPropName];
     if (ip == null) return "";
     var str = _ipLookup[ip];
-    if (data[portPropName] != null) str = str! + ":" + data[portPropName];
+    if (data[portPropName] != null) str = str! + ":" + data[portPropName].toString();
     return str;
   }
 
