@@ -9,20 +9,20 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.5
-  path_provider: ^2.0.14
-  rflutter_alert: ^2.0.4
-  uuid: ^3.0.7
-  http: ^0.13.5
-  package_info_plus: ^3.0.3
+  cupertino_icons: ^1.0.6
+  path_provider: ^2.1.1
+  rflutter_alert: ^2.0.7
+  uuid: ^4.0.0
+  http: ^0.13.6
+  package_info_plus: ^4.1.0
   feature_discovery: ^0.14.1
   provider: ^6.0.5
-  collection: ^1.15.0-nullsafety.4      
+  collection: ^1.17.0      
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.13.0
+  flutter_launcher_icons: ^0.13.1
 
 flutter_icons:
   image_path: "assets/icon/openwrt_manager.png" 
