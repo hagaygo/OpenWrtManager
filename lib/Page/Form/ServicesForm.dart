@@ -93,7 +93,7 @@ class ServicesFormState extends State<ServicesForm> {
   List<Widget> getServicesRows(Map startupData) {
     List<Widget> lst = [];
     var orderdList = startupData.keys.toList();
-    orderdList.sort((a, b) => startupData[a]["index"] - startupData[b]["index"]);
+    orderdList.sort((a, b) => (startupData[a]["index"] ?? 0) - (startupData[b]["index"] ?? 0));
     for (var key in orderdList) {
       lst.add(Container(
           decoration: BoxDecoration(
