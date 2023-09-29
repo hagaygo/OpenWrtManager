@@ -199,7 +199,7 @@ class WIFIStatusState extends OverviewWidgetBaseState {
                 width: 110,
                 child: Text(Utils.formatDuration(Duration(seconds: cli["connected_time"]))),
               ),
-              Expanded(child: Center(child: Text("${cli["rx"]["rate"] / 1000}/${cli["tx"]["rate"] / 1000} Mbit/s"))),
+              Expanded(child: Center(child: Text("${cli["rx"]["rate"] ~/ 1000}/${cli["tx"]["rate"] ~/ 1000} Mbit/s"))),
               Expanded(
                   child: Align(
                 alignment: Alignment.centerRight,
