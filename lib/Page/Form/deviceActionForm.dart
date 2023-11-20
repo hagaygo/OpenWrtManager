@@ -203,7 +203,7 @@ class DeviceActionFormState extends State<DeviceActionForm> {
               )
             ]),
           ),
-          Container(padding: EdgeInsets.all(10), child: Text("Device Info", textScaleFactor: 1.5)),
+          Container(padding: EdgeInsets.all(10), child: Text("Device Info")),
           Column(
             children: [getBoardInfoWidget()],
           )

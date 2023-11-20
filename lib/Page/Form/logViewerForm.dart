@@ -49,7 +49,7 @@ class LogViewerFormState extends State<LogViewerForm> {
         padding: EdgeInsets.all(2),
         child: SelectableText.rich(
           TextSpan(children: textSpans),
-          textScaleFactor: 0.8,
+          textScaler:TextScaler.linear(0.8),          
         )));
     return lst;
   }
