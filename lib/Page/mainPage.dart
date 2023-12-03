@@ -229,8 +229,8 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
               elevation: 100,
               child: ListView(padding: EdgeInsets.zero, children: <Widget>[
                 Container(
-                  height: 80,
-                  child: DrawerHeader(
+                  height: 100,
+                  child: DrawerHeader(                    
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
