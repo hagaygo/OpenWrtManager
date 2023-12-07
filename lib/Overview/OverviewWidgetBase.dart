@@ -18,17 +18,21 @@ abstract class OverviewWidgetBase extends StatefulWidget {
   final OverviewItem? item;
   final String? overviewItemGuid;
   final Function doOverviewRefresh;
-  OverviewWidgetBase(this.device, this.loading, this.authenticationStatus, this.replies, this.item,
-      this.overviewItemGuid, this.doOverviewRefresh);
+  OverviewWidgetBase(this.device, this.loading, this.authenticationStatus,
+      this.replies, this.item, this.overviewItemGuid, this.doOverviewRefresh);
 
-  List<Type> get replyTypes => item!.commands.map((x) => x.runtimeType).toList();
+  List<Type> get replyTypes =>
+      item!.commands.map((x) => x.runtimeType).toList();
 }
 
 abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
   static const iconSize = 20.0;
 
+  String? titleSuffix;
+    
   @override
   Widget build(BuildContext context) {
+    var myWidget = getWidget(); // evalute widget before drawing the base layout
     return Container(
       margin: EdgeInsets.all(5),
       padding: EdgeInsets.only(bottom: 5),
@@ -52,11 +56,15 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
                               height: iconSize,
                               child: Container(
                                 decoration: BoxDecoration(
-                                    borderRadius: new BorderRadius.all(Radius.circular(10)),
+                                    borderRadius: new BorderRadius.all(
+                                        Radius.circular(10)),
                                     gradient: LinearGradient(
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
-                                      colors: [Color.fromARGB(255, 255, 255, 0), Color.fromARGB(255, 128, 128, 0)],
+                                      colors: [
+                                        Color.fromARGB(255, 255, 255, 0),
+                                        Color.fromARGB(255, 128, 128, 0)
+                                      ],
                                       tileMode: TileMode.repeated,
                                     )),
                               )),
@@ -69,15 +77,22 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
                                   ? LinearGradient(
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
-                                      colors: [Color.fromARGB(255, 0, 255, 0), Color.fromARGB(255, 0, 50, 0)],
+                                      colors: [
+                                        Color.fromARGB(255, 0, 255, 0),
+                                        Color.fromARGB(255, 0, 50, 0)
+                                      ],
                                       tileMode: TileMode.repeated,
                                     )
                                   : LinearGradient(
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
-                                      colors: [Color.fromARGB(255, 255, 0, 0), Color.fromARGB(255, 100, 0, 0)],
+                                      colors: [
+                                        Color.fromARGB(255, 255, 0, 0),
+                                        Color.fromARGB(255, 100, 0, 0)
+                                      ],
                                     ),
-                              borderRadius: new BorderRadius.all(Radius.circular(10)),
+                              borderRadius:
+                                  new BorderRadius.all(Radius.circular(10)),
                             ),
                             margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
                             height: iconSize,
@@ -88,6 +103,7 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
                         Text(
                           "${widget.device.displayName} ${widget.item!.displayName}",
                         ),
+                        Text(titleSuffix ?? ""),
                         Expanded(child: Container()),
                         Container(
                           width: 60,
@@ -108,7 +124,9 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
                                           height: iconSize * 1.5,
                                           child: FittedBox(
                                               fit: BoxFit.fill,
-                                              child: expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more))))),
+                                              child: expanded
+                                                  ? Icon(Icons.expand_less)
+                                                  : Icon(Icons.expand_more))))),
                               Visibility(
                                   visible: supportsConfig,
                                   child: InkWell(
@@ -118,7 +136,8 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
                                     child: Container(
                                         width: iconSize * 1.5,
                                         height: iconSize * 1.5,
-                                        child: FittedBox(child: Icon(Icons.settings))),
+                                        child: FittedBox(
+                                            child: Icon(Icons.settings))),
                                   )),
                             ],
                           ),
@@ -127,13 +146,14 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
                     )))
           ],
         ),
-        Container(decoration: BoxDecoration(), child: getWidget())
+        Container(decoration: BoxDecoration(), child: myWidget)
       ]),
     );
   }
 
   @protected
-  List<Widget> getRows(Map<dynamic, dynamic> data, {double firstRowWidth = 120}) {
+  List<Widget> getRows(Map<dynamic, dynamic> data,
+      {double firstRowWidth = 120}) {
     List<Widget> lst = [];
     for (var k in data.keys) {
       var r = Container(
@@ -165,10 +185,12 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
   }
 
   List<dynamic>? get data {
-    var rp = widget.replies?.where((x) => widget.replyTypes.contains(x.runtimeType));
+    var rp =
+        widget.replies?.where((x) => widget.replyTypes.contains(x.runtimeType));
     if (rp != null && rp.length > 0) {
       List<dynamic> orderdList = [];
-      for (var r in widget.replyTypes) // pass reply data in the order of replyTypes property
+      for (var r in widget
+          .replyTypes) // pass reply data in the order of replyTypes property
       {
         var f = rp.where((x) => x.runtimeType == r);
         orderdList.addAll(f);
@@ -207,7 +229,8 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
 
   Widget _getMyWidget() {
     try {
-      _gotNewData = currentReplyTimeStamp! > 0 && currentReplyTimeStamp != lastReplyTimeStamp;
+      _gotNewData = currentReplyTimeStamp! > 0 &&
+          currentReplyTimeStamp != lastReplyTimeStamp;
       var w = myWidget;
       lastReplyTimeStamp = currentReplyTimeStamp;
       _gotNewData = false;
@@ -215,13 +238,16 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
       return w;
     } catch (e, stackTrace) {
       badReplyData = true;
-      return generateErrorText(e, stackTrace, "Error parsing reply from device");
+      return generateErrorText(
+          e, stackTrace, "Error parsing reply from device");
     }
   }
 
   Column generateErrorText(e, StackTrace stackTrace, String text) {
     return Column(children: [
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: [Expanded(child: Text(text))]),
+      Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [Expanded(child: Text(text))]),
       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         ElevatedButton(
             child: Text("Copy Debug Trace To Clipboard"),
@@ -264,14 +290,17 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
           errorText = "Secure connection error , bad certificate ?";
           break;
         case ReplyStatus.NotFound:
-          errorText = "Url not found , check if your openwrt version is supported";
+          errorText =
+              "Url not found , check if your openwrt version is supported";
           break;
         default:
       }
     }
 
     return Column(children: <Widget>[
-      Visibility(visible: !(noDataAtAll), child: data == null ? Text("No Data Available") : _getMyWidget()),
+      Visibility(
+          visible: !(noDataAtAll),
+          child: data == null ? Text("No Data Available") : _getMyWidget()),
       Row(
         children: <Widget>[
           Expanded(
@@ -304,7 +333,9 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
       showConfigAlert();
     else
       Dialogs.showMyDialog(
-              context, OverviewConfigForm(configItems, widget.device, widget.item, widget.overviewItemGuid))
+              context,
+              OverviewConfigForm(configItems, widget.device, widget.item,
+                  widget.overviewItemGuid))
           .then((_) => setState(() {}));
   }
 

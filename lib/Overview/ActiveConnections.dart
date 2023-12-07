@@ -9,10 +9,19 @@ import 'package:openwrt_manager/Overview/OverviewWidgetBase.dart';
 import 'package:openwrt_manager/Utils.dart';
 import 'dart:math' as math;
 
+import 'package:provider/provider.dart';
+
 class ActiveConnections extends OverviewWidgetBase {
-  ActiveConnections(Device device, bool loading, AuthenticateReply? authenticationStatus,
-      List<CommandReplyBase>? replies, OverviewItem? item, String? overviewItemGuid, Function doOverviewRefresh)
-      : super(device, loading, authenticationStatus, replies, item, overviewItemGuid, doOverviewRefresh);
+  ActiveConnections(
+      Device device,
+      bool loading,
+      AuthenticateReply? authenticationStatus,
+      List<CommandReplyBase>? replies,
+      OverviewItem? item,
+      String? overviewItemGuid,
+      Function doOverviewRefresh)
+      : super(device, loading, authenticationStatus, replies, item,
+            overviewItemGuid, doOverviewRefresh);
 
   @override
   State<StatefulWidget> createState() {
@@ -32,11 +41,15 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
   @override
   bool get supportsExpand => true;
 
-  String? getProtocolText(dynamic data, String ipPropName, String portPropName) {
+  int? _lastActiveConnections;
+
+  String? getProtocolText(
+      dynamic data, String ipPropName, String portPropName) {
     var ip = data[ipPropName];
     if (ip == null) return "";
     var str = _ipLookup[ip];
-    if (data[portPropName] != null) str = str! + ":" + data[portPropName].toString();
+    if (data[portPropName] != null)
+      str = str! + ":" + data[portPropName].toString();
     return str;
   }
 
@@ -49,19 +62,25 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
 
   int getBytes(dynamic b) {
     return double.parse(b.toString()).round();
-  }
+  }  
 
   @override
   Widget get myWidget {
     List<Widget> rows = [];
     var connectionsList = data![0][1]["result"] as List;
     if (connectionsList.length == 0) {
+      _lastActiveConnections = 0;
       rows.add(Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [Text("No active connections")],
       ));
     } else {
-      connectionsList.sort((a, b) => getBytes(b["bytes"]) - getBytes(a["bytes"]));
+      _lastActiveConnections = connectionsList.length;
+
+      titleSuffix = " (${_lastActiveConnections.toString()})";      
+
+      connectionsList
+          .sort((a, b) => getBytes(b["bytes"]) - getBytes(a["bytes"]));
 
       List<String?> ipToResolve = [];
       var currentTimeStamp = new DateTime.now().millisecondsSinceEpoch;
@@ -75,7 +94,9 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
         checkIpForLookup(con["dst"], ipToResolve);
         if (con["speed"] == null) con["speed"] = 0;
 
-        var connectionKey = getProtocolText(con, "src", "sport")! + "," + getProtocolText(con, "dst", "dport")!;
+        var connectionKey = getProtocolText(con, "src", "sport")! +
+            "," +
+            getProtocolText(con, "dst", "dport")!;
 
         if (_trafficMap.containsKey(connectionKey)) {
           var oldTrafficData = _trafficMap[connectionKey];
@@ -106,7 +127,8 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
         return getBytes(b["bytes"]) - getBytes(a["bytes"]);
       });
 
-      for (var con in shownConnectionList.take(expanded ? EXPANDED_MAX_ROWS : MAX_ROWS)) {
+      for (var con in shownConnectionList
+          .take(expanded ? EXPANDED_MAX_ROWS : MAX_ROWS)) {
         var bytes = double.parse(con["bytes"].toString()).round();
         rows.add(Container(
           margin: EdgeInsets.fromLTRB(10, 0, 10, 15),
@@ -127,8 +149,9 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
                     child: Container(
                         width: 100,
                         child: Center(
-                            child:
-                                Text(con["speedText"] != null ? con["speedText"] : (Utils.NoSpeedCalculationText))))),
+                            child: Text(con["speedText"] != null
+                                ? con["speedText"]
+                                : (Utils.NoSpeedCalculationText))))),
                 Container(
                     width: 100,
                     child: Align(
@@ -145,7 +168,9 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
                 Transform(
                   alignment: Alignment.center,
                   transform: Matrix4.rotationY(math.pi),
-                  child: RotatedBox(quarterTurns: 3, child: Icon(Icons.subdirectory_arrow_left, size: 12)),
+                  child: RotatedBox(
+                      quarterTurns: 3,
+                      child: Icon(Icons.subdirectory_arrow_left, size: 12)),
                 ),
                 Expanded(child: Text(getProtocolText(con, "src", "sport")!)),
               ]),
@@ -155,7 +180,8 @@ class ActiveConnectionsState extends OverviewWidgetBaseState {
               Row(children: [
                 Icon(Icons.subdirectory_arrow_right, size: 12),
                 Expanded(
-                  child: Text(getProtocolText(con, "dst", "dport")!, maxLines: 2),
+                  child:
+                      Text(getProtocolText(con, "dst", "dport")!, maxLines: 2),
                 ),
               ])
             ],
