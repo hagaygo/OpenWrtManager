@@ -1,7 +1,7 @@
 name: openwrt_manager
 description: OpenWrt Manager app for your devices.
 
-version: 1.29.0+201290
+version: 1.30.0+201300
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
