@@ -148,9 +148,10 @@ class DeviceFormState extends State<DeviceForm> {
                       Row(
                         children: <Widget>[
                           Container(
-                            width: 150,
-                            child: CheckboxListTile(
-                              dense: true,
+                            constraints: BoxConstraints(       
+                              maxWidth: MediaQuery.of(context).size.width * 0.8,     
+                            ),     
+                            child: CheckboxListTile(                              
                               controlAffinity: ListTileControlAffinity.leading,
                               title: Text("Use https"),
                               onChanged: (bool? value) {
@@ -160,13 +161,17 @@ class DeviceFormState extends State<DeviceForm> {
                               },
                               value: _secureConnection,
                             ),
-                          ),
-                          Visibility(
+                          ),                          
+                        ],
+                      ),
+                      Row(children: [
+                        Visibility(
                             visible: _secureConnection!,
                             child: Container(
-                              width: 210,
-                              child: CheckboxListTile(
-                                dense: true,
+                              constraints: BoxConstraints(       
+                              maxWidth: MediaQuery.of(context).size.width * 0.8,     
+                              ),     
+                              child: CheckboxListTile(                                
                                 controlAffinity:
                                     ListTileControlAffinity.leading,
                                 title: Text("Ignore certificate errors"),
@@ -178,9 +183,8 @@ class DeviceFormState extends State<DeviceForm> {
                                 value: _ignoreBadCertificate,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
+                          )
+                      ],),
                     ],
                   ),
                   Column(mainAxisAlignment: MainAxisAlignment.end, children: <
