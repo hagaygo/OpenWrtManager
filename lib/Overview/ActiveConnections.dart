@@ -9,8 +9,6 @@ import 'package:openwrt_manager/Overview/OverviewWidgetBase.dart';
 import 'package:openwrt_manager/Utils.dart';
 import 'dart:math' as math;
 
-import 'package:provider/provider.dart';
-
 class ActiveConnections extends OverviewWidgetBase {
   ActiveConnections(
       Device device,
