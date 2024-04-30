@@ -60,14 +60,14 @@ class WIFIStatusState extends OverviewWidgetBaseState {
         var interfaces = wirelessDeviceData[1][radio]["interfaces"];
         for (var interface in interfaces.where((x) => x["ifname"] != null)) {
           ifnameToApData[interface["ifname"]] = {
-            "ssid": interface["iwinfo"]["ssid"],
-            "noise": interface["iwinfo"]["noise"],
-            "signal": interface["iwinfo"]["signal"],
-            "channel": interface["iwinfo"]["channel"],
-            "bitrate": interface["iwinfo"]["bitrate"],
-            "frequency": interface["iwinfo"]["frequency"],
-            "encryption": interface["config"]["encryption"],
-            "mode": interface["config"]["mode"],
+            "ssid": interface["iwinfo"]?["ssid"],
+            "noise": interface["iwinfo"]?["noise"],
+            "signal": interface["iwinfo"]?["signal"],
+            "channel": interface["iwinfo"]?["channel"],
+            "bitrate": interface["iwinfo"]?["bitrate"],
+            "frequency": interface["iwinfo"]?["frequency"],
+            "encryption": interface["config"]?["encryption"],
+            "mode": interface["config"]?["mode"],
           };
         }
       }
