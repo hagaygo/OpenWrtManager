@@ -4,6 +4,7 @@ class Device {
   String? address;
   String? port;
   String? identityGuid;
+  String? TAG;
   bool? useSecureConnection;
   bool? ignoreBadCertificate;
   List<String> wifiDevices = [];
@@ -16,6 +17,7 @@ class Device {
         'address': address,
         'identityGuid': identityGuid,
         'port': port,
+        'tag' : TAG?.length == 0 ? null : TAG ,
         'wifiDevices': wifiDevices,
         'useSecureConnection': useSecureConnection,
         'ignoreBadCertificate': ignoreBadCertificate,
@@ -28,6 +30,7 @@ class Device {
     i.displayName = json['displayName'].toString();
     i.identityGuid = json['identityGuid'].toString();
     i.port = json['port'].toString();
+    i.TAG = json['tag']?.toString();
     i.useSecureConnection = json['useSecureConnection'] ?? false;
     i.ignoreBadCertificate = json['ignoreBadCertificate'] ?? false;
     if (json['wifiDevices'] != null && (json['wifiDevices'] as List).length > 0)

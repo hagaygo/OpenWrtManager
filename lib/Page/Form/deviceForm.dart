@@ -21,6 +21,7 @@ class DeviceForm extends StatefulWidget {
       s._port.text = device!.port!;
       s._displayName.text = device!.displayName!;
       s._editedGuid = device!.guid;
+      s._tag.text = device!.TAG ?? "";
       s._secureConnection = device!.useSecureConnection;
       s._ignoreBadCertificate = device!.ignoreBadCertificate;
       s.selectedIdentity = SettingsUtil.identities!
@@ -38,6 +39,7 @@ class DeviceFormState extends State<DeviceForm> {
   final _address = TextEditingController();
   final _port = TextEditingController();
   final _displayName = TextEditingController();
+  final _tag = TextEditingController();
 
   bool? _secureConnection = false;
   bool? _ignoreBadCertificate = false;
@@ -143,6 +145,19 @@ class DeviceFormState extends State<DeviceForm> {
                             ),
                           ),
                         ],
+                      ),
+                      SizedBox(height: 15),
+                      Row(
+                        children: <Widget>[
+                          Text("TAG (optional, allows grouping device's overviews)"),
+                        ],
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                            isDense: true,
+                            contentPadding: EdgeInsets.only(
+                                top: InputMargin, bottom: InputMargin)),
+                        controller: _tag, 
                       ),
                       SizedBox(height: 15),
                       Row(
@@ -291,6 +306,7 @@ class DeviceFormState extends State<DeviceForm> {
     d.displayName = _displayName.text;
     d.address = _address.text;
     d.port = _port.text;
+    d.TAG = _tag.text.length == 0 ? null : _tag.text;
     d.identityGuid = selectedIdentity!.guid;
     d.useSecureConnection = _secureConnection;
     d.ignoreBadCertificate = _ignoreBadCertificate;

@@ -147,6 +147,17 @@ static OverviewConfig? _overviewConfig;
 
   static List<Device>? _devices;
 
+  static List<String> get TagList
+  {
+    List<String> lst =[];
+    for (var d in devices!)
+    {
+      if (d.TAG != null && !lst.contains(d.TAG))
+        lst.add(d.TAG!);
+    }
+    return lst;
+  }
+
   static List<Device>? get devices {
     if (_devices == null) {
       _devices = [];
