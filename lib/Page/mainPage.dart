@@ -203,20 +203,32 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 
   static const drawerIconWidth = 60.0;
 
-  String? _selectedDeviceTag = null;
-
-  void setNewSelectedDeviceTag(String? tag)
-  {
-      _selectedDeviceTag = tag; 
-        refreshOverviews();
+  void setNewSelectedDeviceTag(String? tag) {
+    setState(() {
+      SettingsUtil.appSettings?.selectedDeviceTag = tag;
+      SettingsUtil.saveAppSettings();
+      refreshOverviews();
+    });
   }
+
+  TextStyle getDeviceTagButtonTextStyle(bool selectedButton) {
+    if (selectedButton)
+      return TextStyle(decoration: TextDecoration.underline, fontSize: 16);
+    return TextStyle(decoration: TextDecoration.none);
+  }
+
+  Widget GetDeviceTagButton(String text, String? tag) {
+    var selectedButton = tag == SettingsUtil.appSettings?.selectedDeviceTag;
+    var b = TextButton(
+        child: Text(text, style: getDeviceTagButtonTextStyle(selectedButton)),
+        onPressed: () => {setNewSelectedDeviceTag(tag)});
+    return b;
+  }  
 
   List<Widget> getTagsWidgets() {
     List<Widget> lst = [];
-    for (var t in SettingsUtil.TagList)
-      lst.add(TextButton(child: Text(t), onPressed: ()  =>    { setNewSelectedDeviceTag(t) }));
-    if (lst.length > 0)
-      lst.insert(0, TextButton(child: Text("All"), onPressed: () => { setNewSelectedDeviceTag(null) }));
+    for (var t in SettingsUtil.TagList) lst.add(GetDeviceTagButton(t, t));
+    if (lst.length > 0) lst.insert(0, GetDeviceTagButton("All", null));
     return lst;
   }
 
@@ -455,24 +467,27 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
       for (var oi in SettingsUtil.overviews!) {
         var device =
             SettingsUtil.devices!.firstWhere((d) => d.guid == oi.deviceGuid);
-        if (!requestMap.containsKey(oi.deviceGuid))
-          requestMap[oi.deviceGuid] = [];
-        var l = requestMap[oi.deviceGuid];
-        for (var n in OverviewItemManager.items[oi.overiviewItemGuid]!.commands)
-          if (l!.firstWhereOrNull((x) => x.runtimeType == n.runtimeType) ==
-              null) {
-            var nr = n.createReply(ReplyStatus.Ok, null, device: device);
-            if (nr is CommandReplyBase) {
-              l.add(nr);
-            } else
-              l.addAll(nr as Iterable<CommandReplyBase>);
-          }
-        if (_selectedDeviceTag == null || _selectedDeviceTag == device.TAG)
-        lst.add(InkWell(
-            onLongPress: () {
-              showEditOverviewDialog(oi);
-            },
-            child: getOverviewMainWidget(oi)));
+        if (SettingsUtil.appSettings?.selectedDeviceTag == null ||
+            SettingsUtil.appSettings?.selectedDeviceTag == device.TAG) {
+          if (!requestMap.containsKey(oi.deviceGuid))
+            requestMap[oi.deviceGuid] = [];
+          var l = requestMap[oi.deviceGuid];
+          for (var n
+              in OverviewItemManager.items[oi.overiviewItemGuid]!.commands)
+            if (l!.firstWhereOrNull((x) => x.runtimeType == n.runtimeType) ==
+                null) {
+              var nr = n.createReply(ReplyStatus.Ok, null, device: device);
+              if (nr is CommandReplyBase) {
+                l.add(nr);
+              } else
+                l.addAll(nr as Iterable<CommandReplyBase>);
+            }
+          lst.add(InkWell(
+              onLongPress: () {
+                showEditOverviewDialog(oi);
+              },
+              child: getOverviewMainWidget(oi)));
+        }
       }
     }
 

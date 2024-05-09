@@ -2,12 +2,14 @@ class AppSetting
 {
   bool autoRefresh = true;
   int? autoRefreshInterval = 5;
-  bool darkTheme = false;
+  bool darkTheme = false;  
+  String? selectedDeviceTag = null;
 
   Map toJson() => {
         'autoRefresh': autoRefresh,
         'autoRefreshInterval': autoRefreshInterval,        
-        'darkTheme' : darkTheme
+        'darkTheme' : darkTheme,
+        'SelectedDeviceTag' : selectedDeviceTag
       };
       
       static AppSetting fromJson(Map<String, dynamic> json){
@@ -15,6 +17,7 @@ class AppSetting
          i.autoRefresh = json['autoRefresh'] ?? false;
          i.autoRefreshInterval = json['autoRefreshInterval'] ?? 5;         
          i.darkTheme = json['darkTheme'] ?? false;
+         i.selectedDeviceTag = json['SelectedDeviceTag'];
          return i;         
        }
 }
