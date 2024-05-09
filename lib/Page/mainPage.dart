@@ -179,11 +179,12 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
         },
       ),
       bottomNavigationBar: Container(
-        child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: getTagsWidgets())),
+        color: Theme.of(context).highlightColor ,
+        child: SingleChildScrollView(        
+          scrollDirection: Axis.horizontal,
+          child: Row(  
+              children: getTagsWidgets()),
+        ),
       ),
       floatingActionButton: DescribedFeatureOverlay(
         featureId: addOverviewFeatureId,
@@ -202,33 +203,56 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   }
 
   static const drawerIconWidth = 60.0;
+  String? _lastClickedTag = null;
 
   void setNewSelectedDeviceTag(String? tag) {
     setState(() {
       SettingsUtil.appSettings?.selectedDeviceTag = tag;
       SettingsUtil.saveAppSettings();
+      _lastClickedTag = tag;
+      Scrollable.ensureVisible(_deviceTagButtonKeys[tag]!.currentContext!);
       refreshOverviews();
     });
   }
 
   TextStyle getDeviceTagButtonTextStyle(bool selectedButton) {
-    if (selectedButton)
-      return TextStyle(decoration: TextDecoration.underline, fontSize: 16);
-    return TextStyle(decoration: TextDecoration.none);
+    if (selectedButton) return TextStyle(color: Theme.of(context).canvasColor);
+    return TextStyle();
   }
+
+  Map<String?, GlobalKey> _deviceTagButtonKeys = Map<String?, GlobalKey>();
 
   Widget GetDeviceTagButton(String text, String? tag) {
     var selectedButton = tag == SettingsUtil.appSettings?.selectedDeviceTag;
+    var bs = ButtonStyle(        
+        backgroundColor: selectedButton
+            ? MaterialStateProperty.all(Theme.of(context).primaryColor)
+            : null,
+        minimumSize: MaterialStateProperty.all(Size(80, 50)));
+    var dataKey = new GlobalKey();
+    _deviceTagButtonKeys[tag] = dataKey;
     var b = TextButton(
+        key: dataKey,
+        style: bs,
         child: Text(text, style: getDeviceTagButtonTextStyle(selectedButton)),
         onPressed: () => {setNewSelectedDeviceTag(tag)});
     return b;
-  }  
+  }
 
   List<Widget> getTagsWidgets() {
     List<Widget> lst = [];
+    _deviceTagButtonKeys.clear();
     for (var t in SettingsUtil.TagList) lst.add(GetDeviceTagButton(t, t));
-    if (lst.length > 0) lst.insert(0, GetDeviceTagButton("All", null));
+    if (lst.length > 0) {
+      lst.insert(0, GetDeviceTagButton("All", null));
+      if (SettingsUtil.appSettings?.selectedDeviceTag != null &&
+          _lastClickedTag == null) {
+        Future.delayed(const Duration(milliseconds: 20), () {
+          setNewSelectedDeviceTag(SettingsUtil.appSettings
+              ?.selectedDeviceTag); // forces selected tag to be fully visible
+        });
+      }     
+    }
     return lst;
   }
 
