@@ -144,11 +144,15 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     return Scaffold(
       key: _scaffoldKey,
       drawer: buildDrawer(context),
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          systemNavigationBarColor: Theme.of(context).primaryColorDark, 
+          statusBarColor: Theme.of(context).primaryColorDark,           
+        ),
           title: Text('OpenWrt Overview'),
           leading: GestureDetector(
               onTap: () {
@@ -179,7 +183,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
         },
       ),
       bottomNavigationBar: Container(
-        color: Theme.of(context).highlightColor ,
+        color: Theme.of(context).cardColor ,
         child: SingleChildScrollView(        
           scrollDirection: Axis.horizontal,
           child: Row(  
@@ -216,7 +220,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   }
 
   TextStyle getDeviceTagButtonTextStyle(bool selectedButton) {
-    if (selectedButton) return TextStyle(color: Theme.of(context).canvasColor);
+    if (selectedButton) return TextStyle(color: Theme.of(context).primaryColorLight);
     return TextStyle();
   }
 
