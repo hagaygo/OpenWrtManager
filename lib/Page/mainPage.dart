@@ -628,7 +628,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 Future<List<String?>> updateDevicesData(List<Device> devices) async {
   List<String?> failedDevices = [];
 
-  for (var d in devices) {
+  for (var d in devices.where((d) => SettingsUtil.appSettings?.selectedDeviceTag == null || d.TAG == null || SettingsUtil.appSettings?.selectedDeviceTag == d.TAG)) {
     var cli = OpenWrtClient(d,
         SettingsUtil.identities!.firstWhere((i) => i.guid == d.identityGuid));
 
