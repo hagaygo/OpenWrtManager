@@ -15,7 +15,7 @@ dependencies:
   uuid: ^4.0.0
   http: ^0.13.6
   package_info_plus: ^4.1.0
-  feature_discovery: ^0.14.1
+  feature_discovery_fork: ^0.14.1
   provider: ^6.0.5
   collection: ^1.17.0      
 

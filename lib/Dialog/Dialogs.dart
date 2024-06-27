@@ -63,7 +63,7 @@ class Dialogs {
         desc: text,
         buttons: [
           DialogButton(
-            color: Theme.of(context).buttonTheme.colorScheme!.background,
+            color: Theme.of(context).buttonTheme.colorScheme!.primaryContainer,
             child: Text(
               buttonText ?? "Close",
             ),

@@ -27,7 +27,7 @@ import 'package:flutter/services.dart';
 
 import 'Form/OverviewItemSelectionForm.dart';
 import 'identitiesPage.dart';
-import 'package:feature_discovery/feature_discovery.dart';
+import 'package:feature_discovery_fork/feature_discovery.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({Key? key}) : super(key: key);
@@ -230,9 +230,9 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
     var selectedButton = tag == SettingsUtil.appSettings?.selectedDeviceTag;
     var bs = ButtonStyle(        
         backgroundColor: selectedButton
-            ? MaterialStateProperty.all(Theme.of(context).primaryColor)
+            ? WidgetStateProperty.all(Theme.of(context).primaryColor)
             : null,
-        minimumSize: MaterialStateProperty.all(Size(80, 50)));
+        minimumSize: WidgetStateProperty.all(Size(80, 50)));
     var dataKey = new GlobalKey();
     _deviceTagButtonKeys[tag] = dataKey;
     var b = TextButton(
