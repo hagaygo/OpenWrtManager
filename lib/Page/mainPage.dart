@@ -228,19 +228,20 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 
   Widget GetDeviceTagButton(String text, String? tag) {
     var selectedButton = tag == SettingsUtil.appSettings?.selectedDeviceTag;
-    var bs = ButtonStyle(        
+    var bs = TextButton.styleFrom(           
+      padding: EdgeInsets.all(5),
         backgroundColor: selectedButton
-            ? WidgetStateProperty.all(Theme.of(context).primaryColor)
+            ? Theme.of(context).primaryColor
             : null,
-        minimumSize: WidgetStateProperty.all(Size(80, 50)));
+        minimumSize: Size(50, 30));
     var dataKey = new GlobalKey();
     _deviceTagButtonKeys[tag] = dataKey;
-    var b = TextButton(
+    var b = TextButton(        
         key: dataKey,
         style: bs,
         child: Text(text, style: getDeviceTagButtonTextStyle(selectedButton)),
         onPressed: () => {setNewSelectedDeviceTag(tag)});
-    return b;
+    return Container(child: b, padding: EdgeInsets.fromLTRB(10, 5, 10, 5),);
   }
 
   List<Widget> getTagsWidgets() {
