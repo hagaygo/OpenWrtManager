@@ -36,7 +36,17 @@ class ServicesFormState extends State<ServicesForm> {
               _startupData = (startupReplyRes[0].data!["result"] as List)[1] as Map;
             });
           } catch (e) {
+            cli
+            .getData(res.authenticationCookie, [StartupService2410Reply(ReplyStatus.Ok)], pTimeout: 8) // on failure we try send the openwrt 24.10 command
+            .then((startupReplyRes) {
+          try {
+            setState(() {
+              _startupData = (startupReplyRes[0].data!["result"] as List)[1] as Map;
+            });
+          } catch (e) {
             Dialogs.simpleAlert(context, "Error", "Bad response from device");
+          }
+        });
           }
         });
       } else
@@ -93,7 +103,10 @@ class ServicesFormState extends State<ServicesForm> {
   List<Widget> getServicesRows(Map startupData) {
     List<Widget> lst = [];
     var orderdList = startupData.keys.toList();
-    orderdList.sort((a, b) => (startupData[a]["index"] ?? 0) - (startupData[b]["index"] ?? 0));
+    String fieldName = "index";
+    if (startupData.length > 0 && !startupData[startupData.keys.first].containsKey(fieldName))
+      fieldName = "start";
+    orderdList.sort((a, b) => (startupData[a][fieldName] ?? 0) - (startupData[b][fieldName] ?? 0));
     for (var key in orderdList) {
       lst.add(Container(
           decoration: BoxDecoration(
@@ -111,7 +124,7 @@ class ServicesFormState extends State<ServicesForm> {
                   });
                 },
                 child: Row(children: [
-                  Container(width: 60, child: Text(startupData[key]["index"].toString())),
+                  Container(width: 60, child: Text(startupData[key][fieldName].toString())),
                   Text(key),
                   Expanded(
                       child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [

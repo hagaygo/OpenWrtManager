@@ -6,7 +6,7 @@ class StartupServiceReply extends CommandReplyBase {
   StartupServiceReply(ReplyStatus status) : super(status);
 
   @override
-  List<String> get commandParameters => ["luci", "getInitList"];
+  List<String> get commandParameters => ["luci", "getInitList"];  
 
   @override
   Object createReply(ReplyStatus status, Map<String, dynamic>? data, {Device? device}) {
@@ -36,4 +36,11 @@ class StartupServiceCommandReply extends CommandReplyBase {
     i.data = data;
     return i;
   }
+}
+
+class StartupService2410Reply extends StartupServiceReply
+{
+  StartupService2410Reply(ReplyStatus status) : super(status);
+  
+  List<String> get commandParameters => ["rc", "list"];
 }
