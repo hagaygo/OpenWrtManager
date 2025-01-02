@@ -159,9 +159,11 @@ class OpenWrtClient {
         throw Exception('got $response.statusCode');
     } on Exception catch (ex) {
       if (Utils.ReleaseMode) debugPrint(ex.toString());
-      return 'Error running command $command $ex';
+      return '$ERROR_RUNNING_COMMAND $command $ex';
     }
   }
+
+  static const String ERROR_RUNNING_COMMAND =  "Error running command ";
 
   Future<AuthenticateReply> authenticate() async {
     var http = _getClient();

@@ -96,8 +96,10 @@ class DeviceActionFormState extends State<DeviceActionForm> {
     var cli = OpenWrtClient(device, SettingsUtil.identities!.firstWhere((x) => x.guid == device.identityGuid));
     var lst = ["Authentication failed"];
     await cli.authenticate().then((res) async {
-      if (res.status == ReplyStatus.Ok) {
-        var responseText = await cli.executeCgiExec(res.authenticationCookie!.value, "/sbin/logread -e ^");
+      if (res.status == ReplyStatus.Ok) {        
+        var responseText = await cli.executeCgiExec(res.authenticationCookie!.value, "/usr/libexec/syslog-wrapper");
+        if (responseText.startsWith(OpenWrtClient.ERROR_RUNNING_COMMAND)) // openwrt 23.0.5 and older
+          responseText = await cli.executeCgiExec(res.authenticationCookie!.value, "/sbin/logread -e ^");
         lst = new LineSplitter().convert(responseText).toList();
       }
     });
