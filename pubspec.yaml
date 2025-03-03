@@ -18,6 +18,7 @@ dependencies:
   feature_discovery_fork: ^0.14.1
   provider: ^6.0.5
   collection: ^1.17.0      
+  convert: ^3.1.0
 
 dev_dependencies:
   flutter_test:

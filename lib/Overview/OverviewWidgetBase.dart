@@ -287,7 +287,7 @@ abstract class OverviewWidgetBaseState extends State<OverviewWidgetBase> {
           errorText = "Error";
           break;
         case ReplyStatus.HandshakeError:
-          errorText = "Secure connection error , bad certificate ?";
+          errorText = "Secure connection error , bad certificate , if device's certificate changed from last used one - resave device on devices form";
           break;
         case ReplyStatus.NotFound:
           errorText =

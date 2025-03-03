@@ -310,5 +310,6 @@ class DeviceFormState extends State<DeviceForm> {
     d.identityGuid = selectedIdentity!.guid;
     d.useSecureConnection = _secureConnection;
     d.ignoreBadCertificate = _ignoreBadCertificate;
+    d.pinnedCertificateHash = null; // reset pinned certificate , will fetch new one on next connection
   }
 }

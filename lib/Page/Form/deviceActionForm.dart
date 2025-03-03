@@ -44,6 +44,11 @@ class DeviceActionFormState extends State<DeviceActionForm> {
         });
       } else
         setState(() {
+          if (res.status == ReplyStatus.HandshakeError)
+          {
+              _boardDataStatusText = "Error getting device data - certificate error , if certifcate changed re-save device data to clear pinned certificate";
+          }
+          else
           _boardDataStatusText = "Error getting device data - authentication failed";
         });
     });

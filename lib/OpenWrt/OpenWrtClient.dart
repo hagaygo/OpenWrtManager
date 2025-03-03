@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+import 'package:convert/convert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:openwrt_manager/Model/Identity.dart';
 import 'package:openwrt_manager/Model/device.dart';
@@ -11,6 +12,7 @@ import 'package:openwrt_manager/OpenWrt/Model/DeleteClientReply.dart';
 import 'package:openwrt_manager/OpenWrt/Model/RestartInterfaceReply.dart';
 import 'package:openwrt_manager/OpenWrt/Model/RRDNSReply.dart';
 import 'package:openwrt_manager/Utils.dart';
+import 'package:openwrt_manager/settingsUtil.dart';
 import 'Model/SystemInfoReply.dart';
 
 class OpenWrtClient {
@@ -37,19 +39,34 @@ class OpenWrtClient {
   HttpClient _getClient() {
     var cli = HttpClient();
     if (_device.ignoreBadCertificate!)
-      cli.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
+      cli.badCertificateCallback =
+          ((X509Certificate cert, String host, int port) {
+        var certHex = hex.encode(cert.sha1);
+        if (_device.pinnedCertificateHash != null) {
+          if (certHex != _device.pinnedCertificateHash) {
+            return false;
+          }
+        } else {
+          _device.pinnedCertificateHash = certHex;
+          SettingsUtil.saveDevices();
+        }
+        return true;
+      });
     return cli;
   }
 
   static late String lastJSONResponse;
   static late String lastJSONRequest;
 
-  Future<List<CommandReplyBase>> getData(Cookie? c, List<CommandReplyBase> commands, {pTimeout = Timeout}) async {
+  Future<List<CommandReplyBase>> getData(
+      Cookie? c, List<CommandReplyBase> commands,
+      {pTimeout = Timeout}) async {
     var http = _getClient();
     http.connectionTimeout = Duration(seconds: Timeout);
 
     try {
-      var request = await http.postUrl(Uri.parse(_baseURL + "/cgi-bin/luci/admin/ubus"));
+      var request =
+          await http.postUrl(Uri.parse(_baseURL + "/cgi-bin/luci/admin/ubus"));
       List<Map<String, Object>> data = [];
       var counter = 1;
       for (var cmd in commands) {
@@ -58,7 +75,12 @@ class OpenWrtClient {
           params.add(prm);
         }
         if (params.length < 4) params.add({});
-        var jsonRPC = {"jsonrpc": "2.0", "id": counter++, "method": "call", "params": params};
+        var jsonRPC = {
+          "jsonrpc": "2.0",
+          "id": counter++,
+          "method": "call",
+          "params": params
+        };
         data.add(jsonRPC);
       }
 
@@ -69,7 +91,8 @@ class OpenWrtClient {
       request.contentLength = body.length;
       request.add(body);
 
-      HttpClientResponse response = await request.close().timeout(Duration(seconds: pTimeout));
+      HttpClientResponse response =
+          await request.close().timeout(Duration(seconds: pTimeout));
       http.close();
       if (response.statusCode == 200) {
         var jsonText = await response.transform(utf8.decoder).join();
@@ -78,21 +101,25 @@ class OpenWrtClient {
         List<CommandReplyBase> lstResponse = [];
         var idCounter = 1;
         for (var cmd in commands) {
-          var cmdData = jsonData.firstWhere((x) => (x["id"] as int?) == idCounter);
-          lstResponse.add(cmd.createReply(ReplyStatus.Ok, cmdData) as CommandReplyBase);
+          var cmdData =
+              jsonData.firstWhere((x) => (x["id"] as int?) == idCounter);
+          lstResponse.add(
+              cmd.createReply(ReplyStatus.Ok, cmdData) as CommandReplyBase);
           idCounter++;
         }
         return Future.value(lstResponse);
       } else if (response.statusCode == 403)
         return Future.value([SystemInfoReply(ReplyStatus.Forbidden)]);
-      else if (response.statusCode == 404) return Future.value([SystemInfoReply(ReplyStatus.NotFound)]);
+      else if (response.statusCode == 404)
+        return Future.value([SystemInfoReply(ReplyStatus.NotFound)]);
     } on Exception {
       return Future.value([SystemInfoReply(ReplyStatus.Error)]);
     }
     return Future.value([SystemInfoReply(ReplyStatus.Error)]);
   }
 
-  Future<RRDNSReply> getRemoteDns(AuthenticateReply auth, List<String?> ips) async {
+  Future<RRDNSReply> getRemoteDns(
+      AuthenticateReply auth, List<String?> ips) async {
     try {
       var cmd = RRDNSReply(ReplyStatus.Ok);
       cmd.ipList = ips;
@@ -107,7 +134,8 @@ class OpenWrtClient {
     }
   }
 
-  Future<RestartInterfaceReply> restartInterface(AuthenticateReply auth, String? interfaceName) async {
+  Future<RestartInterfaceReply> restartInterface(
+      AuthenticateReply auth, String? interfaceName) async {
     try {
       var cmd = RestartInterfaceReply(ReplyStatus.Ok);
       cmd.interfaceName = interfaceName;
@@ -122,7 +150,8 @@ class OpenWrtClient {
     }
   }
 
-  Future<DeleteClientReply> deleteClient(AuthenticateReply auth, String? interfaceName, String? mac) async {
+  Future<DeleteClientReply> deleteClient(
+      AuthenticateReply auth, String? interfaceName, String? mac) async {
     try {
       var cmd = DeleteClientReply(ReplyStatus.Ok);
       cmd.interfaceName = interfaceName;
@@ -142,14 +171,16 @@ class OpenWrtClient {
     var http = _getClient();
     http.connectionTimeout = Duration(seconds: Timeout);
     try {
-      var request = await http.postUrl(Uri.parse(_baseURL + "/cgi-bin/cgi-exec"));
+      var request =
+          await http.postUrl(Uri.parse(_baseURL + "/cgi-bin/cgi-exec"));
       var params = 'sessionid=$authKey&command=${Uri.encodeComponent(command)}';
       var body = utf8.encode(params);
       request.headers.set('content-type', 'application/x-www-form-urlencoded');
       request.contentLength = body.length;
       request.add(body);
 
-      HttpClientResponse response = await request.close().timeout(const Duration(seconds: 10));
+      HttpClientResponse response =
+          await request.close().timeout(const Duration(seconds: 10));
       http.close();
       if (response.statusCode == 200) {
         var base64 = await response.transform(utf8.decoder).join();
@@ -163,7 +194,7 @@ class OpenWrtClient {
     }
   }
 
-  static const String ERROR_RUNNING_COMMAND =  "Error running command ";
+  static const String ERROR_RUNNING_COMMAND = "Error running command ";
 
   Future<AuthenticateReply> authenticate() async {
     var http = _getClient();
@@ -177,11 +208,13 @@ class OpenWrtClient {
       request.contentLength = body.length;
       request.add(body);
 
-      HttpClientResponse response = await request.close().timeout(const Duration(seconds: 10));
+      HttpClientResponse response =
+          await request.close().timeout(const Duration(seconds: 10));
       http.close();
       if (response.statusCode == 302) {
         for (var c in response.cookies) {
-          if (c.name.contains("sysauth")) return Future.value(AuthenticateReply(ReplyStatus.Ok, c));
+          if (c.name.contains("sysauth"))
+            return Future.value(AuthenticateReply(ReplyStatus.Ok, c));
         }
       }
       return Future.value(AuthenticateReply(ReplyStatus.Forbidden, null));

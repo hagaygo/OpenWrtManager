@@ -7,6 +7,7 @@ class Device {
   String? TAG;
   bool? useSecureConnection;
   bool? ignoreBadCertificate;
+  String? pinnedCertificateHash;
   List<String> wifiDevices = [];
 
   static const String defaultPort = "80/443";
@@ -21,6 +22,7 @@ class Device {
         'wifiDevices': wifiDevices,
         'useSecureConnection': useSecureConnection,
         'ignoreBadCertificate': ignoreBadCertificate,
+        'pinnedCertificateHash' : pinnedCertificateHash
       };
 
   static Device fromJson(Map<String, dynamic> json) {
@@ -31,6 +33,7 @@ class Device {
     i.identityGuid = json['identityGuid'].toString();
     i.port = json['port'].toString();
     i.TAG = json['tag']?.toString();
+    i.pinnedCertificateHash = json['pinnedCertificateHash']?.toString();
     i.useSecureConnection = json['useSecureConnection'] ?? false;
     i.ignoreBadCertificate = json['ignoreBadCertificate'] ?? false;
     if (json['wifiDevices'] != null && (json['wifiDevices'] as List).length > 0)
