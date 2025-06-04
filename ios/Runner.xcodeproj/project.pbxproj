@@ -151,7 +151,7 @@
 				ORGANIZATIONNAME = "The Chromium Authors";
 				TargetAttributes = {
 					97C146ED1CF9000F007C117D = {
-						CreatedOnToolsVersion = 7.3.1;
+						CreatedOnToolsVersion = 8.3.0;
 						LastSwiftMigration = 1100;
 					};
 				};
