@@ -152,6 +152,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
         systemOverlayStyle: SystemUiOverlayStyle(
           systemNavigationBarColor: Theme.of(context).primaryColorDark, 
           statusBarColor: Theme.of(context).primaryColorDark,           
+          statusBarIconBrightness: Brightness.light
         ),
           title: Text('OpenWrt Overview'),
           leading: GestureDetector(
