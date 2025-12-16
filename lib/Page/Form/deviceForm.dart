@@ -91,7 +91,7 @@ class DeviceFormState extends State<DeviceForm> {
                         decoration: InputDecoration(
                             isDense: true,
                             contentPadding: EdgeInsets.only(top: 0, bottom: 0)),
-                        value: selectedIdentity,
+                        initialValue: selectedIdentity,
                         validator: (value) {
                           if (value == null) {
                             return 'Identity is missing';

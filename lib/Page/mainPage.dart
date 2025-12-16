@@ -144,64 +144,66 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
-  Widget build(BuildContext context) {    
-    return Scaffold(
-      key: _scaffoldKey,
-      drawer: buildDrawer(context),
-      appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle(
-          systemNavigationBarColor: Theme.of(context).primaryColorDark, 
-          statusBarColor: Theme.of(context).primaryColorDark,           
-          statusBarIconBrightness: Brightness.light
-        ),
-          title: Text('OpenWrt Overview'),
-          leading: GestureDetector(
-              onTap: () {
-                if (_scaffoldKey.currentState!.isDrawerOpen) {
-                  _scaffoldKey.currentState!.openEndDrawer();
-                } else {
-                  _scaffoldKey.currentState!.openDrawer();
-                }
-              },
-              child: DescribedFeatureOverlay(
-                featureId: showDrawerFeatureId,
-                tapTarget: Icon(Icons.menu),
-                title: Text('Click here to open menu'),
-                description: Text(
-                    'On the menu you can setup identities, devices and more settings'),
-                child: Icon(Icons.menu),
-              ))),
-      body: RefreshIndicator(
-        child: SingleChildScrollView(
+  Widget build(BuildContext context) {
+    return AnnotatedRegion(value : SystemUiOverlayStyle.light,
+      child: SafeArea(
+        child: Scaffold(
+          key: _scaffoldKey,
+          drawer: buildDrawer(context),
+          appBar: AppBar(
+              systemOverlayStyle: SystemUiOverlayStyle(
+                  systemNavigationBarColor: Theme.of(context).primaryColorDark,
+                  statusBarColor: Theme.of(context).primaryColorDark,
+                  statusBarIconBrightness: Brightness.light),
+              title: Text('OpenWrt Overview'),
+              leading: GestureDetector(
+                  onTap: () {
+                    if (_scaffoldKey.currentState!.isDrawerOpen) {
+                      _scaffoldKey.currentState!.openEndDrawer();
+                    } else {
+                      _scaffoldKey.currentState!.openDrawer();
+                    }
+                  },
+                  child: DescribedFeatureOverlay(
+                    featureId: showDrawerFeatureId,
+                    tapTarget: Icon(Icons.menu),
+                    title: Text('Click here to open menu'),
+                    description: Text(
+                        'On the menu you can setup identities, devices and more settings'),
+                    child: Icon(Icons.menu),
+                  ))),
+          body: RefreshIndicator(
+                  child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
           child: Column(
             children: getOverviews(),
           ),
-        ),
-        onRefresh: () {
+                  ),
+                  onRefresh: () {
           refreshOverviews();
           return Future.value(null);
-        },
-      ),
-      bottomNavigationBar: Container(
-        color: Theme.of(context).cardColor ,
-        child: SingleChildScrollView(        
-          scrollDirection: Axis.horizontal,
-          child: Row(  
-              children: getTagsWidgets()),
-        ),
-      ),
-      floatingActionButton: DescribedFeatureOverlay(
-        featureId: addOverviewFeatureId,
-        tapTarget: const Icon(Icons.add),
-        title: Text('Add new overview to main view'),
-        description: Text(
-            'After setting up your device, you can add an overview for that device'),
-        child: FloatingActionButton(
-          onPressed: () {
-            showAddDialog();
-          },
-          child: Icon(Icons.add),
+                  },
+                ),
+          bottomNavigationBar: Container(
+            color: Theme.of(context).cardColor,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(children: getTagsWidgets()),
+            ),
+          ),
+          floatingActionButton: DescribedFeatureOverlay(
+            featureId: addOverviewFeatureId,
+            tapTarget: const Icon(Icons.add),
+            title: Text('Add new overview to main view'),
+            description: Text(
+                'After setting up your device, you can add an overview for that device'),
+            child: FloatingActionButton(
+              onPressed: () {
+                showAddDialog();
+              },
+              child: Icon(Icons.add),
+            ),
+          ),
         ),
       ),
     );
@@ -221,7 +223,8 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   }
 
   TextStyle getDeviceTagButtonTextStyle(bool selectedButton) {
-    if (selectedButton) return TextStyle(color: Theme.of(context).primaryColorLight);
+    if (selectedButton)
+      return TextStyle(color: Theme.of(context).primaryColorLight);
     return TextStyle();
   }
 
@@ -229,20 +232,21 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 
   Widget GetDeviceTagButton(String text, String? tag) {
     var selectedButton = tag == SettingsUtil.appSettings?.selectedDeviceTag;
-    var bs = TextButton.styleFrom(           
-      padding: EdgeInsets.all(5),
-        backgroundColor: selectedButton
-            ? Theme.of(context).primaryColor
-            : null,
+    var bs = TextButton.styleFrom(
+        padding: EdgeInsets.all(5),
+        backgroundColor: selectedButton ? Theme.of(context).primaryColor : null,
         minimumSize: Size(50, 30));
     var dataKey = new GlobalKey();
     _deviceTagButtonKeys[tag] = dataKey;
-    var b = TextButton(        
+    var b = TextButton(
         key: dataKey,
         style: bs,
         child: Text(text, style: getDeviceTagButtonTextStyle(selectedButton)),
         onPressed: () => {setNewSelectedDeviceTag(tag)});
-    return Container(child: b, padding: EdgeInsets.fromLTRB(10, 5, 10, 5),);
+    return Container(
+      child: b,
+      padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+    );
   }
 
   List<Widget> getTagsWidgets() {
@@ -257,7 +261,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
           setNewSelectedDeviceTag(SettingsUtil.appSettings
               ?.selectedDeviceTag); // forces selected tag to be fully visible
         });
-      }     
+      }
     }
     return lst;
   }
@@ -630,7 +634,10 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 Future<List<String?>> updateDevicesData(List<Device> devices) async {
   List<String?> failedDevices = [];
 
-  for (var d in devices.where((d) => SettingsUtil.appSettings?.selectedDeviceTag == null || d.TAG == null || SettingsUtil.appSettings?.selectedDeviceTag == d.TAG)) {
+  for (var d in devices.where((d) =>
+      SettingsUtil.appSettings?.selectedDeviceTag == null ||
+      d.TAG == null ||
+      SettingsUtil.appSettings?.selectedDeviceTag == d.TAG)) {
     var cli = OpenWrtClient(d,
         SettingsUtil.identities!.firstWhere((i) => i.guid == d.identityGuid));
 

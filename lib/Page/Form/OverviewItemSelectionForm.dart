@@ -62,7 +62,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                     decoration: InputDecoration(
                         isDense: true,
                         contentPadding: EdgeInsets.only(top: 0, bottom: 0)),
-                    value: _selectedDevice,
+                    initialValue: _selectedDevice,
                     validator: (value) {
                       if (value == null) {
                         return 'Device is missing';
@@ -85,7 +85,7 @@ class OverviewItemSelectionFormState extends State<OverviewItemSelectionForm> {
                     decoration: InputDecoration(
                         isDense: true,
                         contentPadding: EdgeInsets.only(top: 0, bottom: 0)),
-                    value: _selectedOverview,
+                    initialValue: _selectedOverview,
                     validator: (value) {
                       if (value == null) {
                         return 'Overview item is missing';
