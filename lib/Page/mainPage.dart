@@ -33,7 +33,7 @@ class MainPage extends StatefulWidget {
   MainPage({Key? key}) : super(key: key);
 
   @override
-  _MainPageState createState() => _MainPageState();
+  _MainPageState createState() => _MainPageState();  
 }
 
 class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
@@ -61,7 +61,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   static const showDrawerFeatureId = "showDrawerFeatureId";
 
   @override
-  void initState() {
+  void initState() {    
     super.initState();
     initVersionState();
     WidgetsBinding.instance.addObserver(this);
@@ -144,65 +144,63 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     return AnnotatedRegion(value : SystemUiOverlayStyle.light,
-      child: SafeArea(
-        child: Scaffold(
-          key: _scaffoldKey,
-          drawer: buildDrawer(context),
-          appBar: AppBar(
-              systemOverlayStyle: SystemUiOverlayStyle(
-                  systemNavigationBarColor: Theme.of(context).primaryColorDark,
-                  statusBarColor: Theme.of(context).primaryColorDark,
-                  statusBarIconBrightness: Brightness.light),
-              title: Text('OpenWrt Overview'),
-              leading: GestureDetector(
-                  onTap: () {
-                    if (_scaffoldKey.currentState!.isDrawerOpen) {
-                      _scaffoldKey.currentState!.openEndDrawer();
-                    } else {
-                      _scaffoldKey.currentState!.openDrawer();
-                    }
-                  },
-                  child: DescribedFeatureOverlay(
-                    featureId: showDrawerFeatureId,
-                    tapTarget: Icon(Icons.menu),
-                    title: Text('Click here to open menu'),
-                    description: Text(
-                        'On the menu you can setup identities, devices and more settings'),
-                    child: Icon(Icons.menu),
-                  ))),
-          body: RefreshIndicator(
-                  child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          child: Column(
-            children: getOverviews(),
-          ),
-                  ),
-                  onRefresh: () {
-          refreshOverviews();
-          return Future.value(null);
-                  },
+      child: Scaffold(
+        key: _scaffoldKey,
+        drawer: buildDrawer(context),
+        appBar: AppBar(
+            systemOverlayStyle: SystemUiOverlayStyle(
+                systemNavigationBarColor: Theme.of(context).primaryColorDark,
+                statusBarColor: Theme.of(context).primaryColorDark,
+                statusBarIconBrightness: Brightness.light),
+            title: Text('OpenWrt Overview'),
+            leading: GestureDetector(
+                onTap: () {                  
+                  if (_scaffoldKey.currentState!.isDrawerOpen) {
+                    _scaffoldKey.currentState!.openEndDrawer();
+                  } else {
+                    _scaffoldKey.currentState!.openDrawer();
+                  }
+                },
+                child: DescribedFeatureOverlay(
+                  featureId: showDrawerFeatureId,
+                  tapTarget: Icon(Icons.menu),
+                  title: Text('Click here to open menu'),
+                  description: Text(
+                      'On the menu you can setup identities, devices and more settings'),
+                  child: Icon(Icons.menu),
+                ))),
+        body: RefreshIndicator(
+                child: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: Column(
+          children: getOverviews(),
+        ),
                 ),
-          bottomNavigationBar: Container(
-            color: Theme.of(context).cardColor,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(children: getTagsWidgets()),
-            ),
+                onRefresh: () {
+        refreshOverviews();
+        return Future.value(null);
+                },
+              ),
+        bottomNavigationBar: Container(
+          color: Theme.of(context).cardColor,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(children: getTagsWidgets()),
           ),
-          floatingActionButton: DescribedFeatureOverlay(
-            featureId: addOverviewFeatureId,
-            tapTarget: const Icon(Icons.add),
-            title: Text('Add new overview to main view'),
-            description: Text(
-                'After setting up your device, you can add an overview for that device'),
-            child: FloatingActionButton(
-              onPressed: () {
-                showAddDialog();
-              },
-              child: Icon(Icons.add),
-            ),
+        ),
+        floatingActionButton: DescribedFeatureOverlay(
+          featureId: addOverviewFeatureId,
+          tapTarget: const Icon(Icons.add),
+          title: Text('Add new overview to main view'),
+          description: Text(
+              'After setting up your device, you can add an overview for that device'),
+          child: FloatingActionButton(
+            onPressed: () {
+              showAddDialog();
+            },
+            child: Icon(Icons.add),
           ),
         ),
       ),

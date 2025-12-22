@@ -25,12 +25,26 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top]);
+
+    SystemChrome.setSystemUIChangeCallback((systemOverlaysAreVisible) async {
+      if (systemOverlaysAreVisible) {        
+        await Future.delayed(Duration(seconds: 2));
+        SystemChrome.setEnabledSystemUIMode(
+          SystemUiMode.manual,
+          overlays: [SystemUiOverlay.top],
+        );
+      }
+    });
+
     return FeatureDiscovery(
       child: MaterialApp(
         title: 'OpenWrt Manager',
         theme: Provider.of<ThemeChangeNotifier>(context, listen: true).currentTheme,
         home: MainPage(),
-        builder: (context, child) {          
+        builder: (context, child) {
           return MediaQuery(
             child: child!,
             data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1)),
