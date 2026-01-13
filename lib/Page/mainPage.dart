@@ -184,7 +184,15 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                 },
               ),
         bottomNavigationBar: Container(
-          color: Theme.of(context).cardColor,
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: Colors.grey,
+              blurRadius: 8,
+            ),
+          ],
+        ),          
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(children: getTagsWidgets()),
