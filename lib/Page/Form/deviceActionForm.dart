@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:openwrt_manager/Model/device.dart';
 import 'package:openwrt_manager/OpenWrt/Model/SystemBoardReply.dart';
+import 'package:openwrt_manager/OpenWrt/Model/SystemLogReply.dart';
 import 'package:openwrt_manager/OpenWrt/OpenWrtClient.dart';
 import 'package:openwrt_manager/Dialog/Dialogs.dart';
 import 'package:openwrt_manager/OpenWrt/Model/RebootReply.dart';
@@ -101,11 +102,21 @@ class DeviceActionFormState extends State<DeviceActionForm> {
     var cli = OpenWrtClient(device, SettingsUtil.identities!.firstWhere((x) => x.guid == device.identityGuid));
     var lst = ["Authentication failed"];
     await cli.authenticate().then((res) async {
-      if (res.status == ReplyStatus.Ok) {        
-        var responseText = await cli.executeCgiExec(res.authenticationCookie!.value, "/usr/libexec/syslog-wrapper");
-        if (responseText.startsWith(OpenWrtClient.ERROR_RUNNING_COMMAND)) // openwrt 23.0.5 and older
-          responseText = await cli.executeCgiExec(res.authenticationCookie!.value, "/sbin/logread -e ^");
-        lst = new LineSplitter().convert(responseText).toList();
+      if (res.status == ReplyStatus.Ok) {
+        var systemLogResponse = await cli.getData(res.authenticationCookie, [SystemLogReply(ReplyStatus.Ok)]);        
+
+        if (systemLogResponse[0].status == ReplyStatus.Ok && systemLogResponse[0].data!["result"] != null)
+        {
+            var logLines = systemLogResponse[0].data!["result"][1]["log"];
+            lst = List<String>.from(logLines.map((i) => "[" + new DateTime.fromMicrosecondsSinceEpoch(i["time"] * 1000).toLocal().toString() + "] " + i["msg"].toString())).reversed.toList();
+        }
+        else
+        {
+          var responseText = await cli.executeCgiExec(res.authenticationCookie!.value, "/usr/libexec/syslog-wrapper"); // openwrt 24.10 
+          if (responseText.startsWith(OpenWrtClient.ERROR_RUNNING_COMMAND)) // openwrt 23.05 and older
+              responseText = await cli.executeCgiExec(res.authenticationCookie!.value, "/sbin/logread -e ^");
+          lst = new LineSplitter().convert(responseText).toList();
+        }
       }
     });
     return lst;
