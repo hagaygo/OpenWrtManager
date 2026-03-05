@@ -6,7 +6,7 @@ A Mobile App for viewing your OpenWrt devices information.
 [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Get_it_on_F-Droid.svg/320px-Get_it_on_F-Droid.svg.png" alt="Get it on F-Droid" height="50">](https://f-droid.org/en/packages/com.hg.openwrtmanager/)
 [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroidButtonGreyBorder_nofont.png" alt="Get it on IzzyOnDroid" height="50">](https://apt.izzysoft.de/packages/com.hg.openwrtmanager)
 
-Currently supports [OpenWrt](https://openwrt.org/) version 19.07 or 21.02 or 22.03 or 23.05 or 24.10 with [LuCI](https://openwrt.org/packages/pkgdata/luci) installed.
+Currently supports [OpenWrt](https://openwrt.org/) version 19.07 or 21.02 or 22.03 or 23.05 or 24.10  or 25.12 with [LuCI](https://openwrt.org/packages/pkgdata/luci) installed.
 
 ## Development Setup
 Install the Flutter SDK for your system.
