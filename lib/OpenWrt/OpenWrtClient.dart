@@ -217,6 +217,9 @@ class OpenWrtClient {
             return Future.value(AuthenticateReply(ReplyStatus.Ok, c));
         }
       }
+      if (response.statusCode >= 300 && response.statusCode < 400) {
+        return Future.value(AuthenticateReply(ReplyStatus.UnexpectedRedirect, null));
+      }
       return Future.value(AuthenticateReply(ReplyStatus.Forbidden, null));
     } on HandshakeException catch (ex) {
       if (Utils.ReleaseMode) debugPrint(ex.toString());

@@ -2,6 +2,7 @@ enum ReplyStatus
 {
   Ok,
   Forbidden,
+  UnexpectedRedirect,
   Timeout,
   Error,
   HandshakeError,
