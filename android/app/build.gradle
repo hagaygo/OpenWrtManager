@@ -23,6 +23,23 @@ if (flutterVersionName == null) {
 }
 
 android {    
+    def dartEnvironmentVariables = [:]
+    if (project.hasProperty('dart-defines')) {
+        project.property('dart-defines').split(',').each { entry ->
+        def pair = new String(entry.decodeBase64(), 'UTF-8').split('=')
+        if (pair.length == 2) {
+            dartEnvironmentVariables[pair[0]] = pair[1]
+        }
+    }
+    }
+
+    def shouldCompress = dartEnvironmentVariables['COMPRESS_APK'] == 'true'
+
+    packagingOptions {
+        dex.useLegacyPackaging = shouldCompress 
+        jniLibs.useLegacyPackaging = shouldCompress
+    }
+
     namespace 'com.hg.openwrtmanager'
     compileSdkVersion 36
     def keystoreProperties = new Properties()
