@@ -81,7 +81,7 @@ static OverviewConfig? _overviewConfig;
       _appSetting = AppSetting();
       return Future.value(false);
     });
-    return Future.value(false);
+    return await Future.value(false);
     }
     catch (e)
     {

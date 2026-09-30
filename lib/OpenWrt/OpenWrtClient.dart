@@ -107,11 +107,11 @@ class OpenWrtClient {
               cmd.createReply(ReplyStatus.Ok, cmdData) as CommandReplyBase);
           idCounter++;
         }
-        return Future.value(lstResponse);
+        return await Future.value(lstResponse);
       } else if (response.statusCode == 403)
-        return Future.value([SystemInfoReply(ReplyStatus.Forbidden)]);
+        return await Future.value([SystemInfoReply(ReplyStatus.Forbidden)]);
       else if (response.statusCode == 404)
-        return Future.value([SystemInfoReply(ReplyStatus.NotFound)]);
+        return await Future.value([SystemInfoReply(ReplyStatus.NotFound)]);
     } on Exception {
       return Future.value([SystemInfoReply(ReplyStatus.Error)]);
     }
@@ -126,7 +126,7 @@ class OpenWrtClient {
       var res = await getData(auth.authenticationCookie, [cmd]);
       var data = res[0] as RRDNSReply;
       if ((data.data!["result"] as List)[0] == 0)
-        return Future.value(data);
+        return await Future.value(data);
       else
         return RRDNSReply(ReplyStatus.Error);
     } catch (e) {
@@ -142,7 +142,7 @@ class OpenWrtClient {
       var res = await getData(auth.authenticationCookie, [cmd]);
       var data = res[0] as RestartInterfaceReply;
       if ((data.data!["result"] as List)[0] == 0)
-        return Future.value(data);
+        return await Future.value(data);
       else
         return RestartInterfaceReply(ReplyStatus.Error);
     } catch (e) {
@@ -159,7 +159,7 @@ class OpenWrtClient {
       var res = await getData(auth.authenticationCookie, [cmd]);
       var data = res[0] as DeleteClientReply;
       if ((data.data!["result"] as List)[0] == 0)
-        return Future.value(data);
+        return await Future.value(data);
       else
         return DeleteClientReply(ReplyStatus.Error);
     } catch (e) {
@@ -214,13 +214,13 @@ class OpenWrtClient {
       if (response.statusCode == 302) {
         for (var c in response.cookies) {
           if (c.name.contains("sysauth"))
-            return Future.value(AuthenticateReply(ReplyStatus.Ok, c));
+            return await Future.value(AuthenticateReply(ReplyStatus.Ok, c));
         }
       }
       if (response.statusCode >= 300 && response.statusCode < 400) {
-        return Future.value(AuthenticateReply(ReplyStatus.UnexpectedRedirect, null));
+        return await Future.value(AuthenticateReply(ReplyStatus.UnexpectedRedirect, null));
       }
-      return Future.value(AuthenticateReply(ReplyStatus.Forbidden, null));
+      return await Future.value(AuthenticateReply(ReplyStatus.Forbidden, null));
     } on HandshakeException catch (ex) {
       if (Utils.ReleaseMode) debugPrint(ex.toString());
       return Future.value(AuthenticateReply(ReplyStatus.HandshakeError, null));
