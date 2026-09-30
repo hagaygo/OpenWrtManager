@@ -69,7 +69,7 @@ IDI_APP_ICON            ICON                    "resources\\app_icon.ico"
 #if defined(FLUTTER_VERSION)
 #define VERSION_AS_STRING FLUTTER_VERSION
 #else
-#define VERSION_AS_STRING "1.28"
+#define VERSION_AS_STRING "1.0.0"
 #endif
 
 VS_VERSION_INFO VERSIONINFO
@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.hg" "\0"
-            VALUE "FileDescription", "openwrtmanager" "\0"
+            VALUE "FileDescription", "openwrt_manager" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "openwrtmanager" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2022 com.hg. All rights reserved." "\0"
-            VALUE "OriginalFilename", "openwrtmanager.exe" "\0"
-            VALUE "ProductName", "openwrtmanager" "\0"
+            VALUE "InternalName", "openwrt_manager" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 com.hg. All rights reserved." "\0"
+            VALUE "OriginalFilename", "openwrt_manager.exe" "\0"
+            VALUE "ProductName", "openwrt_manager" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

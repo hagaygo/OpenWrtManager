@@ -46,15 +46,11 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 
   String _appVersion = "";
 
-  initVersionState() async {
-    try {
+  initVersionState() async {    
       final PackageInfo info = await PackageInfo.fromPlatform();
       _appVersion = info.version;
       if (_appVersion.endsWith(".0"))
-        _appVersion = _appVersion.substring(0, _appVersion.length - 2);
-    } catch (exception) {
-      _appVersion = "1.41"; // currently there is an error on windows build
-    }
+        _appVersion = _appVersion.substring(0, _appVersion.length - 2);    
   }
 
   static const addOverviewFeatureId = "addOverviewFeatureId";
