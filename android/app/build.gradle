@@ -1,6 +1,5 @@
 plugins {
     id "com.android.application"
-    id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
 }
 
@@ -23,6 +22,7 @@ if (flutterVersionName == null) {
 }
 
 android {    
+    ndkVersion = "28.2.13676358"
     def dartEnvironmentVariables = [:]
     if (project.hasProperty('dart-defines')) {
         project.property('dart-defines').split(',').each { entry ->
@@ -57,10 +57,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+    }    
 
     lintOptions {
         disable 'InvalidPackage'
@@ -101,3 +98,10 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+    }
+}
+
